@@ -54,13 +54,17 @@ python -m pip install -r requirements-dev.txt
 Copy-Item .env.example .env
 ```
 
-### 2. Configurar clave de OpenAI
+### 2. Configurar credenciales locales
 
 Edita el archivo `.env` local (este archivo **nunca** debe subirse a Git):
 
 ```text
+AGENT_API_KEY=tu_clave_independiente_para_el_agente
 OPENAI_API_KEY=tu_clave_privada
 ```
+
+`AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
+en Banorte. Nunca debe reutilizarse como `OPENAI_API_KEY`.
 
 ### 3. Construir el índice RAG y evaluar recuperación
 

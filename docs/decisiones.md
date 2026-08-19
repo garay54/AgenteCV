@@ -425,7 +425,7 @@ La prioridad podrá cambiar si Banorte confirma que siempre solicita streaming, 
 
 ## D07. Estrategia de autenticación de entrada
 
-**Estado:** Aceptada para el MVP; pendiente de pruebas de integración  
+**Estado:** Implementada y probada localmente; pendiente de integración con Banorte
 **Fecha:** 2026-08-18
 
 ### Contexto
@@ -442,7 +442,7 @@ Se evaluaron estas alternativas:
 
 ### Decisión
 
-`POST /responses` se protegerá mediante una **clave estática Bearer independiente**, almacenada como variable de entorno.
+`POST /v1/responses` se protege mediante una **clave estática Bearer independiente**, almacenada como variable de entorno.
 
 - La credencial de entrada se llamará `AGENT_API_KEY`.
 - Banorte enviará `Authorization: Bearer <AGENT_API_KEY>`.
@@ -486,6 +486,10 @@ D07 se considerará implementada cuando existan pruebas automatizadas que demues
 - Acceso público a `/health` sin exponer información sensible.
 - Sustitución de `AGENT_API_KEY` mediante configuración, sin editar el código.
 - Ausencia de secretos reales en Git y en los registros de las pruebas.
+
+La implementación local se encuentra en `app/auth.py` y su evidencia automatizada
+en `tests/test_auth.py`. La comparación utiliza `hmac.compare_digest`; las pruebas
+usan una credencial ficticia y no leen la clave personal de `.env`.
 
 ### Condición de revisión
 

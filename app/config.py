@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     app_environment: str = "development"
 
+    # Clave que protege la entrada al agente. Es independiente de las claves de
+    # los proveedores de IA y puede rotarse sin modificar el código.
+    agent_api_key: SecretStr | None = None
+
     openai_api_key: SecretStr | None = None
     openai_embedding_model: str = "text-embedding-3-small"
 

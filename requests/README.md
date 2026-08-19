@@ -6,7 +6,7 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 
 - `GET /health` puede ejecutarse desde ahora.
 - `POST /v1/responses` acepta solicitudes de texto y devuelve una respuesta simulada no streaming.
-- La autenticación, el RAG, el modelo y el streaming permanecen pendientes; sus casos se completarán en actividades posteriores.
+- La autenticación Bearer ya está implementada. El RAG, el modelo y el streaming permanecen pendientes de integración al endpoint.
 - Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de Banorte utiliza otro subconjunto del contrato.
 
 ## Archivos
@@ -73,8 +73,8 @@ Para ver los casos disponibles:
 | `unknown` | Actualmente HTTP `200` con respuesta simulada. La política de incertidumbre queda pendiente de integración. |
 | `multiturn` | Actualmente HTTP `200` con respuesta simulada. La comprensión del historial queda pendiente de integración. |
 | `privacy` | Actualmente HTTP `200` con respuesta simulada. Los guardrails quedan pendientes de integración. |
-| `no-auth` | Actualmente HTTP `200`; deberá cambiar a `401` durante la actividad de autenticación. |
-| `bad-auth` | Actualmente HTTP `200`; deberá cambiar a `401` durante la actividad de autenticación. |
+| `no-auth` | HTTP `401` y encabezado `WWW-Authenticate: Bearer`. |
+| `bad-auth` | HTTP `401` sin revelar la clave recibida ni la configurada. |
 | `malformed` | HTTP `400` o `422`, según el contrato final, con error controlado. |
 | `stream` | Actualmente HTTP `501`; SSE queda pendiente hasta confirmar que forma parte del alcance final. |
 

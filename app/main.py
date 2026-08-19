@@ -1,9 +1,10 @@
 from time import time
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status
 from pydantic import BaseModel
 
+from app.auth import require_agent_access
 from app.config import get_settings
 from app.models import (
     OutputTextContent,
@@ -46,6 +47,7 @@ def health() -> HealthResponse:
     response_model=ResponseResource,
     tags=["responses"],
     summary="Crear una respuesta del agente",
+    dependencies=[Depends(require_agent_access)],
 )
 def create_response(request: ResponseCreateRequest) -> ResponseResource:
     """Devuelve una respuesta Open Responses simulada para probar el contrato.

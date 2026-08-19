@@ -4,10 +4,10 @@ from app.main import MOCK_RESPONSE_TEXT, app
 from app.models import ResponseResource
 
 
-client = TestClient(app)
-
-
-def test_non_streaming_response_satisfies_contract_without_model_call() -> None:
+def test_non_streaming_response_satisfies_contract_without_model_call(
+    client: TestClient,
+    auth_headers: dict[str, str],
+) -> None:
     """La respuesta simulada debe validar sin red, SDK ni credenciales."""
 
     response = client.post(
@@ -28,6 +28,7 @@ def test_non_streaming_response_satisfies_contract_without_model_call() -> None:
             ],
             "stream": False,
         },
+        headers=auth_headers,
     )
 
     assert response.status_code == 200
@@ -47,20 +48,28 @@ def test_non_streaming_response_satisfies_contract_without_model_call() -> None:
     assert contract.usage.total_tokens == 0
 
 
-def test_minimal_string_request_uses_mock_model_name() -> None:
+def test_minimal_string_request_uses_mock_model_name(
+    client: TestClient,
+    auth_headers: dict[str, str],
+) -> None:
     response = client.post(
         "/v1/responses",
         json={"input": "Resume el perfil profesional de Mario."},
+        headers=auth_headers,
     )
 
     assert response.status_code == 200
     assert response.json()["model"] == "cv-agent-mock"
 
 
-def test_streaming_is_rejected_until_sse_is_implemented() -> None:
+def test_streaming_is_rejected_until_sse_is_implemented(
+    client: TestClient,
+    auth_headers: dict[str, str],
+) -> None:
     response = client.post(
         "/v1/responses",
         json={"input": "Resume el perfil profesional de Mario.", "stream": True},
+        headers=auth_headers,
     )
 
     assert response.status_code == 501

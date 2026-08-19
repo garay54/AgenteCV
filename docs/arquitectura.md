@@ -7,7 +7,7 @@ Este documento registra el flujo del agente profesional y relaciona cada compone
 **Estado de D09:** En progreso  
 **Fecha de actualización:** 2026-08-18
 
-La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` también existe con validación Pydantic y una respuesta simulada no streaming. Su autenticación, integración RAG y generación con el modelo todavía están pendientes. Por ese motivo, D09 no se considerará terminado hasta contrastar el flujo extremo a extremo con una solicitud real de Banorte.
+La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` también existe con validación Pydantic, autenticación Bearer y una respuesta simulada no streaming. Su integración RAG y generación con el modelo todavía están pendientes. Por ese motivo, D09 no se considerará terminado hasta contrastar el flujo extremo a extremo con una solicitud real de Banorte.
 
 ## 2. Flujo objetivo de una solicitud
 
@@ -35,9 +35,9 @@ flowchart LR
     classDef partial fill:#fef3c7,stroke:#b45309,color:#78350f;
     classDef planned fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d;
 
-    class RAG,EQ,VS implemented;
-    class HC,CR partial;
-    class B,API,VA,ORI,PR,PM,OA,AN,RI,ORO planned;
+    class API,VA,RAG,EQ,VS implemented;
+    class ORI,HC,CR partial;
+    class B,PR,PM,OA,AN,RI,ORO planned;
 ```
 
 ### Leyenda
@@ -79,7 +79,8 @@ flowchart LR
     C[Cliente local] -->|GET /health| F[FastAPI]
     F --> H[HealthResponse]
     H -->|200 application/json| C
-    C -->|POST /v1/responses| V[Validación Pydantic]
+    C -->|POST /v1/responses| A[Content-Type y Bearer]
+    A --> V[Validación Pydantic]
     V --> M[Respuesta simulada]
     M -->|ResponseResource 200| C
 ```
@@ -100,7 +101,7 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py` | Implementado; reporte real pendiente del índice |
 | `POST /v1/responses` | `app/main.py`, `tests/test_responses.py` | Implementado con respuesta simulada no streaming |
 | Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementación inicial probada; aceptación real de Banorte pendiente |
-| Autenticación Bearer | Decisión D07 | Pendiente de implementación y pruebas |
+| Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada y probada localmente; integración con Banorte pendiente |
 | Historial stateless | Decisión D05 | Pendiente de integración al endpoint |
 | Prompt fundamentado | Sin archivo de implementación | Pendiente |
 | Adaptador de generación OpenAI | Decisión D03 | Pendiente |
