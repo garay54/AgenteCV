@@ -1,0 +1,18 @@
+# Entorno y variables secretas
+.env
+.env.*
+!.env.example
+.venv/
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Editores e IDEs
+.vscode/
+.idea/
+tmp/
+
+# Índices locales reconstruibles
+data/chroma/
