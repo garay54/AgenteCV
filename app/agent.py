@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 
-from app.llm import GenerationProvider, GenerationResult, ProviderInput
+from app.llm import (
+    GenerationProvider,
+    GenerationResult,
+    GenerationStreamEvent,
+    ProviderInput,
+)
 from app.models import (
     AssistantMessage,
     DeveloperMessage,
@@ -102,24 +108,43 @@ class AgentService:
         self.generation_provider = generation_provider
         self.default_max_output_tokens = default_max_output_tokens
 
-    def answer(self, request: ResponseCreateRequest) -> AgentAnswer:
+    def _retrieve(self, request: ResponseCreateRequest) -> list[SearchResult]:
         query = retrieval_query(request)
         try:
-            retrieved = self.rag_service.search(query)
+            return self.rag_service.search(query)
         except Exception as exc:
             raise RetrievalError(
                 "No fue posible consultar la base de conocimiento."
             ) from exc
 
+    def _effective_max_output_tokens(self, request: ResponseCreateRequest) -> int:
         configured_limit = self.default_max_output_tokens
         requested_limit = request.max_output_tokens or configured_limit
-        effective_limit = min(requested_limit, configured_limit)
+        return min(requested_limit, configured_limit)
+
+    def answer(self, request: ResponseCreateRequest) -> AgentAnswer:
+        retrieved = self._retrieve(request)
         generation = self.generation_provider.generate(
             input_data=provider_input(request),
             instructions=build_instructions(
                 retrieved,
                 client_instructions=request.instructions,
             ),
-            max_output_tokens=effective_limit,
+            max_output_tokens=self._effective_max_output_tokens(request),
         )
         return AgentAnswer(generation=generation, retrieved=tuple(retrieved))
+
+    def stream(
+        self, request: ResponseCreateRequest
+    ) -> Iterator[GenerationStreamEvent]:
+        """Prepara RAG antes de abrir SSE y devuelve eventos internos del modelo."""
+
+        retrieved = self._retrieve(request)
+        return self.generation_provider.stream(
+            input_data=provider_input(request),
+            instructions=build_instructions(
+                retrieved,
+                client_instructions=request.instructions,
+            ),
+            max_output_tokens=self._effective_max_output_tokens(request),
+        )

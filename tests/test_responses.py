@@ -1,3 +1,4 @@
+import json
 from time import time
 
 import pytest
@@ -5,7 +6,15 @@ from fastapi.testclient import TestClient
 
 from app.agent import AgentAnswer
 from app.dependencies import get_agent_service
-from app.llm import GenerationRateLimitError, GenerationResult, GenerationUsage
+from app.llm import (
+    GenerationRateLimitError,
+    GenerationResult,
+    GenerationStreamCompleted,
+    GenerationStreamStarted,
+    GenerationTextDelta,
+    GenerationTimeoutError,
+    GenerationUsage,
+)
 from app.main import app
 from app.models import ResponseResource
 
@@ -36,10 +45,50 @@ class _AgentStub:
             retrieved=(),
         )
 
+    def stream(self, request):
+        timestamp = int(time())
+        result = GenerationResult(
+            id="resp_stream_stub_001",
+            text=STUB_RESPONSE_TEXT,
+            model="gpt-5.6-luna",
+            created_at=timestamp,
+            completed_at=timestamp,
+            status="completed",
+            usage=GenerationUsage(
+                input_tokens=120,
+                output_tokens=24,
+                total_tokens=144,
+            ),
+        )
+        return iter(
+            (
+                GenerationStreamStarted(
+                    id=result.id,
+                    model=result.model,
+                    created_at=result.created_at,
+                ),
+                GenerationTextDelta(delta="Mario cuenta con experiencia "),
+                GenerationTextDelta(
+                    delta="documentada en inteligencia artificial."
+                ),
+                GenerationStreamCompleted(result=result),
+            )
+        )
+
 
 class _RateLimitedAgentStub:
     def answer(self, request) -> AgentAnswer:
         raise GenerationRateLimitError("detalle interno no publicable")
+
+
+class _StreamingTimeoutAgentStub:
+    def stream(self, request):
+        yield GenerationStreamStarted(
+            id="resp_stream_timeout_001",
+            model="gpt-5.6-luna",
+            created_at=int(time()),
+        )
+        raise GenerationTimeoutError("detalle interno no publicable")
 
 
 @pytest.fixture
@@ -105,7 +154,7 @@ def test_minimal_string_request_uses_configured_generation_model(
     assert response.json()["model"] == "gpt-5.6-luna"
 
 
-def test_streaming_is_rejected_until_sse_is_implemented(
+def test_streaming_emits_open_responses_event_lifecycle(
     generated_client: TestClient,
     auth_headers: dict[str, str],
 ) -> None:
@@ -115,10 +164,66 @@ def test_streaming_is_rejected_until_sse_is_implemented(
         headers=auth_headers,
     )
 
-    assert response.status_code == 501
-    assert response.json() == {
-        "detail": "El streaming SSE todavía no está implementado."
-    }
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+
+    lines = [line for line in response.text.splitlines() if line]
+    event_names = [
+        line.removeprefix("event: ")
+        for line in lines
+        if line.startswith("event: ")
+    ]
+    assert event_names == [
+        "response.created",
+        "response.in_progress",
+        "response.output_item.added",
+        "response.content_part.added",
+        "response.output_text.delta",
+        "response.output_text.delta",
+        "response.output_text.done",
+        "response.content_part.done",
+        "response.output_item.done",
+        "response.completed",
+    ]
+    assert lines[-1] == "data: [DONE]"
+
+    payloads = [
+        json.loads(line.removeprefix("data: "))
+        for line in lines
+        if line.startswith("data: {")
+    ]
+    assert [payload["sequence_number"] for payload in payloads] == list(
+        range(len(payloads))
+    )
+    completed = payloads[-1]["response"]
+    assert completed["model"] == "gpt-5.6-luna"
+    assert completed["status"] == "completed"
+    assert completed["usage"]["total_tokens"] == 144
+    assert "fuentes_profesionales" not in response.text
+    assert "SRC-" not in response.text
+
+
+def test_streaming_error_is_sanitized_and_closed(
+    client: TestClient,
+    auth_headers: dict[str, str],
+) -> None:
+    app.dependency_overrides[get_agent_service] = lambda: _StreamingTimeoutAgentStub()
+    try:
+        response = client.post(
+            "/v1/responses",
+            json={"input": "Resume el perfil de Mario.", "stream": True},
+            headers=auth_headers,
+        )
+    finally:
+        app.dependency_overrides.pop(get_agent_service, None)
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+    assert "event: error" in response.text
+    assert "event: response.failed" in response.text
+    assert response.text.rstrip().endswith("data: [DONE]")
+    assert "model_timeout" in response.text
+    assert "detalle interno" not in response.text
 
 
 def test_provider_rate_limit_is_mapped_without_leaking_details(

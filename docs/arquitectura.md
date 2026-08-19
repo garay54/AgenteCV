@@ -7,7 +7,7 @@ Este documento registra el flujo del agente profesional y relaciona cada compone
 **Estado de D09:** En progreso  
 **Fecha de actualización:** 2026-08-18
 
-La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` integra validación Pydantic, autenticación Bearer, recuperación RAG, prompt fundamentado y generación con `gpt-5.6-luna` en modalidad no streaming. El flujo real fue validado localmente; D09 permanecerá en progreso hasta desplegar este incremento y contrastarlo con una solicitud real de Banorte.
+La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` integra validación Pydantic, autenticación Bearer, recuperación RAG, prompt fundamentado y generación con `gpt-5.6-luna` en modalidades JSON completa y streaming SSE. Ambos flujos fueron validados localmente; D09 permanecerá en progreso hasta desplegar el incremento SSE y contrastarlo con una solicitud real de Banorte.
 
 ## 2. Flujo objetivo de una solicitud
 
@@ -28,8 +28,8 @@ flowchart LR
     OA --> RI[Respuesta interna normalizada]
     AN --> RI
     RI --> ORO[Adaptador Open Responses]
-    ORO -->|JSON completo| B
-    ORO -. si Banorte lo exige .->|SSE| B
+    ORO -->|JSON completo si stream=false| B
+    ORO -->|SSE si stream=true| B
 
     classDef implemented fill:#d1fae5,stroke:#047857,color:#064e3b;
     classDef partial fill:#fef3c7,stroke:#b45309,color:#78350f;
@@ -89,7 +89,7 @@ flowchart LR
     M -->|200 application/json| C
 ```
 
-Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta ejecuta el recorrido real no streaming. El modelo se fija mediante configuración del servidor, el historial se procesa sin persistencia y el uso de tokens se refleja en la respuesta pública.
+Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta ejecuta el recorrido real completo o incremental según `stream`. El modelo se fija mediante configuración del servidor, el historial se procesa sin persistencia y el uso de tokens se refleja en la respuesta pública final.
 
 ## 5. Correspondencia entre arquitectura y código
 
@@ -103,7 +103,7 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Chroma y similitud coseno | `app/rag/vector_store.py`, `tests/test_vector_store.py` | Implementado y probado localmente |
 | Recuperación, diversidad y reranking | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
 | Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py`, `artifacts/evaluations/retrieval-20260818-221152.json` | Implementada y aprobada: 49 casos, Hit@4 100 %, Top-1 81.63 %, MRR@4 90.48 % |
-| `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real no streaming |
+| `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real completa o streaming |
 | Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementación inicial probada; aceptación real de Banorte pendiente |
 | Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada y probada localmente; integración con Banorte pendiente |
 | Historial stateless | `app/agent.py`, `tests/test_agent.py` | Implementado para reproducción de transcripción |
@@ -111,7 +111,7 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Adaptador de generación OpenAI | `app/llm.py`, `tests/test_llm.py` | Implementado con `gpt-5.6-luna`; llamada real local validada |
 | Contingencia Anthropic | Decisiones D02 y D03 | Pendiente |
 | Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Implementada con respuesta real y uso de tokens |
-| Streaming SSE | Decisión D06 | Condicional y pendiente |
+| Streaming SSE | `app/main.py`, `app/agent.py`, `app/llm.py`, `app/open_responses.py`, `tests/test_responses.py` | Implementado y validado localmente; despliegue y aceptación de Banorte pendientes |
 | Contenedor Docker | Decisión D08 | Pendiente |
 | Despliegue Railway | `railway.json`, `.python-version`, `scripts/ensure_index.py` | API base desplegada; el nuevo incremento y la persistencia del índice deben validarse |
 
@@ -161,8 +161,7 @@ D09 podrá marcarse como terminado cuando:
 - Exista `POST /responses` y su recorrido real corresponda con el flujo documentado.
 - La autenticación Bearer, validación, RAG, modelo y adaptación se relacionen con archivos y pruebas concretas.
 - El diagrama elimine o actualice todos los componentes marcados como pendientes.
-- La modalidad JSON completa funcione desde Banorte.
-- Se confirme si el flujo SSE forma parte de la implementación final.
+- Las modalidades JSON completa y SSE funcionen desde Banorte.
 - La URL, volumen, secretos y logs de Railway coincidan con el diagrama de despliegue.
 - Cualquier diferencia entre diseño y código se corrija en el código o en este documento.
 

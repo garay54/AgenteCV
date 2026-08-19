@@ -386,24 +386,24 @@ La decisión se revisará si una solicitud real demuestra que Banorte no reprodu
 
 ## D06. Modalidad de respuesta completa y streaming
 
-**Estado:** Aceptada para el MVP; streaming condicionado a la integración real  
+**Estado:** Implementada y validada localmente; aceptación pública pendiente
 **Fecha:** 2026-08-18
 
 ### Contexto
 
-El contrato preliminar contempla respuestas completas en JSON y transmisión incremental mediante Server-Sent Events (SSE). Todavía no existe evidencia de cuál modalidad solicitará realmente la plataforma de Banorte ni de los eventos incrementales que consume su interfaz.
+El contrato contempla respuestas completas en JSON y transmisión incremental mediante Server-Sent Events (SSE). Una solicitud real de la plataforma de Banorte utilizó `stream: true` y la versión desplegada respondió que SSE no estaba implementado. Esta evidencia convirtió el streaming en un requisito obligatorio de integración.
 
 Las respuestas del agente de CV serán normalmente breves, pero algunas explicaciones sobre proyectos, investigaciones o experiencia pueden beneficiarse de mostrar contenido antes de terminar la generación.
 
 ### Decisión
 
-Se implementará primero la modalidad de **respuesta completa no streaming**.
+Se soportarán las dos modalidades del contrato:
 
 - Cuando `stream` sea `false` o no esté presente, el endpoint devolverá una respuesta completa con `Content-Type: application/json`.
 - La recuperación RAG y la generación deberán funcionar y estar probadas en esta modalidad antes de incorporar SSE.
 - La arquitectura interna conservará interfaces separadas para generación completa y generación incremental, evitando acoplar el RAG a una modalidad de transporte.
-- SSE será una capacidad condicional durante el MVP.
-- Si una solicitud real de Banorte contiene `stream: true`, el soporte SSE se convertirá en requisito obligatorio antes de la entrega.
+- Cuando `stream` sea `true`, el endpoint devolverá eventos SSE semánticos compatibles con Open Responses.
+- SSE es un requisito obligatorio porque Banorte ya envió una solicitud real con `stream: true`.
 - Una solicitud con `stream: true` no deberá tratarse silenciosamente como `stream: false`.
 - La modalidad definitiva aceptada se confirmará mediante una prueba desde la plataforma de Banorte.
 
@@ -412,14 +412,14 @@ Se implementará primero la modalidad de **respuesta completa no streaming**.
 | Criterio | Respuesta completa | Streaming SSE |
 |---|---|---|
 | Experiencia de usuario | Adecuada para respuestas breves; el contenido aparece al terminar | Mejora la percepción de velocidad en respuestas extensas |
-| Contrato | Contemplada en el contrato preliminar mediante `stream: false` o su ausencia | Contemplada mediante `stream: true`, pero su uso real por Banorte no está confirmado |
+| Contrato | Contemplada mediante `stream: false` o su ausencia | Obligatoria: Banorte ya envió `stream: true` |
 | Proxies y nube | Compatible con el comportamiento HTTP convencional | Puede sufrir buffering, timeout o cierre anticipado; requiere validación en el despliegue real |
 | Complejidad | Una respuesta, un estado final y errores HTTP directos | Requiere eventos ordenados, vaciado incremental, desconexión, errores parciales y cierre correcto |
-| Prioridad | Obligatoria y primera en implementarse | Condicional hasta recibir evidencia de uso |
+| Prioridad | Obligatoria y primera en implementarse | Obligatoria para la integración con Banorte |
 
-### Requisitos para SSE si se activa
+### Requisitos implementados para SSE
 
-Si Banorte solicita streaming, la implementación deberá:
+La implementación:
 
 - Responder con `Content-Type: text/event-stream`.
 - Emitir la secuencia de eventos exigida por el subconjunto de Open Responses que consuma Banorte.
@@ -432,9 +432,9 @@ Si Banorte solicita streaming, la implementación deberá:
 
 ### Validación
 
-La modalidad no streaming se considerará validada cuando una solicitud con `stream: false` o sin el campo produzca una respuesta JSON válida que Banorte muestre correctamente.
+La modalidad no streaming produce una respuesta JSON válida. La modalidad streaming fue probada localmente contra el proveedor real: respondió HTTP 200, emitió el ciclo semántico esperado con números de secuencia monotónicos, entregó texto mediante múltiples eventos `response.output_text.delta`, finalizó con `response.completed` y cerró con `[DONE]` sin exponer el prompt interno ni identificadores de fuentes RAG.
 
-Antes de cerrar la integración se deberá observar si Banorte envía `stream: true`. Si lo hace, D06 no estará completamente validada hasta que una secuencia SSE sea aceptada y finalizada correctamente desde la plataforma.
+D06 no estará completamente validada hasta desplegar este incremento y comprobar que la interfaz de Banorte acepta y muestra la secuencia SSE.
 
 ### Condición de revisión
 

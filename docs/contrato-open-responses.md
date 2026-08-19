@@ -10,7 +10,7 @@ Este documento no define la implementación interna del agente, el proveedor del
 
 | Actividad | Estado | Motivo |
 |---|---|---|
-| R06 — Confirmar contrato Open Responses | En progreso | Existe una especificación de referencia, pero aún faltan solicitudes y respuestas aceptadas por Banorte. |
+| R06 — Confirmar contrato Open Responses | En progreso | Banorte confirmó en una solicitud real que utiliza `stream: true`; la implementación local ya emite SSE, pero falta que la plataforma acepte la secuencia desplegada. |
 | R07 — Confirmar entrega del historial | Confirmado | La plataforma permite reproducir la transcripción o utilizar `previous_response_id`; para el MVP se seleccionó reproducir la transcripción. |
 | R08 — Confirmar autenticación de entrada | Confirmado | La plataforma puede enviar una clave mediante `Authorization: Bearer <API_KEY>`. |
 
@@ -39,6 +39,7 @@ La versión de referencia observada en el esquema OpenAPI es `2026-04-24`. Falta
 | Estado de conversación | `Reproducir transcripción (sin estado)` o `previous_response_id (el agente guarda el estado)`. |
 | Modalidad del MVP | Texto. Las entradas de imágenes y archivos permanecerán desactivadas. |
 | Cliente conversacional | Banorte proporciona el chat, permite seleccionar el agente y envía las solicitudes al endpoint registrado. No se requiere frontend propio para el MVP. |
+| Streaming observado | Una solicitud real de Banorte envió `stream: true`; por ello SSE es obligatorio para la integración. |
 
 La función de importar una tarjeta de agente desde `/.well-known/agent-card.json` es opcional y no forma parte del contrato mínimo del MVP.
 
@@ -272,6 +273,8 @@ data: [DONE]
 
 El ejemplo está abreviado y no reemplaza los eventos completos definidos en el esquema OpenAPI.
 
+La implementación local fue validada con una llamada real a `gpt-5.6-luna`: devolvió HTTP 200, `text/event-stream`, números de secuencia monotónicos, texto incremental, `response.completed` y el terminador `[DONE]`. La aceptación de esta secuencia desde la interfaz de Banorte permanece pendiente hasta desplegar el cambio.
+
 ## 9. Historial de conversación
 
 ### 9.1 Configuración seleccionada
@@ -354,8 +357,8 @@ Por tanto:
 - Forma exacta en que Banorte reproduce la transcripción dentro de `input`.
 - Inclusión u omisión del campo `model`.
 - Inclusión de `instructions` y parámetros adicionales.
-- Uso real de `stream: true` por parte de Banorte.
-- Eventos SSE que consume la interfaz de Banorte.
+- Aceptación por Banorte de la secuencia SSE implementada y desplegada.
+- Confirmación de si la interfaz consume todo el ciclo semántico o sólo un subconjunto de eventos.
 - Versión o subconjunto de Open Responses utilizado en la evaluación.
 - Tiempo máximo de respuesta.
 - Tamaño máximo de solicitud.
@@ -390,8 +393,7 @@ R06 podrá marcarse como completada cuando:
 
 - Exista una solicitud no streaming recibida desde Banorte.
 - Exista una respuesta no streaming aceptada y mostrada correctamente.
-- Se haya confirmado si Banorte solicita streaming.
-- Si utiliza streaming, exista una secuencia SSE aceptada y finalizada correctamente.
+- Exista una secuencia SSE desplegada, aceptada y finalizada correctamente desde Banorte.
 - Se hayan probado errores representativos.
 - Los ejemplos sanitizados estén guardados en el proyecto.
 - La respuesta se haya validado contra el esquema OpenAPI aplicable.

@@ -5,8 +5,8 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 ## Estado actual
 
 - `GET /health` puede ejecutarse desde ahora.
-- `POST /v1/responses` acepta solicitudes de texto y conecta RAG con `gpt-5.6-luna` en modalidad no streaming.
-- La autenticación Bearer, el RAG y el modelo ya están integrados. El streaming permanece pendiente.
+- `POST /v1/responses` acepta solicitudes de texto y conecta RAG con `gpt-5.6-luna` tanto en modalidad completa como en streaming SSE.
+- La autenticación Bearer, el RAG, el modelo y el streaming están integrados y probados localmente. La aceptación del stream en Banorte requiere desplegar este incremento.
 - Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de Banorte utiliza otro subconjunto del contrato.
 
 ## Archivos
@@ -76,7 +76,7 @@ Para ver los casos disponibles:
 | `no-auth` | HTTP `401` y encabezado `WWW-Authenticate: Bearer`. |
 | `bad-auth` | HTTP `401` sin revelar la clave recibida ni la configurada. |
 | `malformed` | HTTP `400` o `422`, según el contrato final, con error controlado. |
-| `stream` | Actualmente HTTP `501`; SSE queda pendiente hasta confirmar que forma parte del alcance final. |
+| `stream` | HTTP `200`, `Content-Type: text/event-stream`, eventos Open Responses ordenados y cierre `data: [DONE]`. |
 
 ## Seguridad
 

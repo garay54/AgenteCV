@@ -6,11 +6,12 @@ Banorte proporciona la interfaz de chat que consume el endpoint desplegado; este
 
 ## Estado actual
 
-- API base desplegada en Railway con HTTPS, healthcheck y autenticación Bearer; el despliegue público debe actualizarse con el incremento de generación real.
+- API desplegada en Railway con HTTPS, healthcheck y autenticación Bearer; el despliegue público debe actualizarse con el incremento de streaming SSE.
 - RAG local construido con 55 fragmentos curados y evaluación real aprobada.
-- Suite automatizada: 39 pruebas aprobadas.
+- Suite automatizada: 41 pruebas aprobadas.
 - `POST /v1/responses` conecta localmente recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
-- Flujo real local validado con HTTP 200, modelo efectivo y uso de tokens reportado; falta desplegar este incremento y validarlo desde Banorte.
+- Las modalidades JSON completa y streaming SSE están implementadas; el stream local produjo el ciclo Open Responses completo, texto incremental y cierre `[DONE]`.
+- Flujo real local validado con HTTP 200, modelo efectivo y uso de tokens reportado; falta desplegar el incremento SSE y validarlo desde Banorte.
 
 ### Resultado de recuperación
 

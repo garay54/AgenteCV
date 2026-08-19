@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Literal, Protocol
+from typing import Any, Iterator, Literal, Protocol
 
 
 ProviderInput = str | list[dict[str, str]]
@@ -46,6 +46,28 @@ class GenerationResult:
     incomplete_reason: str | None = None
 
 
+@dataclass(frozen=True, slots=True)
+class GenerationStreamStarted:
+    id: str
+    model: str
+    created_at: int
+
+
+@dataclass(frozen=True, slots=True)
+class GenerationTextDelta:
+    delta: str
+
+
+@dataclass(frozen=True, slots=True)
+class GenerationStreamCompleted:
+    result: GenerationResult
+
+
+GenerationStreamEvent = (
+    GenerationStreamStarted | GenerationTextDelta | GenerationStreamCompleted
+)
+
+
 class GenerationProvider(Protocol):
     @property
     def model_name(self) -> str: ...
@@ -58,10 +80,51 @@ class GenerationProvider(Protocol):
         max_output_tokens: int,
     ) -> GenerationResult: ...
 
+    def stream(
+        self,
+        *,
+        input_data: ProviderInput,
+        instructions: str,
+        max_output_tokens: int,
+    ) -> Iterator[GenerationStreamEvent]: ...
+
 
 def _integer_attribute(value: Any, name: str) -> int:
     raw = getattr(value, name, 0) if value is not None else 0
     return int(raw or 0)
+
+
+def _result_from_response(response: Any, *, text: str) -> GenerationResult:
+    usage = getattr(response, "usage", None)
+    input_details = getattr(usage, "input_tokens_details", None)
+    output_details = getattr(usage, "output_tokens_details", None)
+    incomplete_details = getattr(response, "incomplete_details", None)
+
+    return GenerationResult(
+        id=str(response.id),
+        text=text.strip(),
+        model=str(getattr(response, "model", "") or ""),
+        created_at=int(response.created_at),
+        completed_at=(
+            int(response.completed_at)
+            if getattr(response, "completed_at", None) is not None
+            else None
+        ),
+        status=str(getattr(response, "status", "completed") or "completed"),
+        incomplete_reason=(
+            str(incomplete_details.reason)
+            if incomplete_details is not None
+            and getattr(incomplete_details, "reason", None)
+            else None
+        ),
+        usage=GenerationUsage(
+            input_tokens=_integer_attribute(usage, "input_tokens"),
+            output_tokens=_integer_attribute(usage, "output_tokens"),
+            total_tokens=_integer_attribute(usage, "total_tokens"),
+            cached_tokens=_integer_attribute(input_details, "cached_tokens"),
+            reasoning_tokens=_integer_attribute(output_details, "reasoning_tokens"),
+        ),
+    )
 
 
 class OpenAIResponsesProvider:
@@ -140,35 +203,85 @@ class OpenAIResponsesProvider:
                 "El proveedor terminó la solicitud sin texto utilizable."
             )
 
-        usage = getattr(response, "usage", None)
-        input_details = getattr(usage, "input_tokens_details", None)
-        output_details = getattr(usage, "output_tokens_details", None)
-        incomplete_details = getattr(response, "incomplete_details", None)
+        result = _result_from_response(response, text=text)
+        if not result.model:
+            return GenerationResult(
+                id=result.id,
+                text=result.text,
+                model=self._model,
+                created_at=result.created_at,
+                completed_at=result.completed_at,
+                status=result.status,
+                usage=result.usage,
+                incomplete_reason=result.incomplete_reason,
+            )
+        return result
 
-        return GenerationResult(
-            id=str(response.id),
-            text=text,
-            model=str(getattr(response, "model", self._model) or self._model),
-            created_at=int(response.created_at),
-            completed_at=(
-                int(response.completed_at)
-                if getattr(response, "completed_at", None) is not None
-                else None
-            ),
-            status=str(getattr(response, "status", "completed") or "completed"),
-            incomplete_reason=(
-                str(incomplete_details.reason)
-                if incomplete_details is not None
-                and getattr(incomplete_details, "reason", None)
-                else None
-            ),
-            usage=GenerationUsage(
-                input_tokens=_integer_attribute(usage, "input_tokens"),
-                output_tokens=_integer_attribute(usage, "output_tokens"),
-                total_tokens=_integer_attribute(usage, "total_tokens"),
-                cached_tokens=_integer_attribute(input_details, "cached_tokens"),
-                reasoning_tokens=_integer_attribute(
-                    output_details, "reasoning_tokens"
-                ),
-            ),
-        )
+    def stream(
+        self,
+        *,
+        input_data: ProviderInput,
+        instructions: str,
+        max_output_tokens: int,
+    ) -> Iterator[GenerationStreamEvent]:
+        """Normaliza eventos de OpenAI sin exponer sus objetos al cliente HTTP."""
+
+        from openai import APIConnectionError, APIStatusError, APITimeoutError, RateLimitError
+
+        def iterate() -> Iterator[GenerationStreamEvent]:
+            text_parts: list[str] = []
+            try:
+                stream = self._client.responses.create(
+                    model=self._model,
+                    input=input_data,
+                    instructions=instructions,
+                    max_output_tokens=max_output_tokens,
+                    reasoning={"effort": self._reasoning_effort},
+                    text={"verbosity": self._text_verbosity},
+                    store=False,
+                    stream=True,
+                )
+                for event in stream:
+                    event_type = str(getattr(event, "type", ""))
+                    if event_type == "response.created":
+                        response = event.response
+                        yield GenerationStreamStarted(
+                            id=str(response.id),
+                            model=str(getattr(response, "model", self._model) or self._model),
+                            created_at=int(response.created_at),
+                        )
+                    elif event_type == "response.output_text.delta":
+                        delta = str(getattr(event, "delta", "") or "")
+                        if delta:
+                            text_parts.append(delta)
+                            yield GenerationTextDelta(delta=delta)
+                    elif event_type in {
+                        "response.completed",
+                        "response.incomplete",
+                    }:
+                        text = "".join(text_parts).strip()
+                        if not text:
+                            raise GenerationProviderError(
+                                "El proveedor terminó el stream sin texto utilizable."
+                            )
+                        yield GenerationStreamCompleted(
+                            result=_result_from_response(event.response, text=text)
+                        )
+                    elif event_type == "response.failed":
+                        raise GenerationProviderError(
+                            "El proveedor no pudo completar el stream."
+                        )
+            except APITimeoutError as exc:
+                raise GenerationTimeoutError(
+                    "El proveedor excedió el tiempo de respuesta."
+                ) from exc
+            except RateLimitError as exc:
+                raise GenerationRateLimitError(
+                    "El proveedor no tiene cuota disponible temporalmente."
+                ) from exc
+            except (APIConnectionError, APIStatusError) as exc:
+                raise GenerationProviderError(
+                    "El proveedor de generación no está disponible."
+                ) from exc
+
+        return iterate()
