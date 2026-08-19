@@ -1,0 +1,17 @@
+{
+  "model": "cv-agent",
+  "input": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Resume el perfil profesional de Mario."
+        }
+      ]
+    }
+  ],
+  "stream": true
+}
+

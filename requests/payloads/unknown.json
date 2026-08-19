@@ -1,0 +1,17 @@
+{
+  "model": "cv-agent",
+  "input": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "¿Qué certificación profesional de AWS posee Mario?"
+        }
+      ]
+    }
+  ],
+  "stream": false
+}
+

@@ -1,0 +1,17 @@
+{
+  "model": "cv-agent",
+  "input": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "¿Cuál es la experiencia profesional de Mario?"
+        }
+      ]
+    }
+  ],
+  "stream": false
+}
+

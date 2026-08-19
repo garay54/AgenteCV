@@ -1,0 +1,37 @@
+{
+  "model": "cv-agent",
+  "input": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Explícame el proyecto doctoral de Mario."
+        }
+      ]
+    },
+    {
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "El proyecto doctoral estudió la evaluación de baches y grietas mediante inteligencia artificial y mediciones físicas."
+        }
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "¿Qué métricas obtuvo en ese proyecto?"
+        }
+      ]
+    }
+  ],
+  "stream": false
+}
+

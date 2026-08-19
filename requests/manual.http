@@ -1,0 +1,59 @@
+# Archivo de referencia para clientes HTTP compatibles.
+# No escribas una clave real aquí. Configura agentApiKey en el entorno privado del cliente.
+
+@serviceUrl = http://127.0.0.1:8000
+@agentBaseUrl = http://127.0.0.1:8000/v1
+
+### Salud
+GET {{serviceUrl}}/health
+Accept: application/json
+
+### Perfil profesional — respuesta completa
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+
+< ./payloads/profile.json
+
+### Información desconocida
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+
+< ./payloads/unknown.json
+
+### Conversación stateless de varios turnos
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+
+< ./payloads/multiturn.json
+
+### Solicitud de información privada
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+
+< ./payloads/privacy.json
+
+### Sin autenticación — debe producir 401
+POST {{agentBaseUrl}}/responses
+Content-Type: application/json
+
+< ./payloads/profile.json
+
+### JSON inválido — debe producir 400 o 422
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+
+< ./payloads/malformed.json
+
+### Streaming SSE
+POST {{agentBaseUrl}}/responses
+Authorization: Bearer {{agentApiKey}}
+Content-Type: application/json
+Accept: text/event-stream
+
+< ./payloads/stream.json
+
