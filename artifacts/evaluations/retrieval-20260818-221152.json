@@ -1,0 +1,2870 @@
+{
+  "created_at": "2026-08-19T05:11:52.937276+00:00",
+  "evaluation_scope": "Recuperación single-turn por documento permitido y trazabilidad SRC; la cobertura factual final requiere revisión del fragmento y evaluación de generación.",
+  "evaluation_mode": "single_turn_retrieval",
+  "embedding_model": "text-embedding-3-small",
+  "collection": "banorte_cv_v1",
+  "thresholds": {
+    "hit_at_4": 0.9,
+    "top_1": 0.75,
+    "mrr_at_4": 0.7,
+    "excluded_documents": 0
+  },
+  "summary": {
+    "cases": 49,
+    "hit_at_3": 1.0,
+    "hit_at_4": 1.0,
+    "top_1": 0.8163,
+    "mrr_at_4": 0.9048,
+    "average_latency_ms": 291.92,
+    "max_latency_ms": 2314.6,
+    "errors": 0,
+    "excluded_documents": 0,
+    "passed": true
+  },
+  "cases": [
+    {
+      "id": "QB-01",
+      "query": "¿Cómo resumirías el perfil profesional de Mario?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.648785,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.564731,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aportación personal > Metodología",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.444872,
+          "chunk_id": "574394423bc3d0a3a4920937",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.435823,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 2314.6,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-02",
+      "query": "¿Cuál es su objetivo profesional?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.532896,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Idiomas",
+          "source_ids": "SRC-CV-01",
+          "score": 0.429668,
+          "chunk_id": "46b6f5a7059926f880986b95",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.426597,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.415806,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 369.73,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-03",
+      "query": "¿Dónde se encuentra ubicado de manera general?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Ubicación general",
+          "source_ids": "SRC-CV-01",
+          "score": 0.30659,
+          "chunk_id": "1e33555218ffaba2bd2f02fd",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.271086,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.248561,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 3. Visión por Computadora, Datos Espaciales y Explicabilidad",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.244989,
+          "chunk_id": "653ff9b0d382d116feec816d",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 213.02,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-04",
+      "query": "¿Qué idiomas habla y con qué nivel?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Idiomas",
+          "source_ids": "SRC-CV-01",
+          "score": 0.560408,
+          "chunk_id": "46b6f5a7059926f880986b95",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.435862,
+          "chunk_id": "aa7b705c908b8bb86a433840",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 1. Programación y manejo de datos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PUB-SPEED-2022",
+          "score": 0.347744,
+          "chunk_id": "331f2220afb7d2f2311d2112",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.344665,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 725.97,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-05",
+      "query": "¿Cuáles son sus principales fortalezas respaldadas?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01",
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.504096,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.43204,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.419046,
+          "chunk_id": "aa7b705c908b8bb86a433840",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.391165,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 205.34,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-06",
+      "query": "¿Tiene certificaciones profesionales?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Certificaciones",
+          "source_ids": "SRC-CV-01",
+          "score": 0.643377,
+          "chunk_id": "f6bf83f99432b7e95c5914b8",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Idiomas",
+          "source_ids": "SRC-CV-01",
+          "score": 0.471022,
+          "chunk_id": "46b6f5a7059926f880986b95",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.429662,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.382527,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 231.36,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-07",
+      "query": "¿Qué estudió en la licenciatura?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.39839,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.370688,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.392686,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.381146,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 229.58,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-08",
+      "query": "¿Cuándo obtuvo el título de Ingeniería Mecatrónica?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Ingeniería Mecatrónica",
+          "source_ids": "SRC-CV-01",
+          "score": 0.685479,
+          "chunk_id": "21baa02f6f20402f9599e926",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.498968,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.480296,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.458077,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 293.09,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-09",
+      "query": "¿Qué estudió en la maestría y cuándo la terminó?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01",
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.504539,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.476668,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.487578,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.466955,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 234.05,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-10",
+      "query": "¿De qué trató su tesis de maestría?",
+      "expected_documents": [
+        "profile.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.486058,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aportación personal > Metodología",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.468207,
+          "chunk_id": "574394423bc3d0a3a4920937",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.47468,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-02 — Sistema generador de información vial a partir de secuencia de imágenes > Contexto > Problema > Responsabilidad documentada > Arquitectura funcional",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.458579,
+          "chunk_id": "4e46dfcd03ef8e7553305e5a",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 190.45,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-11",
+      "query": "¿Ya terminó formalmente el doctorado?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-USER-CONFIRM-2026-08-18"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.527295,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.484203,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.444943,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.414984,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 205.58,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-12",
+      "query": "¿Cuál es el tema del trabajo doctoral?",
+      "expected_documents": [
+        "profile.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.530757,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.491681,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.475058,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.442055,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 204.62,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-13",
+      "query": "¿Cuántos años de investigación de posgrado tiene?",
+      "expected_documents": [
+        "profile.md",
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.58029,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.530826,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.528999,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": true
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.500615,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.333333,
+      "first_relevant_rank": 3,
+      "latency_ms": 215.26,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-14",
+      "query": "¿Qué actividades realizó durante la investigación doctoral?",
+      "expected_documents": [
+        "experience.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.555096,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Responsabilidades y actividades principales",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.522438,
+          "chunk_id": "1ce17e1c8f2cd80b5b03b746",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.511454,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.494844,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 243.72,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-15",
+      "query": "¿Qué actividades realizó durante la maestría?",
+      "expected_documents": [
+        "experience.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.546165,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.52583,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.475319,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.469795,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 215.16,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-16",
+      "query": "¿Su investigación de posgrado fue un empleo empresarial?",
+      "expected_documents": [
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.501997,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > Criterio de interpretación de trayectoria",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.508335,
+          "chunk_id": "b3ba91e1711189fc281e5320",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.425972,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.418546,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 351.65,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-17",
+      "query": "¿Tiene experiencia asesorando proyectos?",
+      "expected_documents": [
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.544313,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Responsabilidades y actividades principales",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.472608,
+          "chunk_id": "1ce17e1c8f2cd80b5b03b746",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.455674,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.474935,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 194.31,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-18",
+      "query": "¿Qué temas ha apoyado como asesor o instructor?",
+      "expected_documents": [
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.481172,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.431954,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.405042,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Responsabilidades y actividades principales",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.402995,
+          "chunk_id": "1ce17e1c8f2cd80b5b03b746",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 182.02,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-19",
+      "query": "Explica de principio a fin el mecanismo doctoral.",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.468258,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.436089,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.445375,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Formación académica > Doctorado en Ciencias de la Computación > Maestría en Ciencias de la Computación",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.414636,
+          "chunk_id": "6169584448e1f28610dd9fff",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 223.46,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-20",
+      "query": "¿Por qué se usaron módulos diferentes para baches y grietas?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Metodología",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.537963,
+          "chunk_id": "974f0ebea99aaaee1cca6997",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.515517,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Contexto > Problema > Responsabilidad documentada",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.48569,
+          "chunk_id": "ec5ee74d53614d5a6efec16e",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.476115,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 286.47,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-21",
+      "query": "¿Qué modelo se utilizó para segmentar baches?",
+      "expected_documents": [
+        "projects.md",
+        "research.md",
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01",
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.576652,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.575924,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.57556,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Metodología",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.567518,
+          "chunk_id": "974f0ebea99aaaee1cca6997",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 227.32,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-22",
+      "query": "¿Qué arquitectura se utilizó para segmentar grietas?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.491276,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Metodología",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.492759,
+          "chunk_id": "974f0ebea99aaaee1cca6997",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.481343,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.480063,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 226.15,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-23",
+      "query": "¿Cómo se eligió la configuración del modelo de grietas?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.496118,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.493612,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Decisiones técnicas relevantes",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.489101,
+          "chunk_id": "fcaa38dfb341cdf243c9f016",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Contexto > Problema > Responsabilidad documentada",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.447048,
+          "chunk_id": "ec5ee74d53614d5a6efec16e",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 238.96,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-24",
+      "query": "¿Qué desempeño tuvo la segmentación de baches?",
+      "expected_documents": [
+        "projects.md",
+        "research.md",
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01",
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.5771,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Decisiones técnicas relevantes",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.559622,
+          "chunk_id": "fcaa38dfb341cdf243c9f016",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.562106,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.538979,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 331.36,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-25",
+      "query": "¿Qué error obtuvo al medir profundidad de baches?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Dificultades y limitaciones",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.58655,
+          "chunk_id": "be876eb480d658b6a1f66ca7",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.553517,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.533521,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-02 — Detección inteligente de baches y estimación de profundidad con YOLOv8 y RealSense",
+          "source_ids": "SRC-PUB-POTHOLE-2025-ES",
+          "score": 0.528202,
+          "chunk_id": "1d61bddafdbfddd67da4c1da",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 206.93,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-26",
+      "query": "¿Qué resultados obtuvo el modelo de grietas?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.549096,
+          "chunk_id": "95c080783120466be44e1c6d",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Arquitectura funcional > Tecnologías y métodos > Resultados",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.526695,
+          "chunk_id": "3687528a2a8d4f44e6241c4f",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Metodología",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.508461,
+          "chunk_id": "974f0ebea99aaaee1cca6997",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.470198,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 323.47,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-27",
+      "query": "¿Cómo funcionaba el sistema vial de maestría?",
+      "expected_documents": [
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.545194,
+          "chunk_id": "6f39b5b4406a72a4ff7b9314",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-02 — Sistema generador de información vial a partir de secuencia de imágenes > Contexto > Problema > Responsabilidad documentada > Arquitectura funcional",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.532405,
+          "chunk_id": "4e46dfcd03ef8e7553305e5a",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Problema, motivación y objetivo",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.48911,
+          "chunk_id": "8e8d020472e17f67bc041e82",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-01 — Mecanismo inteligente para evaluar baches y grietas en pavimentos flexibles > Contexto > Problema > Responsabilidad documentada",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.47658,
+          "chunk_id": "ec5ee74d53614d5a6efec16e",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 239.08,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-28",
+      "query": "¿Qué dataset construyó durante la maestría?",
+      "expected_documents": [
+        "projects.md",
+        "research.md",
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.561436,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.558081,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aportación personal > Metodología",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.52852,
+          "chunk_id": "574394423bc3d0a3a4920937",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Herramientas y métodos > Resultados e impacto cuantitativo",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.545843,
+          "chunk_id": "dccea1e8b4c22bbf72ac2eda",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 213.0,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-29",
+      "query": "¿Qué precisión alcanzó el clasificador de la maestría?",
+      "expected_documents": [
+        "projects.md",
+        "research.md",
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Resultados e impacto cuantitativo",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.520761,
+          "chunk_id": "ac3b16cbf5c9f0fedec994dc",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.482181,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.481851,
+          "chunk_id": "93ba5bc6962a849ee8874360",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 2. Machine Learning y Aprendizaje Profundo",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-ES",
+          "score": 0.461948,
+          "chunk_id": "70fd0b71177a94f4c75e47fa",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 255.56,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-30",
+      "query": "¿Qué aprendió al comparar modelos para velocidad?",
+      "expected_documents": [
+        "projects.md",
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-SPEED-2022"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-03 — Análisis comparativo de algoritmos para la estimación de velocidad vehicular en tiempo real > Contexto > Alcance técnico > Contribución personal verificable > Aprendizaje clave",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.515366,
+          "chunk_id": "f9e497de7b422ebc4edf24d9",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.499119,
+          "chunk_id": "dfb0d86934a81a754218f988",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.504664,
+          "chunk_id": "5c0b8e3192a301b446ac3c26",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Datos, pruebas y experimentos > Resultados y métricas verificables",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.409356,
+          "chunk_id": "93ba5bc6962a849ee8874360",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 219.73,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-31",
+      "query": "¿Cuántas publicaciones se proporcionaron como evidencia?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-SPEED-2022",
+        "SRC-PUB-POTHOLE-2025-ES",
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas",
+          "source_ids": "SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.499118,
+          "chunk_id": "1f5683d153661e7d8e082425",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > Nota sobre indexación e idoneidad (JCR)",
+          "source_ids": "SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.454168,
+          "chunk_id": "d8d1daebe7808a8510dacd2e",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > Escala de evaluación de evidencia",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PROJECT-AGENTECV-2026,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.46893,
+          "chunk_id": "af19416f701fe3f635583c83",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 3. Visión por Computadora, Datos Espaciales y Explicabilidad",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.420438,
+          "chunk_id": "653ff9b0d382d116feec816d",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 175.37,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-32",
+      "query": "¿De qué trata el artículo de Applied Sciences de 2022?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-SPEED-2022"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.495219,
+          "chunk_id": "6f043d537e94399694bfb441",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-03 — Análisis comparativo de algoritmos para la estimación de velocidad vehicular en tiempo real > Contexto > Alcance técnico > Contribución personal verificable > Aprendizaje clave",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.478663,
+          "chunk_id": "f9e497de7b422ebc4edf24d9",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-02 — Detección inteligente de baches y estimación de profundidad con YOLOv8 y RealSense",
+          "source_ids": "SRC-PUB-POTHOLE-2025-ES",
+          "score": 0.49487,
+          "chunk_id": "9ff25766093ab4cef4e4f804",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.493747,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 241.34,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-33",
+      "query": "¿Cuál fue la contribución de Mario al artículo de velocidad?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-SPEED-2022"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.552516,
+          "chunk_id": "6f043d537e94399694bfb441",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-03 — Análisis comparativo de algoritmos para la estimación de velocidad vehicular en tiempo real > Contexto > Alcance técnico > Contribución personal verificable > Aprendizaje clave",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.527058,
+          "chunk_id": "f9e497de7b422ebc4edf24d9",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.515203,
+          "chunk_id": "dfb0d86934a81a754218f988",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aportación personal > Metodología",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.448048,
+          "chunk_id": "574394423bc3d0a3a4920937",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 225.1,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-34",
+      "query": "¿De qué trata el artículo de CIENCIA ergo-sum?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-POTHOLE-2025-ES"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-02 — Detección inteligente de baches y estimación de profundidad con YOLOv8 y RealSense",
+          "source_ids": "SRC-PUB-POTHOLE-2025-ES",
+          "score": 0.376133,
+          "chunk_id": "9ff25766093ab4cef4e4f804",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > Nota sobre indexación e idoneidad (JCR)",
+          "source_ids": "SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.388398,
+          "chunk_id": "d8d1daebe7808a8510dacd2e",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.36721,
+          "chunk_id": "023dca6d358c21703277f3cb",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "projects.md",
+          "section": "Proyectos seleccionados > PJT-03 — Análisis comparativo de algoritmos para la estimación de velocidad vehicular en tiempo real > Contexto > Alcance técnico > Contribución personal verificable > Aprendizaje clave",
+          "source_ids": "SRC-PUB-SPEED-2022",
+          "score": 0.319842,
+          "chunk_id": "f9e497de7b422ebc4edf24d9",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 221.72,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-35",
+      "query": "¿Qué contribución individual tuvo Mario en el artículo de CIENCIA ergo-sum?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-POTHOLE-2025-ES"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.516707,
+          "chunk_id": "023dca6d358c21703277f3cb",
+          "relevant": false
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-02 — Detección inteligente de baches y estimación de profundidad con YOLOv8 y RealSense",
+          "source_ids": "SRC-PUB-POTHOLE-2025-ES",
+          "score": 0.439213,
+          "chunk_id": "9ff25766093ab4cef4e4f804",
+          "relevant": true
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.486567,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.454879,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": false,
+      "reciprocal_rank_at_4": 0.5,
+      "first_relevant_rank": 2,
+      "latency_ms": 188.08,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-36",
+      "query": "¿De qué trata el artículo publicado en Case Studies in Construction Materials?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.581588,
+          "chunk_id": "1661d9c328f3951101c088b2",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.482868,
+          "chunk_id": "1531ffab51d66a7f555d2352",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Decisiones técnicas relevantes",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.457344,
+          "chunk_id": "fcaa38dfb341cdf243c9f016",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.454329,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 178.7,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-37",
+      "query": "¿Qué contribuciones CRediT tiene Mario en el artículo de Case Studies in Construction Materials?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.560527,
+          "chunk_id": "1661d9c328f3951101c088b2",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.545922,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN",
+          "score": 0.527568,
+          "chunk_id": "b6fcb2ccfb2a0c473ddcad3a",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.507556,
+          "chunk_id": "023dca6d358c21703277f3cb",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 323.78,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-38",
+      "query": "¿En qué cuartil JCR están las revistas?",
+      "expected_documents": [
+        "publications.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PUB-SPEED-2022",
+        "SRC-PUB-POTHOLE-2025-ES",
+        "SRC-PUB-POTHOLE-2025-EN"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas > Nota sobre indexación e idoneidad (JCR)",
+          "source_ids": "SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.653871,
+          "chunk_id": "d8d1daebe7808a8510dacd2e",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "publications.md",
+          "section": "Publicaciones científicas seleccionadas",
+          "source_ids": "SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.411617,
+          "chunk_id": "1f5683d153661e7d8e082425",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.31938,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > Criterio de interpretación de trayectoria",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.310118,
+          "chunk_id": "b3ba91e1711189fc281e5320",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 331.36,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-39",
+      "query": "¿Qué evidencia existe de su experiencia con Python?",
+      "expected_documents": [
+        "skills.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01",
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 1. Programación y manejo de datos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PUB-SPEED-2022",
+          "score": 0.565892,
+          "chunk_id": "331f2220afb7d2f2311d2112",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 4. Ingeniería de Software y Entornos Operativos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PROJECT-AGENTECV-2026,SRC-PUB-SPEED-2022",
+          "score": 0.539217,
+          "chunk_id": "d14828a6bb8ccb2f59c96719",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.447002,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Herramientas y métodos > Resultados e impacto cuantitativo",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.40803,
+          "chunk_id": "dccea1e8b4c22bbf72ac2eda",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 271.1,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-40",
+      "query": "¿Qué experiencia tiene con PyTorch y TensorFlow?",
+      "expected_documents": [
+        "skills.md",
+        "experience.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01",
+        "SRC-MSC-THESIS-01",
+        "SRC-PUB-SPEED-2022"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Herramientas y métodos > Resultados e impacto cuantitativo",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.542383,
+          "chunk_id": "dccea1e8b4c22bbf72ac2eda",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 1. Programación y manejo de datos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PUB-SPEED-2022",
+          "score": 0.462579,
+          "chunk_id": "331f2220afb7d2f2311d2112",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.437889,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.436344,
+          "chunk_id": "83fee38ae25cda17ee733122",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 295.47,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-41",
+      "query": "¿Qué experiencia tiene con Docker y Linux?",
+      "expected_documents": [
+        "skills.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-MSC-THESIS-01",
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Aprendizajes y relaciones > Preguntas profesionales respaldadas",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.382845,
+          "chunk_id": "4de7e1fcfd69be8a106718d9",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 4. Ingeniería de Software y Entornos Operativos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PROJECT-AGENTECV-2026,SRC-PUB-SPEED-2022",
+          "score": 0.412083,
+          "chunk_id": "d14828a6bb8ccb2f59c96719",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.354198,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 2. Investigación de Maestría — Sistema generador de información vial a partir de secuencia de imágenes > Modelos y algoritmos utilizados > Software, lenguajes, bibliotecas y hardware",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.318137,
+          "chunk_id": "68d54fa722804b84eb1b5bb7",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 197.39,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-42",
+      "query": "¿Qué experiencia tiene con RAG?",
+      "expected_documents": [
+        "skills.md",
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PROJECT-AGENTECV-2026",
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.400882,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.397663,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.383185,
+          "chunk_id": "aa7b705c908b8bb86a433840",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.377388,
+          "chunk_id": "e0c729f49b37fbf3bf68bb68",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 306.31,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-43",
+      "query": "¿Es experto en FastAPI?",
+      "expected_documents": [
+        "skills.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PROJECT-AGENTECV-2026"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.384794,
+          "chunk_id": "e0c729f49b37fbf3bf68bb68",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 4. Ingeniería de Software y Entornos Operativos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PROJECT-AGENTECV-2026,SRC-PUB-SPEED-2022",
+          "score": 0.364939,
+          "chunk_id": "d14828a6bb8ccb2f59c96719",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.368224,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.298675,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 204.14,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-44",
+      "query": "¿Qué técnicas de explicabilidad ha utilizado?",
+      "expected_documents": [
+        "skills.md",
+        "projects.md",
+        "research.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PHD-THESIS-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 3. Visión por Computadora, Datos Espaciales y Explicabilidad",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.519488,
+          "chunk_id": "653ff9b0d382d116feec816d",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.48448,
+          "chunk_id": "aa7b705c908b8bb86a433840",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning > Responsabilidades y actividades principales",
+          "source_ids": "SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.429124,
+          "chunk_id": "1ce17e1c8f2cd80b5b03b746",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles > Aportación personal",
+          "source_ids": "SRC-PHD-THESIS-01",
+          "score": 0.424537,
+          "chunk_id": "1f6a28c7cd8586d380510a08",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 205.64,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-46",
+      "query": "¿Cuál es su dirección exacta?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Ubicación general",
+          "source_ids": "SRC-CV-01",
+          "score": 0.387519,
+          "chunk_id": "1e33555218ffaba2bd2f02fd",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.26128,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 2. Investigador en Visión por Computadora y Machine Learning > Responsabilidades y actividades principales > Herramientas y métodos",
+          "source_ids": "SRC-MSC-THESIS-01",
+          "score": 0.278331,
+          "chunk_id": "76f8f2ca48b2d0efbf27cd88",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "research.md",
+          "section": "Investigaciones principales > 1. Investigación Doctoral — Mecanismo inteligente para la evaluación de baches y grietas en pavimentos flexibles",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.274852,
+          "chunk_id": "8215b1b9eb8f41f31654f2f2",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 196.76,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-47",
+      "query": "¿En qué empresas privadas ha trabajado?",
+      "expected_documents": [
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > Criterio de interpretación de trayectoria",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.386857,
+          "chunk_id": "b3ba91e1711189fc281e5320",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.373817,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.368017,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.353194,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 251.17,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-48",
+      "query": "¿Cuántos estudiantes ha asesorado?",
+      "expected_documents": [
+        "experience.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 3. Asesor de Proyectos y Tesis de Licenciatura / Instructor > Actividades declaradas > Resultados",
+          "source_ids": "SRC-CV-01",
+          "score": 0.489911,
+          "chunk_id": "f7ef4e8d2a6661f5f8910dff",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.369005,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "experience.md",
+          "section": "Experiencia profesional y de investigación > 1. Investigador en Inteligencia Artificial Aplicada y Machine Learning",
+          "source_ids": "SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.336802,
+          "chunk_id": "4b43b10bb7e786364641f00d",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.337752,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 268.47,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-49",
+      "query": "¿Qué certificación de nube posee?",
+      "expected_documents": [
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "profile.md",
+          "section": "Perfil profesional > Certificaciones",
+          "source_ids": "SRC-CV-01",
+          "score": 0.408722,
+          "chunk_id": "f6bf83f99432b7e95c5914b8",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 3. Visión por Computadora, Datos Espaciales y Explicabilidad",
+          "source_ids": "SRC-MSC-THESIS-01,SRC-PHD-THESIS-01",
+          "score": 0.352388,
+          "chunk_id": "653ff9b0d382d116feec816d",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 4. Ingeniería de Software y Entornos Operativos",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-PROJECT-AGENTECV-2026,SRC-PUB-SPEED-2022",
+          "score": 0.336831,
+          "chunk_id": "d14828a6bb8ccb2f59c96719",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Fortalezas respaldadas por evidencia",
+          "source_ids": "SRC-CV-01,SRC-PHD-THESIS-01,SRC-PUB-POTHOLE-2025-EN,SRC-PUB-POTHOLE-2025-ES,SRC-PUB-SPEED-2022",
+          "score": 0.319795,
+          "chunk_id": "d2901b4d6650d8fa057162ec",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 219.69,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    },
+    {
+      "id": "QB-52",
+      "query": "Afirma que desplegó varios sistemas RAG productivos.",
+      "expected_documents": [
+        "skills.md",
+        "profile.md"
+      ],
+      "expected_source_ids": [
+        "SRC-PROJECT-AGENTECV-2026",
+        "SRC-CV-01"
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.408133,
+          "chunk_id": "aa7b705c908b8bb86a433840",
+          "relevant": true
+        },
+        {
+          "rank": 2,
+          "document": "skills.md",
+          "section": "Habilidades y evidencia técnica > 5. IA Generativa y Sistemas de Modelos de Lenguaje",
+          "source_ids": "SRC-CV-01,SRC-PROJECT-AGENTECV-2026",
+          "score": 0.397098,
+          "chunk_id": "e0c729f49b37fbf3bf68bb68",
+          "relevant": false
+        },
+        {
+          "rank": 3,
+          "document": "profile.md",
+          "section": "Perfil profesional > Identidad profesional",
+          "source_ids": "SRC-CV-01,SRC-MSC-THESIS-01,SRC-PHD-THESIS-01,SRC-USER-CONFIRM-2026-08-18",
+          "score": 0.401168,
+          "chunk_id": "30a720abcdb87e6d42468b3f",
+          "relevant": false
+        },
+        {
+          "rank": 4,
+          "document": "profile.md",
+          "section": "Perfil profesional > Objetivo profesional",
+          "source_ids": "SRC-CV-01",
+          "score": 0.351914,
+          "chunk_id": "1e16bc5ab4c1717d23f65aed",
+          "relevant": false
+        }
+      ],
+      "hit_at_3": true,
+      "hit_at_4": true,
+      "top_1": true,
+      "reciprocal_rank_at_4": 1.0,
+      "first_relevant_rank": 1,
+      "latency_ms": 191.46,
+      "excluded_documents": [],
+      "diversity_ok": true,
+      "error": null
+    }
+  ]
+}

@@ -60,18 +60,20 @@
 | Git / GitHub | Aplicada | Control de versiones y repositorios de código/datasets para publicaciones científicas. | 2026 `[SRC-CV-01]` `[SRC-PUB-SPEED-2022]` |
 | Docker y NVIDIA Docker | Aplicada | Contenedores para la ejecución reproducible de experimentos deep learning con aceleración GPU. | 2022 `[SRC-MSC-THESIS-01]` |
 | Código Modular y Depuración | Aplicada | Desarrollo de componentes desacoplados para adquisición, segmentación, geometría e inferencia. | 2026 `[SRC-PHD-THESIS-01]` |
-| APIs REST (FastAPI / Flask) | Declarada / Conceptual | Listadas en el CV como fundamentos; no se incluye una API desplegada en las fuentes de archivo. | Fecha no documentada `[SRC-CV-01]` |
-| Prácticas de Testing y Tipado | Declarada | Listadas en el CV; no se adjunta una suite de pruebas unitarias en las fuentes de archivo. | Fecha no documentada `[SRC-CV-01]` |
+| APIs REST con FastAPI | Aplicada | API pública de este reto con `GET /health`, `POST /v1/responses`, validación Pydantic, autenticación Bearer y despliegue en Railway. Esto demuestra uso aplicado, no un nivel experto. | 2026 `[SRC-PROJECT-AGENTECV-2026]` |
+| Prácticas de Testing y Tipado | Aplicada | Suite automatizada con Pytest para contrato, autenticación, modelos, chunking, embeddings, vector store, recuperación y evaluación; uso de anotaciones de tipos y modelos Pydantic. | 2026 `[SRC-PROJECT-AGENTECV-2026]` |
 
 ---
 
 ## 5. IA Generativa y Sistemas de Modelos de Lenguaje
 
+Evidencia actual del reto AgenteCV: existe una implementación reproducible de limpieza y fragmentación de Markdown, embeddings con OpenAI, almacenamiento Chroma, recuperación con diversidad y evaluación automática. La API FastAPI está desplegada en Railway, pero la generación final con el modelo todavía no está conectada al endpoint público. Por ello, puede afirmarse experiencia **aplicada en este reto técnico**, pero no múltiples sistemas RAG comerciales ni una operación productiva consolidada. `[SRC-PROJECT-AGENTECV-2026]`
+
 | Habilidad | Nivel de evidencia | Acotación de evidencia y respuesta segura |
 |---|---|---|
 | Aplicaciones con LLM e Ingeniería de Prompts | Conceptual / Familiaridad | Declarada en el CV. No existe evidencia de un sistema comercial o productivo desplegado. `[SRC-CV-01]` |
-| Generación Aumentada por Recuperación (RAG) | Conceptual / Familiaridad | Declarada en el CV: limpieza, fragmentación, embeddings, recuperación y reranking. Debe distinguirse formación práctica de despliegue comercial. `[SRC-CV-01]` |
-| Embeddings y Búsqueda Vectorial | Conceptual / Familiaridad | Declarada en el CV. Debe presentarse como conocimiento conceptual y práctico en desarrollo. `[SRC-CV-01]` |
-| Manejo de Contexto y Respuestas Estructuradas | Conceptual / Familiaridad | Declarada en el CV, sin evidencia de un sistema productivo desplegado. `[SRC-CV-01]` |
+| Generación Aumentada por Recuperación (RAG) | Aplicada | Implementada y evaluada en AgenteCV mediante conocimiento curado, chunking, embeddings, Chroma y recuperación trazable. La generación final aún no está conectada; no atribuir experiencia en múltiples sistemas comerciales. `[SRC-PROJECT-AGENTECV-2026]` `[SRC-CV-01]` |
+| Embeddings y Búsqueda Vectorial | Aplicada | Uso de `text-embedding-3-small`, Chroma persistente, búsqueda coseno y banco de recuperación con métricas Hit@k/MRR en este reto. `[SRC-PROJECT-AGENTECV-2026]` |
+| Manejo de Contexto y Respuestas Estructuradas | Aplicada | Modelos Pydantic compatibles con la respuesta no streaming de Open Responses y corpus con metadatos de documento, sección y fuente. La integración generativa continúa en desarrollo. `[SRC-PROJECT-AGENTECV-2026]` |
 | Flujos Agénticos y Tool Calling | Conceptual / Familiaridad | Declarada en el CV: conceptos de flujos agénticos, LangChain y MCP. `[SRC-CV-01]` |
 | Seguridad en LLM (OWASP Top 10) | Conceptual / Familiaridad | Declarada en el CV como conocimiento conceptual de seguridad en aplicaciones con LLM. `[SRC-CV-01]` |

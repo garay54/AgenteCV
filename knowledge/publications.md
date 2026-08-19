@@ -12,6 +12,9 @@ Las fuentes confirman la publicación de tres artículos científicos revisados 
 
 ## PUB-01 — Estimación de velocidad vehicular en tiempo real basada en YOLO
 
+- **Nombres de búsqueda y alias:** artículo de *Applied Sciences* de 2022, artículo de estimación de velocidad, publicación 2907 y *Analysis of Statistical and Artificial Intelligence Algorithms for Real-Time Speed Estimation*.
+- **Resumen directo:** El artículo de *Applied Sciences* compara algoritmos estadísticos y de inteligencia artificial para estimar velocidad vehicular en tiempo real a partir de detección YOLOv3 y seguimiento con filtro de Kalman. `[SRC-PUB-SPEED-2022]`
+- **Contribución individual documentada de Mario:** Redacción del borrador original y revisión/edición; la declaración CRediT no le atribuye individualmente software o metodología. `[SRC-PUB-SPEED-2022]`
 - **Título:** *Analysis of Statistical and Artificial Intelligence Algorithms for Real-Time Speed Estimation Based on Vehicle Detection with YOLO*.
 - **Año:** 2022 (Publicado el 11 de marzo de 2022).
 - **Revista o medio:** *Applied Sciences* (vol. 12, núm. 6, art. 2907).
@@ -37,6 +40,9 @@ Las fuentes confirman la publicación de tres artículos científicos revisados 
 
 ## PUB-02 — Detección inteligente de baches y estimación de profundidad con YOLOv8 y RealSense
 
+- **Nombres de búsqueda y alias:** artículo de *CIENCIA ergo-sum*, artículo en español sobre baches, publicación e37 y *Detección inteligente de baches y estimación de su profundidad*.
+- **Resumen directo:** El artículo de *CIENCIA ergo-sum* utiliza YOLOv8 y una cámara Intel RealSense D435i para detectar baches y estimar su profundidad. `[SRC-PUB-POTHOLE-2025-ES]`
+- **Contribución individual documentada de Mario:** Es primer autor; como la fuente no contiene una declaración CRediT individual, no deben atribuirse exclusivamente a Mario todas las tareas del equipo. `[SRC-PUB-POTHOLE-2025-ES]`
 - **Título:** *Detección inteligente de baches y estimación de su profundidad con aprendizaje profundo para la conservación de carreteras*.
 - **Año:** 2025.
 - **Revista o medio:** *CIENCIA ergo-sum* (vol. 32, núm. 1, e37).
@@ -62,6 +68,9 @@ Las fuentes confirman la publicación de tres artículos científicos revisados 
 
 ## PUB-03 — Arquitectura de evaluación de baches con SegFormer, nubes de puntos y lógica difusa
 
+- **Nombres de búsqueda y alias:** artículo de *Case Studies*, artículo de *Case Studies in Construction Materials*, publicación e04440 y *Architecture for pavement pothole evaluation*.
+- **Resumen directo:** El artículo de *Case Studies in Construction Materials* presenta una arquitectura para evaluar baches mediante SegFormer, integración de información 2D/3D y un sistema de lógica difusa para severidad y recomendaciones de mantenimiento. `[SRC-PUB-POTHOLE-2025-EN]`
+- **Contribuciones CRediT de Mario:** Conceptualización, investigación, metodología, software y redacción del borrador original. `[SRC-PUB-POTHOLE-2025-EN]`
 - **Título:** *Architecture for pavement pothole evaluation using deep learning, machine vision, and fuzzy logic*.
 - **Año:** 2025 (Publicado en 2025, e04440).
 - **Revista o medio:** *Case Studies in Construction Materials* (vol. 22, e04440).

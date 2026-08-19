@@ -7,7 +7,7 @@ Este documento registra el flujo del agente profesional y relaciona cada compone
 **Estado de D09:** En progreso  
 **Fecha de actualización:** 2026-08-18
 
-La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` también existe con validación Pydantic, autenticación Bearer y una respuesta simulada no streaming. Su integración RAG y generación con el modelo todavía están pendientes. Por ese motivo, D09 no se considerará terminado hasta contrastar el flujo extremo a extremo con una solicitud real de Banorte.
+La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` integra validación Pydantic, autenticación Bearer, recuperación RAG, prompt fundamentado y generación con `gpt-5.6-luna` en modalidad no streaming. El flujo real fue validado localmente; D09 permanecerá en progreso hasta desplegar este incremento y contrastarlo con una solicitud real de Banorte.
 
 ## 2. Flujo objetivo de una solicitud
 
@@ -35,9 +35,9 @@ flowchart LR
     classDef partial fill:#fef3c7,stroke:#b45309,color:#78350f;
     classDef planned fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d;
 
-    class API,VA,RAG,EQ,VS implemented;
-    class ORI,HC,CR partial;
-    class B,PR,PM,OA,AN,RI,ORO planned;
+    class API,VA,ORI,HC,RAG,EQ,VS,CR,PR,PM,OA,RI,ORO implemented;
+    class B partial;
+    class AN planned;
 ```
 
 ### Leyenda
@@ -67,8 +67,8 @@ Este flujo está implementado mediante:
 - `app/rag/chunking.py`: selección del corpus, fragmentación, metadatos e identificadores estables.
 - `app/rag/embeddings.py`: adaptador de embeddings de OpenAI.
 - `app/rag/vector_store.py`: persistencia y búsqueda coseno en Chroma.
-- `app/rag/service.py`: construcción del índice, recuperación y diversidad por documento.
-- `app/rag/evaluation.py`: lectura reproducible del banco de preguntas.
+- `app/rag/service.py`: construcción del índice, recuperación, diversidad por documento y reranking híbrido ligero por especificidad de fuente y coincidencia léxica.
+- `app/rag/evaluation.py`: lectura reproducible del banco de preguntas y validación por documento permitido más trazabilidad `SRC-*`.
 - `scripts/build_index.py`: construcción controlada del índice.
 - `scripts/evaluate_retrieval.py`: evaluación y generación del reporte.
 
@@ -81,11 +81,15 @@ flowchart LR
     H -->|200 application/json| C
     C -->|POST /v1/responses| A[Content-Type y Bearer]
     A --> V[Validación Pydantic]
-    V --> M[Respuesta simulada]
-    M -->|ResponseResource 200| C
+    V --> Q[Consulta de recuperación]
+    Q --> R[Chroma y fragmentos autorizados]
+    R --> P[Prompt fundamentado]
+    P --> L[gpt-5.6-luna mediante Responses API]
+    L --> M[Adaptación a ResponseResource]
+    M -->|200 application/json| C
 ```
 
-Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta devuelve temporalmente texto fijo y no consulta el RAG ni un proveedor de IA; por lo tanto, el diagrama objetivo todavía no representa una implementación terminada.
+Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta ejecuta el recorrido real no streaming. El modelo se fija mediante configuración del servidor, el historial se procesa sin persistencia y el uso de tokens se refleja en la respuesta pública.
 
 ## 5. Correspondencia entre arquitectura y código
 
@@ -97,19 +101,19 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Fragmentación y metadatos | `app/rag/chunking.py`, `tests/test_chunking.py` | Implementado y probado |
 | Embeddings de documentos y consulta | `app/rag/embeddings.py` | Implementado; ejecución real depende de la clave y cuota |
 | Chroma y similitud coseno | `app/rag/vector_store.py`, `tests/test_vector_store.py` | Implementado y probado localmente |
-| Recuperación y diversidad | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
-| Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py` | Implementado; reporte real pendiente del índice |
-| `POST /v1/responses` | `app/main.py`, `tests/test_responses.py` | Implementado con respuesta simulada no streaming |
+| Recuperación, diversidad y reranking | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
+| Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py`, `artifacts/evaluations/retrieval-20260818-221152.json` | Implementada y aprobada: 49 casos, Hit@4 100 %, Top-1 81.63 %, MRR@4 90.48 % |
+| `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real no streaming |
 | Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementación inicial probada; aceptación real de Banorte pendiente |
 | Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada y probada localmente; integración con Banorte pendiente |
-| Historial stateless | Decisión D05 | Pendiente de integración al endpoint |
-| Prompt fundamentado | Sin archivo de implementación | Pendiente |
-| Adaptador de generación OpenAI | Decisión D03 | Pendiente |
+| Historial stateless | `app/agent.py`, `tests/test_agent.py` | Implementado para reproducción de transcripción |
+| Prompt fundamentado | `app/prompts.py`, `tests/test_agent.py` | Implementado y probado sin red |
+| Adaptador de generación OpenAI | `app/llm.py`, `tests/test_llm.py` | Implementado con `gpt-5.6-luna`; llamada real local validada |
 | Contingencia Anthropic | Decisiones D02 y D03 | Pendiente |
-| Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Contrato simulado implementado; generación real pendiente |
+| Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Implementada con respuesta real y uso de tokens |
 | Streaming SSE | Decisión D06 | Condicional y pendiente |
 | Contenedor Docker | Decisión D08 | Pendiente |
-| Despliegue Railway | Decisión D08 | Pendiente |
+| Despliegue Railway | `railway.json`, `.python-version`, `scripts/ensure_index.py` | API base desplegada; el nuevo incremento y la persistencia del índice deben validarse |
 
 ## 6. Límites de seguridad y privacidad
 
@@ -139,8 +143,8 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    GH[Repositorio sanitizado] --> DK[Construcción Docker]
-    DK --> RW[Railway Hobby - US West]
+    GH[Repositorio sanitizado] --> RP[Build Python con Railpack]
+    RP --> RW[Railway Hobby]
     SEC[Variables secretas] --> RW
     VOL[(Volumen persistente)] --> RW
     RW --> URL[URL HTTPS estable]
@@ -168,5 +172,7 @@ D09 podrá marcarse como terminado cuando:
 - Contrato preliminar: `docs/contrato-open-responses.md`.
 - Requisitos: `docs/requisitos.md`.
 - Alcance: `docs/alcance-mvp.md`.
+- Evaluación RAG aprobada: `artifacts/evaluations/retrieval-20260818-221152.json`.
+- API base pública: `https://agentecv-production.up.railway.app`.
 - Estado para continuidad: `ESTADO_IMPLEMENTACION.md`.
 - Pruebas automatizadas: carpeta `tests/`.

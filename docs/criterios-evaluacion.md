@@ -35,11 +35,14 @@ Esta ponderación expresa la estrategia de presentación de Mario. No deberá de
 
 La evaluación inicial de recuperación deberá cumplir:
 
-- `Hit@3 >= 90 %`.
-- Documento esperado en `Top-1 >= 75 %`.
+- `Hit@4 >= 90 %` con documento permitido y trazabilidad `SRC-*`.
+- Resultado relevante en `Top-1 >= 75 %`.
+- `MRR@4 >= 70 %`.
 - Cero resultados procedentes de documentos excluidos.
 - Máximo dos resultados del mismo documento entre los cuatro entregados.
 - Cero errores de ejecución.
+
+La evaluación del 18 de agosto de 2026 aprobó los 49 casos single-turn con `Hit@3 = 100 %`, `Hit@4 = 100 %`, `Top-1 = 81.63 %` y `MRR@4 = 90.48 %`. Los seguimientos conversacionales y la generación se evaluarán por separado para no convertir pronombres sin contexto en consultas de recuperación artificiales.
 
 ### 4.2 Generación y conversación
 
@@ -128,3 +131,4 @@ Todavía deben validarse mediante una solicitud real desde Banorte:
 | Fecha | Cambio | Fuente |
 |---|---|---|
 | 2026-08-18 | Creación de la rúbrica interna, criterios de éxito, entregables, identidad y compromiso operativo. | Decisiones directas de Mario y expectativas generales del reto. |
+| 2026-08-18 | Evaluación de recuperación actualizada con trazabilidad `SRC-*`, Hit@4, MRR@4 y separación single-turn/multitur­no. | Reporte reproducible `retrieval-20260818-221152.json`. |

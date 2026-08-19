@@ -25,6 +25,8 @@ Aplicar su experiencia en machine learning, investigación reproducible, visión
 
 ## Formación académica
 
+Resumen directo de formación: Mario estudió la licenciatura en **Ingeniería Mecatrónica** y obtuvo el título en 2019; obtuvo la **Maestría en Ciencias de la Computación** en agosto de 2022; y obtuvo el grado de **Doctor en Ciencias de la Computación** después de defender su tesis el 10 de agosto de 2026. `[SRC-CV-01]` `[SRC-MSC-THESIS-01]` `[SRC-USER-CONFIRM-2026-08-18]`
+
 ### Doctorado en Ciencias de la Computación
 - **Institución:** Tecnológico Nacional de México, campus Culiacán.
 - **Periodo documentado:** Agosto de 2022 a agosto de 2026.

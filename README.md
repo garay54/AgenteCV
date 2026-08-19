@@ -4,6 +4,29 @@ Agente conversacional de CV desarrollado con FastAPI, RAG ligero (OpenAI Embeddi
 
 Banorte proporciona la interfaz de chat que consume el endpoint desplegado; este repositorio contiene la API backend, el motor RAG, la base de conocimiento curada y la suite de evaluación y pruebas.
 
+## Estado actual
+
+- API base desplegada en Railway con HTTPS, healthcheck y autenticación Bearer; el despliegue público debe actualizarse con el incremento de generación real.
+- RAG local construido con 55 fragmentos curados y evaluación real aprobada.
+- Suite automatizada: 39 pruebas aprobadas.
+- `POST /v1/responses` conecta localmente recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
+- Flujo real local validado con HTTP 200, modelo efectivo y uso de tokens reportado; falta desplegar este incremento y validarlo desde Banorte.
+
+### Resultado de recuperación
+
+La evaluación reproducible más reciente ejecutó 49 consultas single-turn con `text-embedding-3-small`, Chroma y reranking híbrido ligero:
+
+| Métrica | Resultado |
+|---|---:|
+| Hit@3 | 100 % |
+| Hit@4 | 100 % |
+| Top-1 | 81.63 % |
+| MRR@4 | 90.48 % |
+| Errores | 0 |
+| Documentos excluidos recuperados | 0 |
+
+Reporte: `artifacts/evaluations/retrieval-20260818-221152.json`. Estas cifras evalúan recuperación; la generación y las conversaciones multitur­no requieren una evaluación posterior.
+
 ---
 
 ## Corpus autorizado para producción
@@ -61,10 +84,17 @@ Edita el archivo `.env` local (este archivo **nunca** debe subirse a Git):
 ```text
 AGENT_API_KEY=tu_clave_independiente_para_el_agente
 OPENAI_API_KEY=tu_clave_privada
+OPENAI_GENERATION_MODEL=gpt-5.6-luna
+OPENAI_REASONING_EFFORT=none
+OPENAI_TEXT_VERBOSITY=low
 ```
 
 `AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
 en Banorte. Nunca debe reutilizarse como `OPENAI_API_KEY`.
+
+El modelo recibido en el cuerpo de una solicitud no sustituye el modelo configurado
+por el servidor. Esto evita que un cliente seleccione modelos no autorizados o más
+costosos. Para el MVP, el modelo efectivo es `gpt-5.6-luna`.
 
 ### 3. Construir el índice RAG y evaluar recuperación
 

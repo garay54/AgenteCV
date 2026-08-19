@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,6 +31,14 @@ class Settings(BaseSettings):
 
     openai_api_key: SecretStr | None = None
     openai_embedding_model: str = "text-embedding-3-small"
+    openai_generation_model: str = "gpt-5.6-luna"
+    openai_reasoning_effort: Literal[
+        "none", "low", "medium", "high", "xhigh", "max"
+    ] = "none"
+    openai_text_verbosity: Literal["low", "medium", "high"] = "low"
+    openai_timeout_seconds: float = 30.0
+    openai_max_retries: int = 2
+    generation_max_output_tokens: int = 500
 
     knowledge_dir: Path = PROJECT_ROOT / "knowledge"
     chroma_path: Path = PROJECT_ROOT / "data" / "chroma"
@@ -38,6 +47,8 @@ class Settings(BaseSettings):
     rag_top_k: int = 4
     rag_candidate_k: int = 16
     rag_max_per_document: int = 2
+    rag_source_breadth_penalty: float = 0.005
+    rag_lexical_bonus: float = 0.05
     rag_min_score: float | None = None
 
     rag_chunk_min_tokens: int = 150

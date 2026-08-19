@@ -131,7 +131,7 @@ class ReasoningConfig(StrictContractModel):
     Parámetros opcionales de razonamiento aceptados por Open Responses.
     """
 
-    effort: Literal["none", "low", "medium", "high", "xhigh"] | None = None
+    effort: Literal["none", "low", "medium", "high", "xhigh", "max"] | None = None
     summary: Literal["concise", "detailed", "auto"] | None = None
 
 
@@ -268,7 +268,7 @@ class ResponseReasoning(StrictContractModel):
     Configuración de razonamiento reflejada en la respuesta.
     """
 
-    effort: Literal["none", "low", "medium", "high", "xhigh"] | None
+    effort: Literal["none", "low", "medium", "high", "xhigh", "max"] | None
     summary: Literal["concise", "detailed", "auto"] | None
 
 

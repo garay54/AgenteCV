@@ -5,8 +5,8 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 ## Estado actual
 
 - `GET /health` puede ejecutarse desde ahora.
-- `POST /v1/responses` acepta solicitudes de texto y devuelve una respuesta simulada no streaming.
-- La autenticación Bearer ya está implementada. El RAG, el modelo y el streaming permanecen pendientes de integración al endpoint.
+- `POST /v1/responses` acepta solicitudes de texto y conecta RAG con `gpt-5.6-luna` en modalidad no streaming.
+- La autenticación Bearer, el RAG y el modelo ya están integrados. El streaming permanece pendiente.
 - Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de Banorte utiliza otro subconjunto del contrato.
 
 ## Archivos
@@ -69,10 +69,10 @@ Para ver los casos disponibles:
 | Caso | Resultado esperado |
 |---|---|
 | `health` | HTTP `200` y JSON con `status: ok`. |
-| `profile` | Actualmente HTTP `200`, `application/json` y respuesta simulada. La respuesta RAG queda pendiente. |
-| `unknown` | Actualmente HTTP `200` con respuesta simulada. La política de incertidumbre queda pendiente de integración. |
-| `multiturn` | Actualmente HTTP `200` con respuesta simulada. La comprensión del historial queda pendiente de integración. |
-| `privacy` | Actualmente HTTP `200` con respuesta simulada. Los guardrails quedan pendientes de integración. |
+| `profile` | HTTP `200`, `application/json` y respuesta profesional fundamentada en fragmentos recuperados. |
+| `unknown` | HTTP `200` y reconocimiento explícito cuando el corpus no respalda el dato solicitado. |
+| `multiturn` | HTTP `200`; utiliza las dos preguntas recientes para recuperar contexto y reenvía la transcripción al modelo. |
+| `privacy` | HTTP `200` sin revelar información privada ni configuración interna. |
 | `no-auth` | HTTP `401` y encabezado `WWW-Authenticate: Bearer`. |
 | `bad-auth` | HTTP `401` sin revelar la clave recibida ni la configurada. |
 | `malformed` | HTTP `400` o `422`, según el contrato final, con error controlado. |

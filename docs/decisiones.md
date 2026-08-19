@@ -50,15 +50,15 @@ La decisión solamente se reconsiderará si la plataforma de Banorte presenta un
 
 El agente necesita un modelo de lenguaje capaz de responder en español a partir del contexto recuperado por el sistema RAG. Para la demostración se priorizan la estabilidad, la disponibilidad de cuota, el tiempo de respuesta, el costo y la compatibilidad con streaming, además de la calidad de las respuestas.
 
-Se compararon OpenAI con `gpt-4o-mini` y Anthropic con `claude-haiku-4-5-20251001`.
+Se compararon OpenAI con `gpt-5.6-luna` y Anthropic con `claude-haiku-4-5-20251001`. La primera comparación había utilizado `gpt-4o-mini`, pero Mario decidió sustituirlo antes de integrar la generación porque Luna pertenece a la familia actual de modelos eficientes de OpenAI y permite controlar explícitamente el esfuerzo de razonamiento.
 
 ### Comparación
 
-| Criterio | OpenAI: `gpt-4o-mini` | Anthropic: `claude-haiku-4-5-20251001` |
+| Criterio | OpenAI: `gpt-5.6-luna` | Anthropic: `claude-haiku-4-5-20251001` |
 |---|---|---|
 | Calidad para el caso de uso | Adecuada para tareas enfocadas; pendiente de validar con preguntas reales | Modelo rápido con capacidad multilingüe; pendiente de validar con preguntas reales |
 | Latencia | Modelo clasificado como rápido; se medirá con el agente | Modelo clasificado como el más rápido de la familia Claude; se medirá con el agente |
-| Costo por millón de tokens | USD $0.15 de entrada y USD $0.60 de salida | USD $1.00 de entrada y USD $5.00 de salida |
+| Costo por millón de tokens | USD $0.20 de entrada, USD $0.02 de entrada en caché y USD $1.20 de salida | USD $1.00 de entrada y USD $5.00 de salida |
 | Límites | Dependen del nivel de uso de la cuenta | Dependen del nivel y antigüedad de la cuenta |
 | Disponibilidad regional | Disponible en México | Disponible en México |
 | Idioma | Se validará la calidad de las respuestas en español | Anthropic declara capacidad multilingüe; se validará la calidad en español |
@@ -68,14 +68,16 @@ Se compararon OpenAI con `gpt-4o-mini` y Anthropic con `claude-haiku-4-5-2025100
 ### Decisión
 
 - **Proveedor principal:** OpenAI.
-- **Modelo principal:** `gpt-4o-mini`.
+- **Modelo principal:** `gpt-5.6-luna`.
+- **Esfuerzo de razonamiento inicial:** `none`, con comparación posterior contra `low`.
 - **Proveedor de contingencia:** Anthropic.
 - **Modelo de contingencia:** `claude-haiku-4-5-20251001`.
 
 ### Razones
 
-- `gpt-4o-mini` tiene el menor costo de los dos candidatos.
+- `gpt-5.6-luna` está optimizado para cargas eficientes y de alto volumen, y conserva un costo inferior al modelo de contingencia considerado.
 - Es compatible con streaming y con Responses API, lo cual reduce el esfuerzo de adaptación interno.
+- El RAG aporta la evidencia factual, por lo que `reasoning.effort=none` es una línea base apropiada para reducir latencia; `low` sólo se adoptará si las evaluaciones demuestran una mejora útil.
 - Sus límites documentados son suficientes para el desarrollo y la demostración, sujetos a la cuota efectiva de la cuenta.
 - Haiku 4.5 ofrece una contingencia independiente frente a indisponibilidad, timeout o agotamiento de cuota de OpenAI.
 - El presupuesto previsto de USD $5 en Anthropic es suficiente para probar y mantener la contingencia durante el reto.
@@ -93,7 +95,8 @@ Si la cuenta de OpenAI no dispone de una clave funcional y cuota suficiente, se 
 
 ### Referencias
 
-- [OpenAI: GPT-4o mini](https://developers.openai.com/api/docs/models/gpt-4o-mini)
+- [OpenAI: GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)
+- [OpenAI: guía de modelos GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model)
 - [Anthropic: modelos Claude](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [Anthropic: precios](https://platform.claude.com/docs/en/about-claude/pricing)
 - [Anthropic: streaming](https://platform.claude.com/docs/en/build-with-claude/streaming)
@@ -279,7 +282,7 @@ La decisión se considerará validada cuando una evaluación separada de recuper
 
 ## D04.1. Fragmentación, embeddings y almacenamiento vectorial
 
-**Estado:** Aceptada para el MVP; parámetros sujetos a evaluación  
+**Estado:** Aceptada y evaluada para el MVP
 **Fecha:** 2026-08-18
 
 ### Contexto
@@ -295,20 +298,34 @@ Después de seleccionar un RAG ligero faltaba definir cómo dividir los document
 - El modelo inicial de embeddings será `text-embedding-3-small` de OpenAI.
 - El almacén inicial será Chroma persistente y embebido, con distancia coseno. El índice será reconstruible desde los seis archivos autorizados.
 - La búsqueda solicitará hasta 16 candidatos, devolverá cuatro resultados y limitará la salida a un máximo de dos fragmentos por documento.
-- No se incorporará reranking en la primera versión. Sólo se añadirá si la evaluación muestra fallos que no se resuelvan mediante corpus, fragmentación o parámetros de búsqueda.
+- La evaluación inicial mostró que encabezados genéricos con varias fuentes y consultas con nombres literales de publicaciones podían desplazar fragmentos específicos. Por ello se incorporó un reranking híbrido ligero sobre los candidatos vectoriales: penalización de `0.005` por cada fuente adicional heredada y bono léxico máximo de `0.05` para términos coincidentes. El score coseno original se conserva para diagnóstico.
 - No se fijará un umbral mínimo de similitud antes de observar la distribución de puntuaciones reales.
 
 ### Criterios de aceptación iniciales
 
-- `Hit@3` por documento esperado: al menos 90 %.
-- Documento esperado en `Top-1`: al menos 75 %.
+- `Hit@4` con documento permitido y trazabilidad `SRC-*`: al menos 90 %.
+- Resultado relevante en `Top-1`: al menos 75 %.
+- `MRR@4`: al menos 70 %.
 - Cero fragmentos procedentes de documentos excluidos.
 - Máximo de dos resultados del mismo documento entre los cuatro entregados.
 - Registro por caso de consulta, resultados, puntuaciones, fuentes, latencia y error.
 
+### Resultado de evaluación
+
+El índice reconstruido el 18 de agosto de 2026 produjo 55 fragmentos. Sobre 49 consultas single-turn se obtuvo:
+
+- `Hit@3 = 100 %`.
+- `Hit@4 = 100 %`.
+- `Top-1 = 81.63 %`.
+- `MRR@4 = 90.48 %`.
+- Cero errores y cero documentos excluidos.
+- Latencia promedio de recuperación de 291.92 ms; se observó un máximo aislado de 2,314.60 ms que deberá vigilarse al medir el flujo completo.
+
+La evidencia reproducible está en `artifacts/evaluations/retrieval-20260818-221152.json`. Estas métricas validan recuperación, no la exactitud de la respuesta generada ni la conversación multitur­no.
+
 ### Alternativas y revisión
 
-`text-embedding-3-large`, un almacén administrado y un reranker quedan como alternativas. Sólo se adoptarán si aportan una mejora medible que justifique su costo o complejidad. Chroma embebido es suficiente para desarrollo y demostración local; su persistencia en la plataforma de despliegue deberá revisarse antes de publicar el servicio.
+`text-embedding-3-large`, un almacén administrado y un reranker neuronal quedan como alternativas. No se adoptaron porque el modelo pequeño más el reranking determinista alcanzaron los umbrales. Chroma embebido es suficiente para desarrollo; su persistencia en Railway todavía debe validarse antes de conectar el RAG al endpoint público.
 
 ### Referencias
 
@@ -497,13 +514,13 @@ La estrategia se revisará si Banorte exige un encabezado diferente, un endpoint
 
 ## D08. Plataforma de despliegue
 
-**Estado:** Aceptada  
+**Estado:** Aceptada; despliegue base validado, persistencia RAG pendiente
 **Fecha:** 2026-08-18  
 **Aprobación de costo:** Mario acepta el plan Railway Hobby con cuota base de USD $5 al mes.
 
 ### Contexto
 
-El agente necesita una URL HTTPS pública y estable, ejecución de un contenedor FastAPI, configuración segura de secretos, registros operativos, posibilidad de transmitir SSE y disponibilidad durante el periodo de evaluación. El RAG utiliza Chroma embebido, por lo que también resulta conveniente disponer de almacenamiento persistente.
+El agente necesita una URL HTTPS pública y estable, ejecución reproducible de FastAPI, configuración segura de secretos, registros operativos, posibilidad de transmitir SSE y disponibilidad durante el periodo de evaluación. El RAG utiliza Chroma embebido, por lo que también resulta conveniente disponer de almacenamiento persistente.
 
 Se compararon Railway, Render y Google Cloud Run:
 
@@ -524,7 +541,7 @@ Se compararon Railway, Render y Google Cloud Run:
 
 La plataforma principal será **Railway**, utilizando el plan **Hobby**.
 
-- El servicio se desplegará como un contenedor Docker.
+- El despliegue inicial utilizará Railpack para Python a partir del repositorio, con `.python-version`, `requirements.txt` y `railway.json`. Docker queda como alternativa de portabilidad, no como requisito del despliegue vigente.
 - La región inicial será **US West, California**.
 - Railway Serverless permanecerá desactivado durante la integración y el periodo de evaluación para evitar cold starts.
 - El servicio tendrá una URL HTTPS estable proporcionada por Railway.
@@ -565,13 +582,8 @@ Render gratuito no se utilizará para la entrega porque su suspensión por inact
 
 ### Validación
 
-D08 se considerará implementada cuando exista evidencia de que:
+D08 está validada para la API base: Railway construye el servicio, la URL pública HTTPS es estable, `/health` responde externamente, `/v1/responses` acepta autenticación y la clave de entrada puede rotarse mediante variables. Para considerarla terminada aún falta evidencia de que:
 
-- El contenedor se construye y arranca correctamente en Railway.
-- La URL pública utiliza HTTPS y permanece estable entre despliegues.
-- `/health` responde desde una red externa.
-- `/responses` funciona con autenticación desde la URL pública.
-- Las variables secretas pueden rotarse sin cambiar el código.
 - El índice Chroma permanece disponible después de reiniciar el servicio o puede reconstruirse de manera controlada.
 - Los logs permiten diagnosticar solicitudes sin divulgar secretos ni transcripciones completas.
 - Una prueba SSE funciona a través del proxy público si Banorte activa `stream: true`.
