@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "Agente profesional de Mario"
+    app_version: str = "0.1.0"
     app_environment: str = "development"
 
     openai_api_key: SecretStr | None = None

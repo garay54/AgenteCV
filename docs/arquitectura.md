@@ -7,7 +7,7 @@ Este documento registra el flujo del agente profesional y relaciona cada compone
 **Estado de D09:** En progreso  
 **Fecha de actualización:** 2026-08-18
 
-La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. El endpoint `/responses`, su autenticación, la adaptación Open Responses y la generación con el modelo todavía están pendientes. Por ese motivo, el flujo objetivo se documenta ahora, pero D09 no se considerará terminado hasta contrastarlo con el código extremo a extremo y con una solicitud real de Banorte.
+La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` también existe con validación Pydantic y una respuesta simulada no streaming. Su autenticación, integración RAG y generación con el modelo todavía están pendientes. Por ese motivo, D09 no se considerará terminado hasta contrastar el flujo extremo a extremo con una solicitud real de Banorte.
 
 ## 2. Flujo objetivo de una solicitud
 
@@ -79,9 +79,12 @@ flowchart LR
     C[Cliente local] -->|GET /health| F[FastAPI]
     F --> H[HealthResponse]
     H -->|200 application/json| C
+    C -->|POST /v1/responses| V[Validación Pydantic]
+    V --> M[Respuesta simulada]
+    M -->|ResponseResource 200| C
 ```
 
-Actualmente `app/main.py` sólo expone `GET /health`. No existe todavía `POST /responses`; por lo tanto, el diagrama objetivo no debe presentarse como una implementación terminada.
+Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta devuelve temporalmente texto fijo y no consulta el RAG ni un proveedor de IA; por lo tanto, el diagrama objetivo todavía no representa una implementación terminada.
 
 ## 5. Correspondencia entre arquitectura y código
 
@@ -95,14 +98,14 @@ Actualmente `app/main.py` sólo expone `GET /health`. No existe todavía `POST /
 | Chroma y similitud coseno | `app/rag/vector_store.py`, `tests/test_vector_store.py` | Implementado y probado localmente |
 | Recuperación y diversidad | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
 | Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py` | Implementado; reporte real pendiente del índice |
-| `POST /responses` | Sin archivo de implementación | Pendiente |
-| Validación del contrato Open Responses | `docs/contrato-open-responses.md` | Documentación preliminar; implementación pendiente |
+| `POST /v1/responses` | `app/main.py`, `tests/test_responses.py` | Implementado con respuesta simulada no streaming |
+| Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementación inicial probada; aceptación real de Banorte pendiente |
 | Autenticación Bearer | Decisión D07 | Pendiente de implementación y pruebas |
 | Historial stateless | Decisión D05 | Pendiente de integración al endpoint |
 | Prompt fundamentado | Sin archivo de implementación | Pendiente |
 | Adaptador de generación OpenAI | Decisión D03 | Pendiente |
 | Contingencia Anthropic | Decisiones D02 y D03 | Pendiente |
-| Respuesta JSON completa | Decisión D06 | Pendiente |
+| Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Contrato simulado implementado; generación real pendiente |
 | Streaming SSE | Decisión D06 | Condicional y pendiente |
 | Contenedor Docker | Decisión D08 | Pendiente |
 | Despliegue Railway | Decisión D08 | Pendiente |
@@ -166,4 +169,3 @@ D09 podrá marcarse como terminado cuando:
 - Alcance: `docs/alcance-mvp.md`.
 - Estado para continuidad: `ESTADO_IMPLEMENTACION.md`.
 - Pruebas automatizadas: carpeta `tests/`.
-

@@ -5,7 +5,8 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 ## Estado actual
 
 - `GET /health` puede ejecutarse desde ahora.
-- Las pruebas de `/responses` son casos preparados y permanecerán pendientes hasta que exista el endpoint.
+- `POST /v1/responses` acepta solicitudes de texto y devuelve una respuesta simulada no streaming.
+- La autenticación, el RAG, el modelo y el streaming permanecen pendientes; sus casos se completarán en actividades posteriores.
 - Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de Banorte utiliza otro subconjunto del contrato.
 
 ## Archivos
@@ -68,14 +69,14 @@ Para ver los casos disponibles:
 | Caso | Resultado esperado |
 |---|---|
 | `health` | HTTP `200` y JSON con `status: ok`. |
-| `profile` | HTTP `200`, `application/json` y una respuesta respaldada por el corpus. |
-| `unknown` | HTTP `200`; reconoce que no existe evidencia suficiente. |
-| `multiturn` | HTTP `200`; comprende que el seguimiento se refiere al doctorado. |
-| `privacy` | HTTP `200`; no revela teléfono, correo ni dirección exacta. |
-| `no-auth` | HTTP `401` y `WWW-Authenticate: Bearer`. |
-| `bad-auth` | HTTP `401` sin revelar detalles de la clave. |
+| `profile` | Actualmente HTTP `200`, `application/json` y respuesta simulada. La respuesta RAG queda pendiente. |
+| `unknown` | Actualmente HTTP `200` con respuesta simulada. La política de incertidumbre queda pendiente de integración. |
+| `multiturn` | Actualmente HTTP `200` con respuesta simulada. La comprensión del historial queda pendiente de integración. |
+| `privacy` | Actualmente HTTP `200` con respuesta simulada. Los guardrails quedan pendientes de integración. |
+| `no-auth` | Actualmente HTTP `200`; deberá cambiar a `401` durante la actividad de autenticación. |
+| `bad-auth` | Actualmente HTTP `200`; deberá cambiar a `401` durante la actividad de autenticación. |
 | `malformed` | HTTP `400` o `422`, según el contrato final, con error controlado. |
-| `stream` | HTTP `200`, `text/event-stream`, eventos ordenados y cierre conforme al contrato confirmado. |
+| `stream` | Actualmente HTTP `501`; SSE queda pendiente hasta confirmar que forma parte del alcance final. |
 
 ## Seguridad
 
@@ -87,4 +88,3 @@ Para ver los casos disponibles:
 ## Criterio de terminado
 
 La actividad estará terminada cuando todos los casos aplicables puedan ejecutarse con los comandos anteriores contra la API real, produzcan el resultado esperado y no requieran editar manualmente los cuerpos o encabezados.
-
