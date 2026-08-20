@@ -6,7 +6,7 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 
 - `GET /health` puede ejecutarse desde ahora.
 - `POST /v1/responses` acepta solicitudes de texto y conecta RAG con `gpt-5.6-luna` tanto en modalidad completa como en streaming SSE.
-- La autenticación Bearer, el RAG, el modelo y el streaming están integrados, desplegados y aceptados por el cliente conversacional.
+- La autenticación Bearer, el RAG, el modelo y el streaming están integrados, desplegados y en funcionamiento
 - Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de la plataforma cliente utiliza otro subconjunto del contrato.
 
 ## Archivos
@@ -80,11 +80,9 @@ Para ver los casos disponibles:
 
 ## Seguridad
 
-- No escribas claves reales en `manual.http` ni en los JSON.
-- No guardes encabezados `Authorization` en capturas o reportes.
-- No confirmes en Git archivos de salida que contengan transcripciones completas.
-- Antes de conservar evidencia, elimina credenciales, identificadores internos y datos privados.
+- No escribir claves reales en `manual.http` ni en los JSON.
+- No guardar encabezados `Authorization` en capturas o reportes.
+- No confirmar en Git archivos de salida que contengan transcripciones completas.
+- Antes de conservar evidencia, eliminar credenciales, identificadores internos y datos privados.
 
-## Criterio de terminado
 
-La actividad estará terminada cuando todos los casos aplicables puedan ejecutarse con los comandos anteriores contra la API real, produzcan el resultado esperado y no requieran editar manualmente los cuerpos o encabezados.

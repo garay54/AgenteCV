@@ -32,15 +32,9 @@ Esta carpeta contiene la versión estructurada, depurada y apta para recuperaci�
 
 Para el MVP sólo se indexarán `profile.md`, `experience.md`, `projects.md`, `skills.md`, `publications.md` y `research.md`.
 
-Quedan excluidos del índice `faq.md`, `question_bank.md`, `open_questions.md`, este README, `sources/index.md` y los documentos originales completos. `faq.md` se utilizará como referencia conversacional y apoyo para pruebas; `question_bank.md` se utilizará para evaluación; `open_questions.md` y `sources/index.md` conservarán trazabilidad interna.
-
-Los originales contienen datos personales, agradecimientos, direcciones editoriales y otras secciones que no son necesarias para responder sobre la trayectoria profesional.
-
-Los artículos o tesis completos sólo deben incorporarse después de aplicar filtros de privacidad, conservar metadatos de procedencia y evaluar la calidad de recuperación.
+Quedan excluidos del índice `faq.md`, `question_bank.md`, `open_questions.md`, este README y `sources/index.md`. `faq.md` se utilizará como referencia conversacional y apoyo para pruebas; `question_bank.md` se utilizará para evaluación; `open_questions.md` y `sources/index.md` conservarán trazabilidad interna.
 
 ## Estado de la información
 
 - Última consolidación: 18 de agosto de 2026.
 - Idioma principal: español.
-- Información sensible omitida deliberadamente.
-- Los puntos que requieren intervención de Mario están enumerados en `open_questions.md`.
