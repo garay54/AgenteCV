@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # en bytes y se aplica antes de que FastAPI deserialice el JSON.
     max_request_body_bytes: int = Field(default=524_288, ge=1_024)
     rate_limit_enabled: bool = True
-    rate_limit_requests_per_minute: int = Field(default=60, ge=1)
+    rate_limit_requests_per_minute: int = Field(default=20, ge=1)
 
     openai_api_key: SecretStr | None = None
     openai_embedding_model: str = "text-embedding-3-small"

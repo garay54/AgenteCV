@@ -90,7 +90,7 @@ OPENAI_REASONING_EFFORT=none
 OPENAI_TEXT_VERBOSITY=low
 MAX_REQUEST_BODY_BYTES=524288
 RATE_LIMIT_ENABLED=true
-RATE_LIMIT_REQUESTS_PER_MINUTE=60
+RATE_LIMIT_REQUESTS_PER_MINUTE=20
 ```
 
 `AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
@@ -101,6 +101,10 @@ JSON. Las solicitudes autenticadas también se limitan por credencial mediante
 una ventana deslizante en memoria. Esta estrategia corresponde al despliegue de
 una sola instancia del MVP; si el servicio escala horizontalmente, los
 contadores deberán trasladarse a un almacenamiento compartido.
+
+En producción, configura `APP_ENVIRONMENT=production` para deshabilitar
+`/docs`, `/redoc` y `/openapi.json`, y activar HSTS. El endpoint `/health`
+permanece público, pero devuelve únicamente el estado de disponibilidad.
 
 El modelo recibido en el cuerpo de una solicitud no sustituye el modelo configurado
 por el servidor. Esto evita que un cliente seleccione modelos no autorizados o más

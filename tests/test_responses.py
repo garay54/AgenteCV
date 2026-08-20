@@ -1,10 +1,11 @@
 import json
+import logging
 from time import time
 
 import pytest
 from fastapi.testclient import TestClient
 
-from app.agent import AgentAnswer
+from app.agent import AgentAnswer, RetrievalError
 from app.dependencies import get_agent_service
 from app.llm import (
     GenerationRateLimitError,
@@ -79,6 +80,14 @@ class _AgentStub:
 class _RateLimitedAgentStub:
     def answer(self, request) -> AgentAnswer:
         raise GenerationRateLimitError("detalle interno no publicable")
+
+
+class _RetrievalErrorAgentStub:
+    def answer(self, request) -> AgentAnswer:
+        raise RetrievalError("ruta interna que no debe publicarse")
+
+    def stream(self, request):
+        raise RetrievalError("ruta interna que no debe publicarse")
 
 
 class _StreamingTimeoutAgentStub:
@@ -245,3 +254,32 @@ def test_provider_rate_limit_is_mapped_without_leaking_details(
         "detail": "El agente alcanzó temporalmente su límite de uso."
     }
     assert "detalle interno" not in response.text
+
+
+@pytest.mark.parametrize("stream", [False, True])
+def test_retrieval_error_is_logged_but_not_exposed(
+    client: TestClient,
+    auth_headers: dict[str, str],
+    caplog: pytest.LogCaptureFixture,
+    stream: bool,
+) -> None:
+    app.dependency_overrides[get_agent_service] = lambda: _RetrievalErrorAgentStub()
+    try:
+        with caplog.at_level(logging.ERROR, logger="app.main"):
+            response = client.post(
+                "/v1/responses",
+                json={
+                    "input": "Resume el perfil profesional de Mario.",
+                    "stream": stream,
+                },
+                headers=auth_headers,
+            )
+    finally:
+        app.dependency_overrides.pop(get_agent_service, None)
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "El servicio no está disponible temporalmente."
+    }
+    assert "ruta interna" not in response.text
+    assert "Falló" in caplog.text
