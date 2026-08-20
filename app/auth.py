@@ -9,7 +9,7 @@ from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import Settings, get_settings
-
+from app.observability import log_security_event
 
 # auto_error=False permite devolver el mismo error seguro cuando falta el
 # encabezado, el esquema no es Bearer o la credencial está mal formada.
@@ -56,6 +56,7 @@ def require_agent_access(
     )
 
     if not credentials_are_valid:
+        log_security_event("authentication.rejected", status_code=401)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales inválidas.",

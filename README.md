@@ -8,10 +8,13 @@ La plataforma cliente proporciona la interfaz de chat que consume el endpoint de
 
 - API desplegada en Railway con HTTPS, healthcheck, autenticación Bearer y streaming SSE.
 - RAG local `agente_cv_v2` construido con 59 fragmentos curados y evaluación real aprobada.
-- Suite automatizada: 59 pruebas aprobadas.
+- Suite automatizada: 68 pruebas aprobadas.
 - `POST /v1/responses` conecta recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
 - Las modalidades JSON completa y streaming SSE están implementadas; el stream produce el ciclo Open Responses completo, texto incremental y cierre `[DONE]`.
 - La integración desplegada fue validada desde el cliente conversacional con HTTP 200 y transmisión SSE completa.
+- Observabilidad integrada con correlación de solicitudes, logs JSON, métricas
+  Prometheus, trazas OpenTelemetry por OTLP y seguimiento de errores opcional
+  mediante Sentry.
 
 ### Resultado de recuperación
 
@@ -54,6 +57,7 @@ AgenteCV/
 │   ├── main.py             # Instancia FastAPI y endpoints
 │   └── rag/                # Chunking, embeddings, vector store y servicio RAG
 ├── knowledge/              # Base de conocimiento curada en Markdown
+├── monitoring/             # Prometheus, Grafana, OpenTelemetry y Cloud Monitoring
 ├── scripts/                # Scripts de automatización (build_index, evaluate_retrieval)
 ├── tests/                  # Suite de pruebas unitarias e integración con PyTest
 ├── docs/                   # Arquitectura, decisiones, contrato API y requisitos
@@ -91,6 +95,13 @@ OPENAI_TEXT_VERBOSITY=low
 MAX_REQUEST_BODY_BYTES=524288
 RATE_LIMIT_ENABLED=true
 RATE_LIMIT_REQUESTS_PER_MINUTE=20
+LOG_LEVEL=INFO
+LOG_JSON=true
+METRICS_ENABLED=true
+METRICS_API_KEY=una_clave_independiente_para_metricas
+OTEL_ENABLED=false
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=
+SENTRY_DSN=
 ```
 
 `AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
@@ -126,6 +137,7 @@ python -m pytest
 
 - Endpoint de salud: `http://127.0.0.1:8000/health`
 - Documentación Swagger: `http://127.0.0.1:8000/docs`
+- Métricas Prometheus: `http://127.0.0.1:8000/metrics`
 
 ---
 
@@ -135,3 +147,5 @@ python -m pytest
 - `docs/decisiones.md`: Registro de decisiones técnicas (ADR).
 - `docs/criterios-evaluacion.md`: Rúbrica de evaluación interna y calidad.
 - `docs/contrato-open-responses.md`: Especificación del contrato de integración con la plataforma cliente.
+- `docs/observabilidad.md`: Activación de métricas, trazas, Sentry, tableros,
+  alertas y monitoreo externo de disponibilidad.

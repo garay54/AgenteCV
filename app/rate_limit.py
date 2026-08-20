@@ -15,6 +15,7 @@ from fastapi import Depends, HTTPException, Request, status
 
 from app.auth import require_agent_access
 from app.config import Settings, get_settings
+from app.observability import log_security_event
 
 
 class InboundRateLimitExceeded(Exception):
@@ -125,6 +126,7 @@ def enforce_rate_limit(
     try:
         limiter.check(_credential_key(request))
     except InboundRateLimitExceeded as exc:
+        log_security_event("rate_limit.rejected", status_code=429)
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Límite de peticiones excedido. Intenta nuevamente más tarde.",

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from app.config import Settings
+from app.observability import RAG_SEARCHES
 from app.rag.models import KnowledgeChunk, SearchResult
 from app.rag.service import RagService
 
@@ -17,7 +18,13 @@ class _EmbeddingStub:
 
 class _StoreStub:
     def search(self, query_embedding, *, n_results: int):
-        documents = ["profile.md", "profile.md", "profile.md", "skills.md", "projects.md"]
+        documents = [
+            "profile.md",
+            "profile.md",
+            "profile.md",
+            "skills.md",
+            "projects.md",
+        ]
         return [
             SearchResult(
                 chunk=KnowledgeChunk(
@@ -103,9 +110,14 @@ def test_search_applies_top_k_and_document_diversity(tmp_path: Path) -> None:
         vector_store=_StoreStub(),
     )
 
+    searches_before = float(RAG_SEARCHES.labels(outcome="success")._value.get())
     results = service.search("perfil")
     documents = [item.chunk.metadata["document"] for item in results]
     assert documents == ["profile.md", "profile.md", "skills.md", "projects.md"]
+    assert (
+        float(RAG_SEARCHES.labels(outcome="success")._value.get())
+        == searches_before + 1
+    )
 
 
 def test_search_prefers_specific_source_over_generic_heading(tmp_path: Path) -> None:
@@ -129,7 +141,9 @@ def test_search_prefers_specific_source_over_generic_heading(tmp_path: Path) -> 
     assert results[0].score == 0.795
 
 
-def test_search_uses_lexical_aliases_to_rerank_vector_candidates(tmp_path: Path) -> None:
+def test_search_uses_lexical_aliases_to_rerank_vector_candidates(
+    tmp_path: Path,
+) -> None:
     settings = Settings(
         knowledge_dir=tmp_path,
         chroma_path=tmp_path / "chroma",

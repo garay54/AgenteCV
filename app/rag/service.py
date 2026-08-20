@@ -3,8 +3,15 @@ from __future__ import annotations
 import re
 import unicodedata
 from collections import Counter
+from time import perf_counter
 
 from app.config import Settings
+from app.observability import (
+    mark_span_error,
+    record_rag_search,
+    set_span_attributes,
+    tracer,
+)
 from app.rag.chunking import corpus_fingerprint, load_knowledge_corpus
 from app.rag.embeddings import EmbeddingProvider
 from app.rag.models import SearchResult
@@ -91,38 +98,70 @@ class RagService:
         )
 
     def search(self, query: str) -> list[SearchResult]:
-        candidates = self.vector_store.search(
-            self.embedding_provider.embed_query(query),
-            n_results=self.settings.rag_candidate_k,
-        )
-        # Los encabezados generales heredan varias fuentes y pueden desplazar a
-        # fragmentos específicos por diferencias mínimas de similitud. También
-        # interesa conservar coincidencias literales de títulos, revistas y
-        # tecnologías. El reranking combina una penalización pequeña por amplitud
-        # de fuentes con un bono léxico acotado sobre los candidatos vectoriales.
-        # El score coseno original se conserva para diagnóstico y umbrales.
-        candidates = sorted(
-            candidates,
-            key=lambda item: item.score
-            - self.settings.rag_source_breadth_penalty
-            * max(0, _source_count(item) - 1)
-            + self.settings.rag_lexical_bonus
-            * _lexical_overlap(query, item.chunk.text),
-            reverse=True,
-        )
-        selected: list[SearchResult] = []
-        per_document: Counter[str] = Counter()
-        for candidate in candidates:
-            if (
-                self.settings.rag_min_score is not None
-                and candidate.score < self.settings.rag_min_score
-            ):
-                continue
-            document = str(candidate.chunk.metadata["document"])
-            if per_document[document] >= self.settings.rag_max_per_document:
-                continue
-            selected.append(candidate)
-            per_document[document] += 1
-            if len(selected) >= self.settings.rag_top_k:
-                break
-        return selected
+        started_at = perf_counter()
+        with tracer().start_as_current_span("rag.search") as span:
+            set_span_attributes(
+                span,
+                **{
+                    "rag.candidate_count": self.settings.rag_candidate_k,
+                    "rag.result_limit": self.settings.rag_top_k,
+                },
+            )
+            try:
+                candidates = self.vector_store.search(
+                    self.embedding_provider.embed_query(query),
+                    n_results=self.settings.rag_candidate_k,
+                )
+                # Los encabezados generales heredan varias fuentes y pueden
+                # desplazar fragmentos específicos por diferencias mínimas de
+                # similitud. El reranking conserva el score coseno original.
+                candidates = sorted(
+                    candidates,
+                    key=lambda item: (
+                        item.score
+                        - self.settings.rag_source_breadth_penalty
+                        * max(0, _source_count(item) - 1)
+                        + self.settings.rag_lexical_bonus
+                        * _lexical_overlap(query, item.chunk.text)
+                    ),
+                    reverse=True,
+                )
+                selected: list[SearchResult] = []
+                per_document: Counter[str] = Counter()
+                for candidate in candidates:
+                    if (
+                        self.settings.rag_min_score is not None
+                        and candidate.score < self.settings.rag_min_score
+                    ):
+                        continue
+                    document = str(candidate.chunk.metadata["document"])
+                    if per_document[document] >= self.settings.rag_max_per_document:
+                        continue
+                    selected.append(candidate)
+                    per_document[document] += 1
+                    if len(selected) >= self.settings.rag_top_k:
+                        break
+            except Exception as exc:
+                mark_span_error(span, exc)
+                record_rag_search(
+                    outcome="error",
+                    duration_seconds=perf_counter() - started_at,
+                    error=exc,
+                )
+                raise
+
+            top_score = max((item.score for item in selected), default=None)
+            set_span_attributes(
+                span,
+                **{
+                    "rag.result_count": len(selected),
+                    "rag.top_score": top_score,
+                },
+            )
+            record_rag_search(
+                outcome="success",
+                duration_seconds=perf_counter() - started_at,
+                result_count=len(selected),
+                top_score=top_score,
+            )
+            return selected
