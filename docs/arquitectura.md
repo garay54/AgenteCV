@@ -21,8 +21,11 @@ flowchart LR
     RAG --> EQ[Embedding de la consulta]
     EQ --> VS[(Chroma)]
     VS --> CR[Contexto recuperado]
-    CR --> PR[Prompt fundamentado]
-    PR --> PM[Adaptador del modelo]
+    CR --> UD[Datos RAG de rol user]
+    ORI --> UD
+    SP[Reglas fijas del servidor] --> PR[Canal instructions]
+    UD --> PM[Adaptador del modelo]
+    PR --> PM
     PM --> OA[OpenAI]
     PM -. contingencia .-> AN[Anthropic]
     OA --> RI[Respuesta interna normalizada]
@@ -35,7 +38,7 @@ flowchart LR
     classDef partial fill:#fef3c7,stroke:#b45309,color:#78350f;
     classDef planned fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d;
 
-    class API,VA,ORI,HC,RAG,EQ,VS,CR,PR,PM,OA,RI,ORO implemented;
+    class API,VA,ORI,HC,RAG,EQ,VS,CR,UD,SP,PR,PM,OA,RI,ORO implemented;
     class B partial;
     class AN planned;
 ```
@@ -83,13 +86,16 @@ flowchart LR
     A --> V[Validación Pydantic]
     V --> Q[Consulta de recuperación]
     Q --> R[Chroma y fragmentos autorizados]
-    R --> P[Prompt fundamentado]
-    P --> L[gpt-5.6-luna mediante Responses API]
+    R --> D[Fuentes etiquetadas como datos de rol user]
+    V --> D
+    S[Reglas fijas del servidor] --> P[Canal instructions]
+    D --> L[gpt-5.6-luna mediante Responses API]
+    P --> L
     L --> M[Adaptación a ResponseResource]
     M -->|200 application/json| C
 ```
 
-Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta ejecuta el recorrido real completo o incremental según `stream`. El modelo se fija mediante configuración del servidor, el historial se procesa sin persistencia y el uso de tokens se refleja en la respuesta pública final.
+Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segunda ruta ejecuta el recorrido real completo o incremental según `stream`. El modelo se fija mediante configuración del servidor, el historial se procesa sin persistencia y el uso de tokens se refleja en la respuesta pública final. Sólo `BASE_INSTRUCTIONS` ocupa el canal `instructions`; preferencias, historial y evidencia recuperada permanecen en mensajes de rol `user` con procedencia explícita.
 
 ## 5. Correspondencia entre arquitectura y código
 
@@ -106,13 +112,14 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real completa o streaming |
 | Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementada, probada y aceptada por la plataforma cliente |
 | Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada, probada e integrada con la plataforma cliente |
-| Historial stateless | `app/agent.py`, `tests/test_agent.py` | Implementado para reproducción de transcripción |
-| Prompt fundamentado | `app/prompts.py`, `tests/test_agent.py` | Implementado y probado sin red |
+| Historial stateless | `app/agent.py`, `tests/test_agent.py` | Implementado como contexto no confiable; no reproduce roles privilegiados del cliente |
+| Frontera de confianza del prompt | `app/prompts.py`, `app/agent.py`, `tests/test_agent.py` | Reglas del servidor separadas de preferencias, historial y fuentes RAG; probado sin red |
+| Evaluación adversarial de generación | `knowledge/prompt_security_cases.json`, `scripts/evaluate_prompt_security.py`, `tests/test_prompt_security_evaluation.py`, `artifacts/evaluations/prompt-security-20260820-065131.json` | Corpus reproducible implementado y corrida real aprobada: 5/5 casos |
 | Adaptador de generación OpenAI | `app/llm.py`, `tests/test_llm.py` | Implementado con `gpt-5.6-luna`; llamada real local validada |
 | Contingencia Anthropic | Decisiones D02 y D03 | Pendiente |
 | Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Implementada con respuesta real y uso de tokens |
 | Streaming SSE | `app/main.py`, `app/agent.py`, `app/llm.py`, `app/open_responses.py`, `tests/test_responses.py` | Implementado, desplegado y aceptado por el cliente conversacional |
-| Contenedor Docker | Decisión D08 | Pendiente |
+| Contenedor Docker | `dockerfile`, `.dockerignore` | Implementado |
 | Despliegue Railway | `railway.json`, `.python-version`, `scripts/ensure_index.py` | API desplegada; healthcheck, cabeceras y acceso público validados |
 
 ## 6. Límites de seguridad y privacidad
@@ -140,6 +147,13 @@ flowchart TB
 - Las solicitudes autenticadas se limitan por el hash de la credencial en una
   ventana deslizante. El contador actual es local a la única instancia del MVP.
 - El historial conversacional vive solamente durante la solicitud.
+- Los roles `system`, `developer` y `assistant` del payload se convierten en historial
+  no confiable de rol `user`; las preferencias del cliente reciben el mismo trato.
+- El contexto RAG se etiqueta con procedencia y se envía fuera del canal de
+  instrucciones. Este control reduce el riesgo, pero no se considera una garantía
+  absoluta contra prompt injection.
+- Los caracteres invisibles de tag blocks, selectores de variación y ancho cero se
+  retiran de las entradas no confiables antes de invocar el modelo.
 - Chroma conserva conocimiento profesional, no conversaciones.
 - Los logs no deberán incluir claves ni transcripciones completas.
 

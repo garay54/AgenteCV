@@ -121,6 +121,13 @@ El modelo recibido en el cuerpo de una solicitud no sustituye el modelo configur
 por el servidor. Esto evita que un cliente seleccione modelos no autorizados o más
 costosos. Para el MVP, el modelo efectivo es `gpt-5.6-luna`.
 
+Las reglas obligatorias del agente son las únicas que se envían al parámetro
+`instructions` del proveedor. Las preferencias, fuentes RAG y transcripciones
+reenviadas por el cliente viajan como datos de rol `user`. Los roles `system`,
+`developer` y `assistant` recibidos por HTTP no se reproducen con autoridad ante el
+modelo, porque el backend no puede demostrar que realmente fueron emitidos por el
+servidor o por una respuesta anterior.
+
 ### 3. Construir el índice RAG y evaluar recuperación
 
 ```powershell
@@ -128,7 +135,19 @@ python -m scripts.build_index
 python -m scripts.evaluate_retrieval
 ```
 
-### 4. Ejecutar la API y la suite de pruebas
+### 4. Ejecutar la evaluación adversarial de generación
+
+```powershell
+python -m scripts.evaluate_prompt_security
+```
+
+Esta evaluación usa el proveedor real, genera un reporte en
+`artifacts/evaluations/` y requiere `OPENAI_API_KEY` e índice local. Sus comprobaciones
+heurísticas complementan, pero no sustituyen, la revisión humana de las respuestas.
+La corrida del 20 de agosto de 2026 aprobó los 5 casos del corpus; la evidencia se
+encuentra en `artifacts/evaluations/prompt-security-20260820-065131.json`.
+
+### 5. Ejecutar la API y la suite de pruebas
 
 ```powershell
 python -m uvicorn app.main:app --reload
