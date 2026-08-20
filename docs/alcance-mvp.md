@@ -9,7 +9,7 @@ El MVP será un agente de CV accesible mediante una API pública HTTPS compatibl
 - Endpoint público mediante HTTPS.
 - Compatibilidad con el contrato Open Responses requerido por la plataforma cliente.
 - Conversación de texto en español.
-- Identificación explícita como agente profesional de Mario y uso consistente de primera persona al describir su trayectoria.
+- Identificación explícita como agente profesional de Mario y uso consistente de tercera persona al describir su trayectoria.
 - Respuestas sobre el perfil profesional de Mario.
 - Respuestas sobre su formación académica documentada.
 - Respuestas sobre su experiencia laboral.

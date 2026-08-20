@@ -44,7 +44,7 @@ Este documento registra las preguntas que todavía no tienen una respuesta confi
 | R08 | La plataforma puede enviar una API key mediante `Authorization: Bearer <API_KEY>`. | Formulario “Añadir un agente” de la plataforma cliente. |
 | R08 | El campo de API key es opcional en el formulario y la plataforma cliente indica que la almacena cifrada. | Formulario “Añadir un agente” de la plataforma cliente. |
 | R09 | La plataforma cliente proporciona el chat desde el que se selecciona y prueba el agente; no se requiere frontend propio para el MVP. | Instrucciones oficiales del reto y formulario de la plataforma cliente. |
-| R10 | No existe una regla confirmada sobre primera o tercera persona. Mario eligió primera persona por defecto con identificación explícita como agente profesional. | Respuesta del agente Guía y decisión directa de Mario. |
+| R10 | No existe una regla confirmada sobre primera o tercera persona. Mario eligió tercera persona para que el agente no lo suplante. | Respuesta del agente Guía y decisión directa de Mario. |
 | R11 | No existe una rúbrica oficial detallada ni ponderaciones publicadas en la información disponible. | Respuesta del agente Guía; la ponderación del proyecto es interna. |
 
 ## 6. Decisiones de Mario que no son requisitos oficiales
@@ -53,7 +53,7 @@ Este documento registra las preguntas que todavía no tienen una respuesta confi
 |---|---|---|
 | DEC-M01 | Utilizar RAG ligero y evaluarlo de forma reproducible. | Aceptada |
 | DEC-M02 | No construir frontend propio; utilizar el chat de la plataforma cliente. | Aceptada |
-| DEC-M03 | Responder en primera persona por defecto, identificándose como agente y sin afirmar que es una persona humana. | Aceptada |
+| DEC-M03 | Hablar de Mario en tercera persona, identificándose como agente y sin afirmar que es una persona humana. | Aceptada |
 | DEC-M04 | Utilizar una rúbrica interna con énfasis en calidad, arquitectura, despliegue, seguridad y documentación. | Aceptada |
 | DEC-M05 | Publicar un repositorio sanitizado con README y preparar una presentación con evaluación. | Aceptada |
 | DEC-M06 | Mantener el endpoint disponible durante al menos 15 días después de la entrega y retirarlo manualmente. | Aceptada |

@@ -98,14 +98,18 @@ Antes de publicar se deberá comprobar:
 - Autenticación Bearer cuando se registre la clave del agente en la plataforma cliente.
 - Registros sin valores de `Authorization`, cookies ni contenido sensible innecesario.
 - Límites de entrada y respuestas de error sin detalles internos.
-- Pruebas contra inyección de instrucciones, extracción de prompt, invención y solicitudes confidenciales.
+- Pruebas unitarias de la frontera de confianza: las preferencias, fuentes RAG y roles
+  reenviados por el cliente nunca deben entrar al canal de instrucciones del servidor.
+- Ejecución de `scripts/evaluate_prompt_security.py` contra el modelo real para cubrir
+  inyección directa, extracción de prompt, invención, historial falsificado y desvío
+  de dominio. El reporte heurístico requiere además revisión humana.
 
 La publicación del repositorio permanece bloqueada hasta resolver los documentos privados ya presentes en el historial de Git.
 
 ## 8. Identidad y comportamiento conversacional
 
 - El agente se identificará como **el agente profesional de Mario**, no como una persona humana.
-- Utilizará primera persona por defecto al describir la trayectoria de Mario para conservar una conversación natural.
+- Hablará de Mario en tercera persona para no suplantarlo.
 - Mantendrá esta convención durante toda la conversación y no inventará opiniones, emociones, intereses ni experiencias.
 - Cuando un dato no esté disponible, lo indicará explícitamente sin completar la respuesta mediante suposiciones.
 
@@ -135,3 +139,4 @@ La integración real confirmó la invocación autenticada y el streaming SSE. To
 | 2026-08-18 | Creación de la rúbrica interna, criterios de éxito, entregables, identidad y compromiso operativo. | Decisiones directas de Mario y expectativas generales del reto. |
 | 2026-08-18 | Evaluación de recuperación actualizada con trazabilidad `SRC-*`, Hit@4, MRR@4 y separación single-turn/multitur­no. | Reporte reproducible `retrieval-20260818-221152.json`. |
 | 2026-08-19 | Evaluación de `agente_cv_v2` ampliada a 54 casos y validación dirigida de alcance, seguimiento académico y RankVideo. | Reporte reproducible `retrieval-20260819-220326.json` y pruebas manuales con el modelo real. |
+| 2026-08-20 | Separación de la frontera de confianza y evaluación adversarial de generación. | 5/5 casos aprobados en `prompt-security-20260820-065131.json`; las heurísticas requieren revisión humana. |

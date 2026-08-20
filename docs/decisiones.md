@@ -620,7 +620,8 @@ La plataforma cliente proporciona el chat, permite seleccionar el agente y consu
 
 - No se construirá una interfaz gráfica propia para el MVP; la plataforma cliente será el cliente conversacional.
 - El agente se presentará explícitamente como **el agente profesional de Mario**.
-- Utilizará primera persona por defecto al describir la trayectoria de Mario para mantener una conversación natural.
+- Hablará de Mario en tercera persona para no suplantarlo y mantener explícita la
+  identidad del agente.
 - No afirmará ser una persona humana ni inventará opiniones, emociones, intereses o experiencias.
 - Limitará sus respuestas al perfil profesional autorizado.
 - Ante información ausente, privada o no verificable, reconocerá la limitación y no completará la respuesta mediante suposiciones.
@@ -654,3 +655,45 @@ No se dispone de una rúbrica oficial con porcentajes. El reto sí enfatiza que 
 ### Evidencia y revisión
 
 Los criterios completos están en `docs/criterios-evaluacion.md`. La ponderación podrá ajustarse antes de la evaluación final si la plataforma cliente publica una rúbrica oficial; cualquier cambio deberá conservar el historial y distinguir la fuente de cada criterio.
+
+## DC03. Frontera de confianza de instrucciones y contexto
+
+**Estado:** Aceptada
+**Fecha:** 2026-08-20
+**Fuente:** Auditoría interna y jerarquía de mensajes de OpenAI Responses.
+
+### Contexto
+
+El contrato HTTP puede contener `instructions` y mensajes con roles `system`,
+`developer` o `assistant`, pero el servidor no puede demostrar que esos valores fueron
+creados por una autoridad confiable. Además, el contexto RAG podría contener texto que
+se comporte como una instrucción si una fuente fuera alterada. En Responses, las
+instrucciones de sistema o desarrollador tienen prioridad sobre los mensajes de usuario.
+
+### Decisión
+
+- Sólo `BASE_INSTRUCTIONS`, versionado y controlado por el servidor, se enviará al
+  parámetro `instructions` del proveedor.
+- `request.instructions` se conservará por compatibilidad como preferencia opcional de
+  rol `user`, nunca como instrucción autoritativa.
+- Los roles `system`, `developer` y `assistant` recibidos por HTTP se serializarán como
+  historial no confiable de rol `user`, manteniendo etiquetas de procedencia.
+- Los fragmentos RAG se enviarán como datos de rol `user`, separados del prompt fijo.
+- Se retirarán caracteres invisibles conocidos de las superficies no confiables.
+- El filtro regex fuera de dominio se tratará como optimización de costo y latencia,
+  no como una frontera de seguridad.
+
+### Consecuencias y validación
+
+La reproducción de historial pierde la autoridad nativa del rol `assistant`, pero evita
+confiar en transcripciones falsificables. Las pruebas unitarias comprueban la separación
+de canales y el corpus `knowledge/prompt_security_cases.json` cubre ataques directos,
+extracción del prompt, preferencias maliciosas, historial falsificado y desvío de
+dominio. La corrida real conservada en
+`artifacts/evaluations/prompt-security-20260820-065131.json` aprobó 5/5 casos; este
+resultado reduce incertidumbre, pero no constituye una garantía absoluta contra prompt
+injection.
+
+### Referencia
+
+- [OpenAI Responses: jerarquía de roles](https://developers.openai.com/api/reference/ruby/resources/beta/subresources/responses)

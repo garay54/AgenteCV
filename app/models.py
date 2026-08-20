@@ -94,7 +94,7 @@ class UserMessage(StrictContractModel):
 
 class SystemMessage(StrictContractModel):
     """
-    Instrucción de sistema incluida como item de entrada.
+    Texto con rol ``system`` declarado por el cliente; no concede autoridad interna.
     """
 
     type: Literal["message"]
@@ -106,7 +106,7 @@ class SystemMessage(StrictContractModel):
 
 class DeveloperMessage(StrictContractModel):
     """
-    Instrucción de desarrollador incluida como item de entrada.
+    Texto con rol ``developer`` declarado por el cliente; se trata como dato.
     """
 
     type: Literal["message"]
@@ -118,7 +118,7 @@ class DeveloperMessage(StrictContractModel):
 
 class AssistantMessage(StrictContractModel):
     """
-    Respuesta anterior que el front reenvía para conservar el contexto.
+    Texto que el cliente atribuye a una respuesta anterior del asistente.
     """
 
     type: Literal["message"]

@@ -92,10 +92,17 @@ Campos relevantes para el MVP:
 |---|---|
 | `input` | Pregunta actual y transcripción de la conversación. |
 | `model` | Identificador opcional enviado desde la configuración de la plataforma cliente. |
-| `instructions` | Instrucciones opcionales configuradas en la plataforma. |
+| `instructions` | Preferencias opcionales del cliente; se degradan a datos de rol `user` y nunca sustituyen las reglas del servidor. |
 | `stream` | Solicita respuesta completa o transmisión incremental. |
 | `previous_response_id` | No se utilizará con el modo de reproducción de transcripción. |
 | Parámetros adicionales | Valores JSON configurados por Mario en el formulario del agente. |
+
+El backend reserva el parámetro `instructions` enviado al proveedor para las reglas
+fijas controladas por el servidor. Todo texto recibido en `request.instructions` se
+etiqueta como preferencia no confiable dentro de `input`. Por la misma razón, los
+mensajes con roles declarados `system`, `developer` o `assistant` se serializan como
+historial de rol `user`: el contrato HTTP no aporta una prueba de que el cliente tenga
+autoridad de sistema ni de que una respuesta anterior proceda realmente del modelo.
 
 ### 6.1 Ejemplo de referencia no streaming
 
@@ -356,7 +363,8 @@ Por tanto:
 - Cuerpo JSON exacto enviado por la plataforma cliente.
 - Forma exacta en que la plataforma cliente reproduce la transcripción dentro de `input`.
 - Inclusión u omisión del campo `model`.
-- Inclusión de `instructions` y parámetros adicionales.
+- Inclusión u omisión de `instructions` y parámetros adicionales; el tratamiento de
+  baja confianza permanece igual en ambos casos.
 - Confirmación de si la interfaz consume todo el ciclo semántico o sólo un subconjunto de eventos.
 - Versión o subconjunto de Open Responses utilizado en la evaluación.
 - Tiempo máximo de respuesta.
