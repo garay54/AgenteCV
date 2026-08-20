@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from app.dependencies import get_agent_service
 from app.llm import GenerationConfigurationError
 from app.main import app
+from app.observability import HTTP_ERRORS
 from app.rate_limit import (
     InboundRateLimitExceeded,
     InMemorySlidingWindowRateLimiter,
@@ -86,6 +87,9 @@ def test_endpoint_returns_429_before_third_agent_call(
     app.dependency_overrides[get_rate_limiter] = lambda: limiter
     app.dependency_overrides[get_agent_service] = lambda: agent
 
+    errors_before = float(
+        HTTP_ERRORS.labels(status_code="429", category="rate_limit")._value.get()
+    )
     try:
         responses = [
             client.post(
@@ -105,3 +109,7 @@ def test_endpoint_returns_429_before_third_agent_call(
         "detail": "Límite de peticiones excedido. Intenta nuevamente más tarde."
     }
     assert agent.calls == 2
+    assert (
+        float(HTTP_ERRORS.labels(status_code="429", category="rate_limit")._value.get())
+        == errors_before + 1
+    )

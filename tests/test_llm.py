@@ -6,6 +6,12 @@ from app.llm import (
     GenerationTextDelta,
     OpenAIResponsesProvider,
 )
+from app.observability import (
+    OPENAI_REQUESTS,
+    OPENAI_TOKENS,
+    bind_request_id,
+    reset_request_id,
+)
 
 
 class _ResponsesStub:
@@ -63,11 +69,29 @@ def test_openai_adapter_uses_luna_responses_and_server_limits() -> None:
         client=client,
     )
 
-    result = provider.generate(
-        input_data="Resume el perfil de Mario.",
-        instructions="Usa sólo la fuente recuperada.",
-        max_output_tokens=400,
+    requests_before = float(
+        OPENAI_REQUESTS.labels(
+            operation="responses.create",
+            model="gpt-5.6-luna",
+            outcome="success",
+        )._value.get()
     )
+    tokens_before = float(
+        OPENAI_TOKENS.labels(
+            operation="responses.create",
+            model="gpt-5.6-luna",
+            token_type="total",
+        )._value.get()
+    )
+    token = bind_request_id("request-provider-test")
+    try:
+        result = provider.generate(
+            input_data="Resume el perfil de Mario.",
+            instructions="Usa sólo la fuente recuperada.",
+            max_output_tokens=400,
+        )
+    finally:
+        reset_request_id(token)
 
     arguments = client.responses.arguments
     assert arguments["model"] == "gpt-5.6-luna"
@@ -76,9 +100,32 @@ def test_openai_adapter_uses_luna_responses_and_server_limits() -> None:
     assert arguments["store"] is False
     assert arguments["stream"] is False
     assert arguments["max_output_tokens"] == 400
+    assert arguments["extra_headers"] == {
+        "X-Client-Request-Id": "request-provider-test"
+    }
     assert result.text == "Respuesta real simulada por el SDK."
     assert result.usage.total_tokens == 100
     assert result.usage.cached_tokens == 10
+    assert (
+        float(
+            OPENAI_REQUESTS.labels(
+                operation="responses.create",
+                model="gpt-5.6-luna",
+                outcome="success",
+            )._value.get()
+        )
+        == requests_before + 1
+    )
+    assert (
+        float(
+            OPENAI_TOKENS.labels(
+                operation="responses.create",
+                model="gpt-5.6-luna",
+                token_type="total",
+            )._value.get()
+        )
+        == tokens_before + 100
+    )
 
 
 def test_openai_adapter_normalizes_stream_without_exposing_provider_objects() -> None:

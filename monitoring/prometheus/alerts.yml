@@ -1,0 +1,79 @@
+groups:
+  - name: agent-api
+    rules:
+      - alert: AgentApiUnavailable
+        expr: up{job="agent-api"} == 0 or probe_success{job="agent-health"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "El servicio no está disponible"
+          description: "El scrape de métricas o la verificación HTTP lleva 2 minutos fallando."
+
+      - alert: AgentApiHighServerErrorRate
+        expr: |
+          (
+            sum(rate(agent_http_requests_total{status_code=~"5.."}[5m]))
+            /
+            sum(rate(agent_http_requests_total[5m]))
+          ) > 0.05
+          and sum(rate(agent_http_requests_total[5m])) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Más de 5 % de errores 5xx"
+          description: "La proporción de errores del servicio superó 5 % durante 5 minutos."
+
+      - alert: AgentApiHighLatency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(agent_http_request_duration_seconds_bucket[5m]))
+          ) > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latencia HTTP p95 superior a 10 segundos"
+          description: "La latencia completa, incluidos streams, permanece elevada."
+
+      - alert: AgentApiRateLimitSpike
+        expr: increase(agent_http_errors_total{status_code="429"}[10m]) > 20
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Aumento de respuestas 429"
+          description: "Se observaron más de 20 rechazos por límite en 10 minutos."
+
+      - alert: AgentOpenAIErrors
+        expr: |
+          sum(increase(agent_openai_requests_total{outcome!="success"}[10m])) > 3
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Errores repetidos del proveedor de IA"
+          description: "Más de tres llamadas a generación o embeddings fallaron en 10 minutos."
+
+      - alert: AgentSSEFailures
+        expr: |
+          sum(increase(agent_sse_streams_total{outcome=~"error|disconnected"}[10m])) > 3
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Streams SSE fallidos o desconectados"
+          description: "Se registraron más de tres cierres anormales en 10 minutos."
+
+      - alert: AgentRAGWithoutResults
+        expr: |
+          increase(agent_rag_result_count_count[15m]) > 0
+          and increase(agent_rag_result_count_sum[15m]) == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Las búsquedas RAG no producen resultados"
+          description: "Hubo búsquedas durante 15 minutos, pero ninguna seleccionó evidencia."

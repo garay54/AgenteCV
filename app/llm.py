@@ -1,8 +1,20 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import suppress
 from dataclasses import dataclass
-from typing import Any, Iterator, Literal, Protocol
+from time import perf_counter
+from typing import Any, Literal, Protocol
 
+from opentelemetry import trace as otel_trace
+
+from app.observability import (
+    mark_span_error,
+    openai_request_headers,
+    record_openai_request,
+    set_span_attributes,
+    tracer,
+)
 
 ProviderInput = str | list[dict[str, str]]
 ReasoningEffort = Literal["none", "low", "medium", "high", "xhigh", "max"]
@@ -171,51 +183,128 @@ class OpenAIResponsesProvider:
         instructions: str,
         max_output_tokens: int,
     ) -> GenerationResult:
-        from openai import APIConnectionError, APIStatusError, APITimeoutError, RateLimitError
+        from openai import (
+            APIConnectionError,
+            APIStatusError,
+            APITimeoutError,
+            RateLimitError,
+        )
 
-        try:
-            response = self._client.responses.create(
-                model=self._model,
-                input=input_data,
-                instructions=instructions,
-                max_output_tokens=max_output_tokens,
-                reasoning={"effort": self._reasoning_effort},
-                text={"verbosity": self._text_verbosity},
-                store=False,
-                stream=False,
+        operation = "responses.create"
+        started_at = perf_counter()
+        headers = openai_request_headers()
+        request_options = {"extra_headers": headers} if headers else {}
+        with tracer().start_as_current_span("openai.responses.create") as span:
+            set_span_attributes(
+                span,
+                **{
+                    "gen_ai.system": "openai",
+                    "gen_ai.operation.name": "responses",
+                    "gen_ai.request.model": self._model,
+                    "gen_ai.request.max_tokens": max_output_tokens,
+                },
             )
-        except APITimeoutError as exc:
-            raise GenerationTimeoutError(
-                "El proveedor excedió el tiempo de respuesta."
-            ) from exc
-        except RateLimitError as exc:
-            raise GenerationRateLimitError(
-                "El proveedor no tiene cuota disponible temporalmente."
-            ) from exc
-        except (APIConnectionError, APIStatusError) as exc:
-            raise GenerationProviderError(
-                "El proveedor de generación no está disponible."
-            ) from exc
+            try:
+                response = self._client.responses.create(
+                    model=self._model,
+                    input=input_data,
+                    instructions=instructions,
+                    max_output_tokens=max_output_tokens,
+                    reasoning={"effort": self._reasoning_effort},
+                    text={"verbosity": self._text_verbosity},
+                    store=False,
+                    stream=False,
+                    **request_options,
+                )
+            except APITimeoutError as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="timeout",
+                    duration_seconds=perf_counter() - started_at,
+                    error=exc,
+                )
+                raise GenerationTimeoutError(
+                    "El proveedor excedió el tiempo de respuesta."
+                ) from exc
+            except RateLimitError as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="rate_limit",
+                    duration_seconds=perf_counter() - started_at,
+                    error=exc,
+                )
+                raise GenerationRateLimitError(
+                    "El proveedor no tiene cuota disponible temporalmente."
+                ) from exc
+            except (APIConnectionError, APIStatusError) as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="provider_error",
+                    duration_seconds=perf_counter() - started_at,
+                    error=exc,
+                )
+                raise GenerationProviderError(
+                    "El proveedor de generación no está disponible."
+                ) from exc
 
-        text = str(getattr(response, "output_text", "") or "").strip()
-        if not text:
-            raise GenerationProviderError(
-                "El proveedor terminó la solicitud sin texto utilizable."
+            try:
+                text = str(getattr(response, "output_text", "") or "").strip()
+                if not text:
+                    raise GenerationProviderError(
+                        "El proveedor terminó la solicitud sin texto utilizable."
+                    )
+                result = _result_from_response(response, text=text)
+                if not result.model:
+                    result = GenerationResult(
+                        id=result.id,
+                        text=result.text,
+                        model=self._model,
+                        created_at=result.created_at,
+                        completed_at=result.completed_at,
+                        status=result.status,
+                        usage=result.usage,
+                        incomplete_reason=result.incomplete_reason,
+                    )
+            except Exception as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="invalid_response",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response,
+                    error=exc,
+                )
+                if isinstance(exc, GenerationProviderError):
+                    raise
+                raise GenerationProviderError(
+                    "El proveedor devolvió una respuesta no utilizable."
+                ) from exc
+
+            set_span_attributes(
+                span,
+                **{
+                    "gen_ai.response.model": result.model,
+                    "gen_ai.usage.input_tokens": result.usage.input_tokens,
+                    "gen_ai.usage.output_tokens": result.usage.output_tokens,
+                    "openai.response.id": result.id,
+                },
             )
-
-        result = _result_from_response(response, text=text)
-        if not result.model:
-            return GenerationResult(
-                id=result.id,
-                text=result.text,
-                model=self._model,
-                created_at=result.created_at,
-                completed_at=result.completed_at,
-                status=result.status,
+            record_openai_request(
+                operation=operation,
+                model=result.model,
+                outcome="success",
+                duration_seconds=perf_counter() - started_at,
                 usage=result.usage,
-                incomplete_reason=result.incomplete_reason,
+                response=response,
             )
-        return result
+            return result
 
     def stream(
         self,
@@ -226,28 +315,61 @@ class OpenAIResponsesProvider:
     ) -> Iterator[GenerationStreamEvent]:
         """Normaliza eventos de OpenAI sin exponer sus objetos al cliente HTTP."""
 
-        from openai import APIConnectionError, APIStatusError, APITimeoutError, RateLimitError
+        from openai import (
+            APIConnectionError,
+            APIStatusError,
+            APITimeoutError,
+            RateLimitError,
+        )
 
         def iterate() -> Iterator[GenerationStreamEvent]:
+            operation = "responses.stream"
+            started_at = perf_counter()
             text_parts: list[str] = []
+            recorded = False
+            response_for_id: Any | None = None
+            stream: Any | None = None
+            headers = openai_request_headers()
+            request_options = {"extra_headers": headers} if headers else {}
+            # Un generador síncrono puede reanudarse en distintos workers de
+            # AnyIO. El span se finaliza explícitamente para no mantener un
+            # token de ContextVar abierto entre yields y conservar la traza.
+            span = tracer().start_span("openai.responses.stream")
+            set_span_attributes(
+                span,
+                **{
+                    "gen_ai.system": "openai",
+                    "gen_ai.operation.name": "responses",
+                    "gen_ai.request.model": self._model,
+                    "gen_ai.request.max_tokens": max_output_tokens,
+                    "gen_ai.response.streaming": True,
+                },
+            )
             try:
-                stream = self._client.responses.create(
-                    model=self._model,
-                    input=input_data,
-                    instructions=instructions,
-                    max_output_tokens=max_output_tokens,
-                    reasoning={"effort": self._reasoning_effort},
-                    text={"verbosity": self._text_verbosity},
-                    store=False,
-                    stream=True,
-                )
+                with otel_trace.use_span(span, end_on_exit=False):
+                    stream = self._client.responses.create(
+                        model=self._model,
+                        input=input_data,
+                        instructions=instructions,
+                        max_output_tokens=max_output_tokens,
+                        reasoning={"effort": self._reasoning_effort},
+                        text={"verbosity": self._text_verbosity},
+                        store=False,
+                        stream=True,
+                        **request_options,
+                    )
+                response_for_id = stream
+                completed = False
                 for event in stream:
                     event_type = str(getattr(event, "type", ""))
                     if event_type == "response.created":
                         response = event.response
+                        response_for_id = response
                         yield GenerationStreamStarted(
                             id=str(response.id),
-                            model=str(getattr(response, "model", self._model) or self._model),
+                            model=str(
+                                getattr(response, "model", self._model) or self._model
+                            ),
                             created_at=int(response.created_at),
                         )
                     elif event_type == "response.output_text.delta":
@@ -264,24 +386,123 @@ class OpenAIResponsesProvider:
                             raise GenerationProviderError(
                                 "El proveedor terminó el stream sin texto utilizable."
                             )
-                        yield GenerationStreamCompleted(
-                            result=_result_from_response(event.response, text=text)
+                        result = _result_from_response(event.response, text=text)
+                        response_for_id = event.response
+                        set_span_attributes(
+                            span,
+                            **{
+                                "gen_ai.response.model": result.model,
+                                "gen_ai.usage.input_tokens": result.usage.input_tokens,
+                                "gen_ai.usage.output_tokens": result.usage.output_tokens,
+                                "openai.response.id": result.id,
+                            },
                         )
+                        record_openai_request(
+                            operation=operation,
+                            model=result.model or self._model,
+                            outcome="success",
+                            duration_seconds=perf_counter() - started_at,
+                            usage=result.usage,
+                            response=event.response,
+                        )
+                        recorded = True
+                        completed = True
+                        yield GenerationStreamCompleted(result=result)
                     elif event_type == "response.failed":
                         raise GenerationProviderError(
                             "El proveedor no pudo completar el stream."
                         )
+                if not completed:
+                    raise GenerationProviderError(
+                        "El proveedor cerró el stream sin un evento terminal."
+                    )
+            except GeneratorExit as exc:
+                if not recorded:
+                    record_openai_request(
+                        operation=operation,
+                        model=self._model,
+                        outcome="disconnected",
+                        duration_seconds=perf_counter() - started_at,
+                        response=response_for_id,
+                        error=exc,
+                    )
+                    recorded = True
+                raise
             except APITimeoutError as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="timeout",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response_for_id,
+                    error=exc,
+                )
+                recorded = True
                 raise GenerationTimeoutError(
                     "El proveedor excedió el tiempo de respuesta."
                 ) from exc
             except RateLimitError as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="rate_limit",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response_for_id,
+                    error=exc,
+                )
+                recorded = True
                 raise GenerationRateLimitError(
                     "El proveedor no tiene cuota disponible temporalmente."
                 ) from exc
             except (APIConnectionError, APIStatusError) as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="provider_error",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response_for_id,
+                    error=exc,
+                )
+                recorded = True
                 raise GenerationProviderError(
                     "El proveedor de generación no está disponible."
                 ) from exc
+            except GenerationProviderError as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="invalid_response",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response_for_id,
+                    error=exc,
+                )
+                recorded = True
+                raise
+            except Exception as exc:
+                mark_span_error(span, exc)
+                record_openai_request(
+                    operation=operation,
+                    model=self._model,
+                    outcome="provider_error",
+                    duration_seconds=perf_counter() - started_at,
+                    response=response_for_id,
+                    error=exc,
+                )
+                recorded = True
+                raise GenerationProviderError(
+                    "El proveedor devolvió un stream no utilizable."
+                ) from exc
+            finally:
+                try:
+                    close = getattr(stream, "close", None)
+                    if callable(close):
+                        with suppress(Exception):
+                            close()
+                finally:
+                    span.end()
 
         return iterate()

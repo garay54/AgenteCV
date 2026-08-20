@@ -28,6 +28,7 @@ from app.models import (
     ResponseUsage,
     TextFormat,
 )
+from app.observability import record_sse_stream, sse_stream_started
 
 
 def _effective_max_output_tokens(
@@ -111,9 +112,7 @@ def build_completed_response(
             input_tokens=generation.usage.input_tokens,
             output_tokens=generation.usage.output_tokens,
             total_tokens=generation.usage.total_tokens,
-            input_tokens_details={
-                "cached_tokens": generation.usage.cached_tokens
-            },
+            input_tokens_details={"cached_tokens": generation.usage.cached_tokens},
             output_tokens_details={
                 "reasoning_tokens": generation.usage.reasoning_tokens
             },
@@ -169,7 +168,10 @@ def _sse_event(event_type: str, payload: dict[str, object]) -> str:
 
 def _public_error(exc: Exception) -> tuple[str, str]:
     if isinstance(exc, GenerationRateLimitError):
-        return "rate_limit_exceeded", "El agente alcanzó temporalmente su límite de uso."
+        return (
+            "rate_limit_exceeded",
+            "El agente alcanzó temporalmente su límite de uso.",
+        )
     if isinstance(exc, GenerationTimeoutError):
         return "model_timeout", "El modelo excedió el tiempo máximo de respuesta."
     return "model_error", "El proveedor no pudo completar la respuesta."
@@ -187,6 +189,9 @@ def iter_open_responses_sse(
     message_id = f"msg_{uuid4().hex}"
     accumulated_text: list[str] = []
     completed = False
+    stream_started_at = sse_stream_started()
+    outcome = "error"
+    stream_error: BaseException | None = None
 
     try:
         for event in events:
@@ -347,13 +352,20 @@ def iter_open_responses_sse(
                 sequence_number += 1
                 yield "data: [DONE]\n\n"
                 completed = True
+                outcome = "completed"
                 return
 
         if not completed:
             raise GenerationProviderError(
                 "El proveedor cerró el stream sin un evento terminal."
             )
+    except GeneratorExit as exc:
+        outcome = "disconnected"
+        stream_error = exc
+        raise
     except Exception as exc:
+        outcome = "error"
+        stream_error = exc
         if started is None:
             started = GenerationStreamStarted(
                 id=f"resp_{uuid4().hex}",
@@ -390,3 +402,14 @@ def iter_open_responses_sse(
             },
         )
         yield "data: [DONE]\n\n"
+    finally:
+        try:
+            close = getattr(events, "close", None)
+            if callable(close):
+                close()
+        finally:
+            record_sse_stream(
+                outcome=outcome,
+                started_at=stream_started_at,
+                error=stream_error,
+            )

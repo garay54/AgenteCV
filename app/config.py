@@ -7,7 +7,6 @@ from typing import Literal
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -34,6 +33,21 @@ class Settings(BaseSettings):
     max_request_body_bytes: int = Field(default=524_288, ge=1_024)
     rate_limit_enabled: bool = True
     rate_limit_requests_per_minute: int = Field(default=20, ge=1)
+
+    # Observabilidad. Ninguna de estas opciones captura cuerpos, credenciales
+    # ni contenido conversacional. El endpoint OTLP debe incluir /v1/traces.
+    log_level: str = "INFO"
+    log_json: bool = True
+    metrics_enabled: bool = True
+    metrics_api_key: SecretStr | None = None
+    otel_enabled: bool = False
+    otel_service_name: str = "agente-cv"
+    otel_exporter_otlp_traces_endpoint: str | None = None
+    otel_exporter_otlp_headers: SecretStr | None = None
+    otel_export_timeout_seconds: float = Field(default=10.0, gt=0)
+    otel_trace_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
+    sentry_dsn: SecretStr | None = None
+    sentry_traces_sample_rate: float = Field(default=0.0, ge=0.0, le=1.0)
 
     openai_api_key: SecretStr | None = None
     openai_embedding_model: str = "text-embedding-3-small"
