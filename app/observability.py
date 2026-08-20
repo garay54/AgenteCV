@@ -18,6 +18,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from opentelemetry import trace
+from opentelemetry.sdk.trace import SpanProcessor
 from opentelemetry.trace import Span, SpanKind, Status, StatusCode
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
@@ -133,7 +134,7 @@ RAG_TOP_SCORE = Histogram(
 )
 
 
-class _FlushOnServerSpanProcessor:
+class _FlushOnServerSpanProcessor(SpanProcessor):
     """Vacía el lote antes de que Cloud Run retire la CPU de la solicitud."""
 
     def __init__(self, batch_processor: Any, timeout_millis: int) -> None:

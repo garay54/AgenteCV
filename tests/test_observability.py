@@ -5,6 +5,7 @@ from time import time
 from urllib.request import urlopen
 
 from fastapi.testclient import TestClient
+from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.trace import SpanKind
 from pydantic import SecretStr
 
@@ -127,16 +128,18 @@ def test_trace_batch_is_flushed_only_when_server_span_finishes() -> None:
             self.calls.append(timeout_millis)
             return True
 
-    class _Span:
-        def __init__(self, kind: SpanKind) -> None:
-            self.kind = kind
-
     batch = _Batch()
     processor = _FlushOnServerSpanProcessor(batch, 2_000)
+    provider = TracerProvider()
+    provider.add_span_processor(processor)
+    tracer = provider.get_tracer("test.flush")
 
-    processor.on_end(_Span(SpanKind.INTERNAL))
-    processor.on_end(_Span(SpanKind.CLIENT))
-    processor.on_end(_Span(SpanKind.SERVER))
+    with tracer.start_as_current_span("internal", kind=SpanKind.INTERNAL):
+        pass
+    with tracer.start_as_current_span("client", kind=SpanKind.CLIENT):
+        pass
+    with tracer.start_as_current_span("server", kind=SpanKind.SERVER):
+        pass
 
     assert batch.calls == [2_000]
 
