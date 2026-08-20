@@ -354,6 +354,7 @@ def instrument_fastapi(application: Any, settings: Settings) -> None:
         application,
         tracer_provider=provider,
         excluded_urls="/health,/metrics",
+        exclude_spans=["receive", "send"],
     )
 
 

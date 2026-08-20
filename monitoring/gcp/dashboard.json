@@ -14,7 +14,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(rate(agent_http_requests_total{service=\"agente-cv\"}[5m]))"
+                  "prometheusQuery": "sum(rate(agent_http_requests_total{service_name=\"agente-cv\"}[5m]))"
                 },
                 "plotType": "LINE",
                 "legendTemplate": "solicitudes/s"
@@ -41,7 +41,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "histogram_quantile(0.95, sum by (le, route) (rate(agent_http_request_duration_seconds_bucket{service=\"agente-cv\"}[5m])))"
+                  "prometheusQuery": "histogram_quantile(0.95, sum by (le, route) (rate(agent_http_request_duration_seconds_bucket{service_name=\"agente-cv\"}[5m])))"
                 },
                 "plotType": "LINE",
                 "legendTemplate": "{{route}}"
@@ -68,7 +68,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (status_code, category) (increase(agent_http_errors_total{service=\"agente-cv\"}[5m]))"
+                  "prometheusQuery": "sum by (status_code, category) (increase(agent_http_errors_total{service_name=\"agente-cv\"}[5m]))"
                 },
                 "plotType": "STACKED_BAR",
                 "legendTemplate": "{{status_code}} - {{category}}"
@@ -95,7 +95,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (operation, token_type) (increase(agent_openai_tokens_total{service=\"agente-cv\"}[5m]))"
+                  "prometheusQuery": "sum by (operation, token_type) (increase(agent_openai_tokens_total{service_name=\"agente-cv\"}[5m]))"
                 },
                 "plotType": "STACKED_BAR",
                 "legendTemplate": "{{operation}} - {{token_type}}"
@@ -122,7 +122,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(agent_sse_active_streams{service=\"agente-cv\"})"
+                  "prometheusQuery": "sum(agent_sse_active_streams{service_name=\"agente-cv\"})"
                 },
                 "plotType": "LINE",
                 "legendTemplate": "streams"
@@ -149,7 +149,7 @@
             "dataSets": [
               {
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum(rate(agent_rag_result_count_sum{service=\"agente-cv\"}[5m])) / clamp_min(sum(rate(agent_rag_result_count_count{service=\"agente-cv\"}[5m])), 1e-9)"
+                  "prometheusQuery": "sum(rate(agent_rag_result_count_sum{service_name=\"agente-cv\"}[5m])) / clamp_min(sum(rate(agent_rag_result_count_count{service_name=\"agente-cv\"}[5m])), 1e-9)"
                 },
                 "plotType": "LINE",
                 "legendTemplate": "fragmentos"
