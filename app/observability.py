@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from opentelemetry import trace
-from opentelemetry.trace import Span, Status, StatusCode
+from opentelemetry.trace import Span, SpanKind, Status, StatusCode
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     Counter,
@@ -131,6 +131,27 @@ RAG_TOP_SCORE = Histogram(
     "Mejor similitud coseno seleccionada por búsqueda.",
     buckets=(0, 0.25, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
 )
+
+
+class _FlushOnServerSpanProcessor:
+    """Vacía el lote antes de que Cloud Run retire la CPU de la solicitud."""
+
+    def __init__(self, batch_processor: Any, timeout_millis: int) -> None:
+        self._batch_processor = batch_processor
+        self._timeout_millis = timeout_millis
+
+    def on_start(self, span: Any, parent_context: Any | None = None) -> None:
+        del span, parent_context
+
+    def on_end(self, span: Any) -> None:
+        if span.kind is SpanKind.SERVER:
+            self._batch_processor.force_flush(self._timeout_millis)
+
+    def shutdown(self) -> None:
+        return None
+
+    def force_flush(self, timeout_millis: int = 30_000) -> bool:
+        return bool(self._batch_processor.force_flush(timeout_millis))
 
 
 def current_request_id() -> str | None:
@@ -329,12 +350,15 @@ def configure_open_telemetry(settings: Settings) -> Any | None:
         sampler=ParentBased(TraceIdRatioBased(settings.otel_trace_sample_ratio)),
     )
     exporter = OTLPSpanExporter(**exporter_arguments)
+    export_timeout_millis = int(settings.otel_export_timeout_seconds * 1_000)
+    batch_processor = BatchSpanProcessor(
+        exporter,
+        schedule_delay_millis=1_000,
+        export_timeout_millis=export_timeout_millis,
+    )
+    provider.add_span_processor(batch_processor)
     provider.add_span_processor(
-        BatchSpanProcessor(
-            exporter,
-            schedule_delay_millis=1_000,
-            export_timeout_millis=int(settings.otel_export_timeout_seconds * 1_000),
-        )
+        _FlushOnServerSpanProcessor(batch_processor, export_timeout_millis)
     )
     trace.set_tracer_provider(provider)
     HTTPXClientInstrumentor().instrument(tracer_provider=provider)

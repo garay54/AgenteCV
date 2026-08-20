@@ -5,6 +5,7 @@ from time import time
 from urllib.request import urlopen
 
 from fastapi.testclient import TestClient
+from opentelemetry.trace import SpanKind
 from pydantic import SecretStr
 
 from app.agent import RetrievalError
@@ -23,6 +24,7 @@ from app.observability import (
     SSE_ACTIVE,
     SSE_STREAMS,
     JsonLogFormatter,
+    _FlushOnServerSpanProcessor,
     bind_request_id,
     reset_request_id,
     start_internal_metrics_server,
@@ -114,6 +116,29 @@ def test_internal_metrics_server_is_bound_only_to_loopback() -> None:
         assert "agent_http_requests_total" in body
     finally:
         stop_internal_metrics_server(handle)
+
+
+def test_trace_batch_is_flushed_only_when_server_span_finishes() -> None:
+    class _Batch:
+        def __init__(self) -> None:
+            self.calls: list[int] = []
+
+        def force_flush(self, timeout_millis: int) -> bool:
+            self.calls.append(timeout_millis)
+            return True
+
+    class _Span:
+        def __init__(self, kind: SpanKind) -> None:
+            self.kind = kind
+
+    batch = _Batch()
+    processor = _FlushOnServerSpanProcessor(batch, 2_000)
+
+    processor.on_end(_Span(SpanKind.INTERNAL))
+    processor.on_end(_Span(SpanKind.CLIENT))
+    processor.on_end(_Span(SpanKind.SERVER))
+
+    assert batch.calls == [2_000]
 
 
 def test_authentication_rejection_increments_401_metric(client: TestClient) -> None:
