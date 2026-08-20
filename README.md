@@ -84,7 +84,7 @@ Copy-Item .env.example .env
 
 ### 2. Configurar credenciales locales
 
-Edita el archivo `.env` local (este archivo **nunca** debe subirse a Git):
+Edita el archivo `.env` local :
 
 ```text
 AGENT_API_KEY=tu_clave_independiente_para_el_agente
