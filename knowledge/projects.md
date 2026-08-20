@@ -78,3 +78,60 @@ La declaración formal CRediT del artículo atribuye a Mario la redacción del b
 
 ### Aprendizaje clave
 Los modelos estadísticos simples superaron en precisión y eficiencia computacional a las redes neuronales y clasificadores complejos para este problema específico, demostrando la importancia de establecer líneas base simples antes de incrementar la complejidad del modelo. `[SRC-PUB-SPEED-2022]`
+
+---
+
+## PJT-04 — AgenteCV: agente conversacional de currículum con RAG
+
+### Contexto
+Proyecto personal de agente conversacional orientado a responder preguntas verificables sobre la experiencia, formación, habilidades, proyectos y publicaciones profesionales de Mario. La plataforma cliente proporciona el chat y consume el endpoint público del agente. `[SRC-PROJECT-AGENTECV-2026]`
+
+### Problema
+Un currículum tradicional presenta información estática y obliga al lector a localizar manualmente los datos relevantes. El proyecto transforma una base de conocimiento profesional curada en una experiencia conversacional, manteniendo trazabilidad hacia las fuentes y evitando inventar información ausente.
+
+### Responsabilidad documentada
+Mario diseñó y desarrolló la API backend, la preparación del corpus, el proceso de fragmentación, la generación de embeddings, el almacenamiento vectorial, la recuperación RAG, la adaptación al protocolo Open Responses, las pruebas automatizadas y el despliegue. `[SRC-PROJECT-AGENTECV-2026]`
+
+### Arquitectura funcional
+1. Una API FastAPI recibe solicitudes autenticadas compatibles con Open Responses.
+2. El historial recibido se normaliza y se procesa sin almacenar sesiones conversacionales.
+3. La consulta se convierte en un embedding y recupera fragmentos desde ChromaDB.
+4. Un reranking combina similitud vectorial, diversidad documental y coincidencia léxica.
+5. El contexto recuperado fundamenta la generación de la respuesta mediante OpenAI.
+6. El endpoint entrega una respuesta JSON completa o una secuencia SSE incremental.
+
+### Tecnologías y métodos
+Python, FastAPI, Pydantic, OpenAI Responses API, OpenAI Embeddings, ChromaDB, RAG, búsqueda vectorial, reranking híbrido, Server-Sent Events, Pytest y Railway.
+
+### Estado y resultados
+- API desplegada mediante HTTPS con autenticación Bearer, límites de entrada, rate limiting y cabeceras defensivas.
+- Recuperación evaluada de forma reproducible sobre el banco de preguntas del proyecto.
+- Respuestas completas y streaming SSE implementados y validados desde el cliente conversacional.
+- Suite automatizada de 56 pruebas para contrato, autenticación, límites HTTP, RAG, generación y streaming. `[SRC-PROJECT-AGENTECV-2026]`
+
+---
+
+## PJT-05 — RankVideo: editor de videos de ranking TOP N
+
+### Contexto
+Proyecto personal de aplicación de escritorio para producir videos de ranking TOP N mediante proyectos reutilizables, edición de línea de tiempo, textos superpuestos, importación de contenido multimedia y exportación con FFmpeg. `[SRC-PROJECT-RANKVIDEO-2026]`
+
+### Problema
+La producción de videos de ranking requiere coordinar posiciones, recursos multimedia, duración, textos y exportación. RankVideo reúne estas operaciones en un flujo visual reutilizable para reducir la edición manual repetitiva.
+
+### Responsabilidad documentada
+Mario desarrolló el prototipo y su arquitectura de escritorio, integrando la interfaz de edición, el estado compartido de la aplicación, el manejo local de recursos multimedia y el proceso de exportación. `[SRC-PROJECT-RANKVIDEO-2026]`
+
+### Arquitectura funcional
+1. Electron proporciona el contenedor de escritorio y el acceso a capacidades locales.
+2. React implementa la interfaz y los editores de ranking, línea de tiempo, proyectos y textos.
+3. Zustand mantiene el estado compartido de la aplicación.
+4. El flujo de trabajo permite importar contenido multimedia local y reutilizar proyectos.
+5. FFmpeg procesa la exportación final de video.
+6. La configuración de empaquetado contempla Windows, Linux y macOS.
+
+### Tecnologías
+Electron, React, TypeScript, Vite, Zustand, Tailwind CSS, FFmpeg, Node.js y npm.
+
+### Estado actual
+Prototipo funcional en desarrollo activo. El repositorio conserva el código fuente y excluye deliberadamente los builds e instaladores generados. `[SRC-PROJECT-RANKVIDEO-2026]`

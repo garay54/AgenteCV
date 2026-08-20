@@ -6,7 +6,7 @@ Mario Alberto Román Garay es Ingeniero Mecatrónico, Maestro en Ciencias de la 
 
 Cuenta con más de cuatro años de experiencia en investigación de posgrado. Ha desarrollado modelos de detección, segmentación semántica con Transformers y U-Net, seguimiento temporal de objetos, cuantificación geométrica, optimización de hiperparámetros con Optuna, explicabilidad visual y sistemas de inferencia difusa. `[SRC-CV-01]` `[SRC-PHD-THESIS-01]`
 
-Declara conocimientos prácticos y conceptuales en aplicaciones basadas en modelos de lenguaje (LLM), ingeniería de prompts, RAG, fragmentación de texto, embeddings, búsqueda vectorial, manejo de contexto y flujos agénticos. Las fuentes actuales no demuestran experiencia comercial ni un sistema productivo desplegado sobre estos temas, por lo que deben presentarse como conocimientos en desarrollo. `[SRC-CV-01]`
+Declara conocimientos prácticos y conceptuales en aplicaciones basadas en modelos de lenguaje (LLM), ingeniería de prompts, RAG, fragmentación de texto, embeddings, búsqueda vectorial, manejo de contexto y flujos agénticos. AgenteCV aporta evidencia aplicada de un agente RAG desplegado en producción controlada, pero las fuentes no demuestran múltiples sistemas comerciales ni una operación a gran escala. `[SRC-CV-01]` `[SRC-PROJECT-AGENTECV-2026]`
 
 ---
 

@@ -67,13 +67,13 @@
 
 ## 5. IA Generativa y Sistemas de Modelos de Lenguaje
 
-Evidencia actual del reto AgenteCV: existe una implementación reproducible de limpieza y fragmentación de Markdown, embeddings con OpenAI, almacenamiento Chroma, recuperación con diversidad y evaluación automática. La API FastAPI está desplegada en Railway, pero la generación final con el modelo todavía no está conectada al endpoint público. Por ello, puede afirmarse experiencia **aplicada en este reto técnico**, pero no múltiples sistemas RAG comerciales ni una operación productiva consolidada. `[SRC-PROJECT-AGENTECV-2026]`
+Evidencia actual del proyecto AgenteCV: existe una implementación reproducible de limpieza y fragmentación de Markdown, embeddings con OpenAI, almacenamiento Chroma, recuperación con diversidad, evaluación automática y generación fundamentada. La API FastAPI está desplegada y entrega respuestas completas o streaming SSE. Por ello, puede afirmarse experiencia **aplicada en este proyecto técnico**, pero no múltiples sistemas RAG comerciales ni una operación productiva a gran escala. `[SRC-PROJECT-AGENTECV-2026]`
 
 | Habilidad | Nivel de evidencia | Acotación de evidencia y respuesta segura |
 |---|---|---|
 | Aplicaciones con LLM e Ingeniería de Prompts | Conceptual / Familiaridad | Declarada en el CV. No existe evidencia de un sistema comercial o productivo desplegado. `[SRC-CV-01]` |
-| Generación Aumentada por Recuperación (RAG) | Aplicada | Implementada y evaluada en AgenteCV mediante conocimiento curado, chunking, embeddings, Chroma y recuperación trazable. La generación final aún no está conectada; no atribuir experiencia en múltiples sistemas comerciales. `[SRC-PROJECT-AGENTECV-2026]` `[SRC-CV-01]` |
+| Generación Aumentada por Recuperación (RAG) | Aplicada | Implementada, evaluada y desplegada en AgenteCV mediante conocimiento curado, chunking, embeddings, Chroma, recuperación trazable y generación fundamentada; no atribuir experiencia en múltiples sistemas comerciales. `[SRC-PROJECT-AGENTECV-2026]` `[SRC-CV-01]` |
 | Embeddings y Búsqueda Vectorial | Aplicada | Uso de `text-embedding-3-small`, Chroma persistente, búsqueda coseno y banco de recuperación con métricas Hit@k/MRR en este reto. `[SRC-PROJECT-AGENTECV-2026]` |
-| Manejo de Contexto y Respuestas Estructuradas | Aplicada | Modelos Pydantic compatibles con la respuesta no streaming de Open Responses y corpus con metadatos de documento, sección y fuente. La integración generativa continúa en desarrollo. `[SRC-PROJECT-AGENTECV-2026]` |
+| Manejo de Contexto y Respuestas Estructuradas | Aplicada | Modelos Pydantic compatibles con Open Responses, historial stateless, respuestas JSON y streaming SSE, junto con un corpus que conserva metadatos de documento, sección y fuente. `[SRC-PROJECT-AGENTECV-2026]` |
 | Flujos Agénticos y Tool Calling | Conceptual / Familiaridad | Declarada en el CV: conceptos de flujos agénticos, LangChain y MCP. `[SRC-CV-01]` |
 | Seguridad en LLM (OWASP Top 10) | Conceptual / Familiaridad | Declarada en el CV como conocimiento conceptual de seguridad en aplicaciones con LLM. `[SRC-CV-01]` |
