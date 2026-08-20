@@ -135,6 +135,10 @@ flowchart TB
 - El índice incluye exclusivamente los seis documentos autorizados por D04.
 - Los documentos originales y los archivos de preguntas o dudas no forman parte del índice.
 - `AGENT_API_KEY` protege la entrada y es distinta de `OPENAI_API_KEY`.
+- El cuerpo HTTP se limita antes de deserializar JSON; el contrato limita tanto
+  cada texto como la transcripción agregada.
+- Las solicitudes autenticadas se limitan por el hash de la credencial en una
+  ventana deslizante. El contador actual es local a la única instancia del MVP.
 - El historial conversacional vive solamente durante la solicitud.
 - Chroma conserva conocimiento profesional, no conversaciones.
 - Los logs no deberán incluir claves ni transcripciones completas.

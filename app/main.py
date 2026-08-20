@@ -3,9 +3,9 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.agent import AgentService, RetrievalError
-from app.auth import require_agent_access
 from app.config import get_settings
 from app.dependencies import get_agent_service
+from app.http_limits import RequestBodyLimitMiddleware
 from app.llm import (
     GenerationConfigurationError,
     GenerationProviderError,
@@ -14,6 +14,7 @@ from app.llm import (
 )
 from app.models import ResponseCreateRequest, ResponseResource
 from app.open_responses import build_completed_response, iter_open_responses_sse
+from app.rate_limit import enforce_rate_limit
 
 
 class HealthResponse(BaseModel):
@@ -24,6 +25,10 @@ class HealthResponse(BaseModel):
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version=settings.app_version)
+app.add_middleware(
+    RequestBodyLimitMiddleware,
+    max_bytes=settings.max_request_body_bytes,
+)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["operación"])
@@ -40,7 +45,7 @@ def health() -> HealthResponse:
     response_model=ResponseResource,
     tags=["responses"],
     summary="Crear una respuesta del agente",
-    dependencies=[Depends(require_agent_access)],
+    dependencies=[Depends(enforce_rate_limit)],
 )
 def create_response(
     request: ResponseCreateRequest,

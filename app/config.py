@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,6 +28,12 @@ class Settings(BaseSettings):
     # Clave que protege la entrada al agente. Es independiente de las claves de
     # los proveedores de IA y puede rotarse sin modificar el código.
     agent_api_key: SecretStr | None = None
+
+    # Controles de abuso del endpoint público. El límite de cuerpo se expresa
+    # en bytes y se aplica antes de que FastAPI deserialice el JSON.
+    max_request_body_bytes: int = Field(default=524_288, ge=1_024)
+    rate_limit_enabled: bool = True
+    rate_limit_requests_per_minute: int = Field(default=60, ge=1)
 
     openai_api_key: SecretStr | None = None
     openai_embedding_model: str = "text-embedding-3-small"

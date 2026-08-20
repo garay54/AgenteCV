@@ -88,10 +88,19 @@ OPENAI_API_KEY=tu_clave_privada
 OPENAI_GENERATION_MODEL=gpt-5.6-luna
 OPENAI_REASONING_EFFORT=none
 OPENAI_TEXT_VERBOSITY=low
+MAX_REQUEST_BODY_BYTES=524288
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_REQUESTS_PER_MINUTE=60
 ```
 
 `AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
 en Banorte. Nunca debe reutilizarse como `OPENAI_API_KEY`.
+
+El cuerpo completo de `POST /v1/responses` se limita antes de deserializar el
+JSON. Las solicitudes autenticadas también se limitan por credencial mediante
+una ventana deslizante en memoria. Esta estrategia corresponde al despliegue de
+una sola instancia del MVP; si el servicio escala horizontalmente, los
+contadores deberán trasladarse a un almacenamiento compartido.
 
 El modelo recibido en el cuerpo de una solicitud no sustituye el modelo configurado
 por el servidor. Esto evita que un cliente seleccione modelos no autorizados o más

@@ -4,6 +4,7 @@ from pydantic import SecretStr
 
 from app.config import Settings, get_settings
 from app.main import app
+from app.rate_limit import InMemorySlidingWindowRateLimiter, get_rate_limiter
 
 
 # Esta credencial sólo existe en la suite de pruebas y puede publicarse.
@@ -22,9 +23,14 @@ def get_test_settings() -> Settings:
 @pytest.fixture
 def client() -> TestClient:
     app.dependency_overrides[get_settings] = get_test_settings
+    limiter = InMemorySlidingWindowRateLimiter(
+        max_requests=get_test_settings().rate_limit_requests_per_minute
+    )
+    app.dependency_overrides[get_rate_limiter] = lambda: limiter
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.pop(get_settings, None)
+    app.dependency_overrides.pop(get_rate_limiter, None)
 
 
 @pytest.fixture

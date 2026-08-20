@@ -5,7 +5,13 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from app.models import ResponseCreateRequest, ResponseResource
+from app.models import (
+    MAX_INPUT_ITEMS,
+    MAX_TEXT_LENGTH,
+    MAX_TOTAL_TEXT_LENGTH,
+    ResponseCreateRequest,
+    ResponseResource,
+)
 
 
 def test_accepts_simple_text_input() -> None:
@@ -69,6 +75,51 @@ def test_accepts_replayed_multiturn_transcript() -> None:
 def test_rejects_invalid_request_values(payload: dict[str, object]) -> None:
     with pytest.raises(ValidationError):
         ResponseCreateRequest.model_validate(payload)
+
+
+def test_accepts_text_at_operational_limit() -> None:
+    request = ResponseCreateRequest.model_validate(
+        {"input": "x" * MAX_TEXT_LENGTH}
+    )
+
+    assert len(request.input) == MAX_TEXT_LENGTH
+
+
+def test_rejects_text_above_operational_limit() -> None:
+    with pytest.raises(ValidationError):
+        ResponseCreateRequest.model_validate(
+            {"input": "x" * (MAX_TEXT_LENGTH + 1)}
+        )
+
+
+def test_rejects_too_many_transcript_items() -> None:
+    messages = [
+        {
+            "type": "message",
+            "role": "user",
+            "content": "x",
+        }
+        for _ in range(MAX_INPUT_ITEMS + 1)
+    ]
+
+    with pytest.raises(ValidationError):
+        ResponseCreateRequest.model_validate({"input": messages})
+
+
+def test_rejects_aggregate_text_above_operational_limit() -> None:
+    text_per_message = MAX_TEXT_LENGTH - 1
+    message_count = (MAX_TOTAL_TEXT_LENGTH // text_per_message) + 1
+    messages = [
+        {
+            "type": "message",
+            "role": "user",
+            "content": "x" * text_per_message,
+        }
+        for _ in range(message_count)
+    ]
+
+    with pytest.raises(ValidationError, match="suma del texto"):
+        ResponseCreateRequest.model_validate({"input": messages})
 
 
 def test_malformed_json_has_a_structured_validation_error() -> None:

@@ -11,14 +11,23 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 
-# La especificación permite textos grandes. El límite de 10 MiB refleja el
-# esquema OpenAPI; más adelante la API podrá imponer un límite operativo menor.
+# Límites operativos del subconjunto conversacional. El middleware HTTP impone
+# además un límite total en bytes antes de deserializar el cuerpo.
+MAX_TEXT_LENGTH = 16_384
+MAX_TOTAL_TEXT_LENGTH = 65_536
+MAX_INPUT_ITEMS = 50
+MAX_CONTENT_PARTS = 20
+
 TextValue = Annotated[
     str,
-    StringConstraints(strip_whitespace=True, min_length=1, max_length=10_485_760),
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=MAX_TEXT_LENGTH,
+    ),
 ]
 Identifier = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 MetadataKey = Annotated[str, StringConstraints(min_length=1, max_length=64)]
@@ -61,10 +70,13 @@ class RefusalContent(StrictContractModel):
     refusal: TextValue
 
 
-InputTextParts = Annotated[list[InputTextContent], Field(min_length=1)]
+InputTextParts = Annotated[
+    list[InputTextContent],
+    Field(min_length=1, max_length=MAX_CONTENT_PARTS),
+]
 AssistantTextParts = Annotated[
     list[OutputTextContent | RefusalContent],
-    Field(min_length=1),
+    Field(min_length=1, max_length=MAX_CONTENT_PARTS),
 ]
 
 
@@ -123,7 +135,10 @@ InputMessage = Annotated[
     UserMessage | SystemMessage | DeveloperMessage | AssistantMessage,
     Field(discriminator="role"),
 ]
-InputItems = Annotated[list[InputMessage], Field(min_length=1)]
+InputItems = Annotated[
+    list[InputMessage],
+    Field(min_length=1, max_length=MAX_INPUT_ITEMS),
+]
 
 
 class ReasoningConfig(StrictContractModel):
@@ -204,6 +219,34 @@ class ResponseCreateRequest(BaseModel):
     store: bool = False
     service_tier: Literal["auto", "default", "flex", "priority"] = "default"
     top_logprobs: int | None = Field(default=None, ge=0, le=20)
+
+    @model_validator(mode="after")
+    def validate_total_text_length(self) -> ResponseCreateRequest:
+        """Impide eludir el límite repartiendo texto entre muchos mensajes."""
+
+        total_length = len(self.instructions or "")
+
+        if isinstance(self.input, str):
+            total_length += len(self.input)
+        else:
+            for message in self.input:
+                if isinstance(message.content, str):
+                    total_length += len(message.content)
+                    continue
+
+                for part in message.content:
+                    if isinstance(part, RefusalContent):
+                        total_length += len(part.refusal)
+                    else:
+                        total_length += len(part.text)
+
+        if total_length > MAX_TOTAL_TEXT_LENGTH:
+            raise ValueError(
+                "La suma del texto de entrada e instrucciones excede "
+                f"{MAX_TOTAL_TEXT_LENGTH} caracteres."
+            )
+
+        return self
 
 
 class ResponseOutputMessage(StrictContractModel):
