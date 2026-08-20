@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     log_json: bool = True
     metrics_enabled: bool = True
     metrics_api_key: SecretStr | None = None
+    # Puerto exclusivo de loopback para que un sidecar pueda recolectar
+    # Prometheus sin publicar una segunda ruta sin autenticación.
+    metrics_internal_port: int | None = Field(default=None, ge=1_024, le=65_535)
     otel_enabled: bool = False
     otel_service_name: str = "agente-cv"
     otel_exporter_otlp_traces_endpoint: str | None = None

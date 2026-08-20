@@ -1,0 +1,170 @@
+{
+  "displayName": "Agente CV - Operación",
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "xPos": 0,
+        "yPos": 0,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Solicitudes por segundo",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agent_http_requests_total{service=\"agente-cv\"}[5m]))"
+                },
+                "plotType": "LINE",
+                "legendTemplate": "solicitudes/s"
+              }
+            ],
+            "yAxis": {
+              "label": "solicitudes/s",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 0,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Latencia HTTP p95",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "histogram_quantile(0.95, sum by (le, route) (rate(agent_http_request_duration_seconds_bucket{service=\"agente-cv\"}[5m])))"
+                },
+                "plotType": "LINE",
+                "legendTemplate": "{{route}}"
+              }
+            ],
+            "yAxis": {
+              "label": "segundos",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Errores HTTP",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (status_code, category) (increase(agent_http_errors_total{service=\"agente-cv\"}[5m]))"
+                },
+                "plotType": "STACKED_BAR",
+                "legendTemplate": "{{status_code}} - {{category}}"
+              }
+            ],
+            "yAxis": {
+              "label": "errores / 5 min",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 16,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Tokens de IA",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (operation, token_type) (increase(agent_openai_tokens_total{service=\"agente-cv\"}[5m]))"
+                },
+                "plotType": "STACKED_BAR",
+                "legendTemplate": "{{operation}} - {{token_type}}"
+              }
+            ],
+            "yAxis": {
+              "label": "tokens / 5 min",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 0,
+        "yPos": 32,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Streams SSE activos",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(agent_sse_active_streams{service=\"agente-cv\"})"
+                },
+                "plotType": "LINE",
+                "legendTemplate": "streams"
+              }
+            ],
+            "yAxis": {
+              "label": "streams",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 32,
+        "width": 24,
+        "height": 16,
+        "widget": {
+          "title": "Resultados promedio del RAG",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum(rate(agent_rag_result_count_sum{service=\"agente-cv\"}[5m])) / clamp_min(sum(rate(agent_rag_result_count_count{service=\"agente-cv\"}[5m])), 1e-9)"
+                },
+                "plotType": "LINE",
+                "legendTemplate": "fragmentos"
+              }
+            ],
+            "yAxis": {
+              "label": "fragmentos",
+              "scale": "LINEAR"
+            },
+            "chartOptions": {
+              "mode": "COLOR"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "displayName": "Agente CV - latencia elevada",
+  "documentation": {
+    "content": "La latencia p95 de Cloud Run ha superado 10 segundos durante cinco minutos.",
+    "mimeType": "text/markdown"
+  },
+  "conditions": [
+    {
+      "displayName": "Latencia p95 mayor a 10 s",
+      "conditionThreshold": {
+        "filter": "resource.type = \"cloud_run_revision\" AND resource.label.service_name = \"agente-cv\" AND metric.type = \"run.googleapis.com/request_latencies\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "60s",
+            "perSeriesAligner": "ALIGN_PERCENTILE_95",
+            "crossSeriesReducer": "REDUCE_MAX",
+            "groupByFields": [
+              "resource.label.service_name"
+            ]
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 10000,
+        "duration": "300s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "combiner": "OR",
+  "enabled": true,
+  "notificationChannels": [],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "userLabels": {
+    "service": "agente-cv",
+    "severity": "warning"
+  }
+}

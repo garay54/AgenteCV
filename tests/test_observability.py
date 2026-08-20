@@ -2,6 +2,7 @@ import json
 import logging
 import re
 from time import time
+from urllib.request import urlopen
 
 from fastapi.testclient import TestClient
 from pydantic import SecretStr
@@ -24,6 +25,8 @@ from app.observability import (
     JsonLogFormatter,
     bind_request_id,
     reset_request_id,
+    start_internal_metrics_server,
+    stop_internal_metrics_server,
 )
 from app.open_responses import iter_open_responses_sse
 
@@ -95,6 +98,22 @@ def test_production_metrics_fail_closed_without_key() -> None:
         response = client.get("/metrics")
 
     assert response.status_code == 503
+
+
+def test_internal_metrics_server_is_bound_only_to_loopback() -> None:
+    handle = start_internal_metrics_server(0)
+    assert handle is not None
+    server, _ = handle
+    try:
+        assert server.server_address[0] == "127.0.0.1"
+        with urlopen(
+            f"http://127.0.0.1:{server.server_port}/metrics",
+            timeout=2,
+        ) as response:
+            body = response.read().decode("utf-8")
+        assert "agent_http_requests_total" in body
+    finally:
+        stop_internal_metrics_server(handle)
 
 
 def test_authentication_rejection_increments_401_metric(client: TestClient) -> None:

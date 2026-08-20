@@ -1,0 +1,13 @@
+apiVersion: monitoring.googleapis.com/v1beta
+kind: RunMonitoring
+metadata:
+  name: agente-cv
+spec:
+  endpoints:
+    - port: 9090
+      path: /metrics
+      interval: 30s
+  targetLabels:
+    metadata:
+      - service
+      - revision

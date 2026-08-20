@@ -14,6 +14,7 @@ from contextvars import ContextVar, Token
 from datetime import UTC, datetime
 from time import perf_counter
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from opentelemetry import trace
@@ -24,6 +25,7 @@ from prometheus_client import (
     Gauge,
     Histogram,
     generate_latest,
+    start_http_server,
 )
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
@@ -38,6 +40,7 @@ _REQUEST_ID_RE = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 _LOGGING_CONFIGURED = False
 _SENTRY_CONFIGURED = False
 _TRACER_PROVIDER: Any | None = None
+_INTERNAL_METRICS_SERVER: tuple[Any, Any] | None = None
 
 _LOG_FIELDS = {
     "client_disconnected",
@@ -294,27 +297,45 @@ def configure_open_telemetry(settings: Settings) -> Any | None:
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
     from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 
-    provider = TracerProvider(
-        resource=Resource.create(
-            {
-                "service.name": settings.otel_service_name,
-                "service.version": settings.app_version,
-                "deployment.environment.name": settings.app_environment,
-            }
-        ),
-        sampler=ParentBased(TraceIdRatioBased(settings.otel_trace_sample_ratio)),
-    )
+    resource_attributes = {
+        "service.name": settings.otel_service_name,
+        "service.version": settings.app_version,
+        "deployment.environment.name": settings.app_environment,
+    }
     raw_headers = (
         settings.otel_exporter_otlp_headers.get_secret_value()
         if settings.otel_exporter_otlp_headers is not None
         else None
     )
-    exporter = OTLPSpanExporter(
-        endpoint=settings.otel_exporter_otlp_traces_endpoint,
-        headers=_otlp_headers(raw_headers),
-        timeout=settings.otel_export_timeout_seconds,
+    exporter_arguments: dict[str, Any] = {
+        "endpoint": settings.otel_exporter_otlp_traces_endpoint,
+        "headers": _otlp_headers(raw_headers),
+        "timeout": settings.otel_export_timeout_seconds,
+    }
+    endpoint_host = urlparse(settings.otel_exporter_otlp_traces_endpoint).hostname
+    if endpoint_host == "telemetry.googleapis.com":
+        import google.auth
+        from google.auth.transport.requests import AuthorizedSession
+
+        credentials, detected_project_id = google.auth.default(
+            scopes=("https://www.googleapis.com/auth/cloud-platform",)
+        )
+        exporter_arguments["session"] = AuthorizedSession(credentials)
+        if detected_project_id:
+            resource_attributes["gcp.project_id"] = detected_project_id
+
+    provider = TracerProvider(
+        resource=Resource.create(resource_attributes),
+        sampler=ParentBased(TraceIdRatioBased(settings.otel_trace_sample_ratio)),
     )
-    provider.add_span_processor(BatchSpanProcessor(exporter))
+    exporter = OTLPSpanExporter(**exporter_arguments)
+    provider.add_span_processor(
+        BatchSpanProcessor(
+            exporter,
+            schedule_delay_millis=1_000,
+            export_timeout_millis=int(settings.otel_export_timeout_seconds * 1_000),
+        )
+    )
     trace.set_tracer_provider(provider)
     HTTPXClientInstrumentor().instrument(tracer_provider=provider)
     _TRACER_PROVIDER = provider
@@ -539,6 +560,42 @@ def record_http_request(
 
 def render_metrics() -> tuple[bytes, str]:
     return generate_latest(), CONTENT_TYPE_LATEST
+
+
+def start_internal_metrics_server(port: int | None) -> tuple[Any, Any] | None:
+    """Expone Prometheus sólo en loopback para un sidecar del mismo servicio."""
+
+    global _INTERNAL_METRICS_SERVER
+    if port is None:
+        return None
+    if _INTERNAL_METRICS_SERVER is not None:
+        return _INTERNAL_METRICS_SERVER
+
+    server, thread = start_http_server(port, addr="127.0.0.1")
+    _INTERNAL_METRICS_SERVER = (server, thread)
+    LOGGER.info(
+        "Servidor interno de métricas iniciado.",
+        extra={"event": "metrics.internal.started"},
+    )
+    return _INTERNAL_METRICS_SERVER
+
+
+def stop_internal_metrics_server(handle: tuple[Any, Any] | None) -> None:
+    """Cierra limpiamente el servidor interno sin afectar `/metrics`."""
+
+    global _INTERNAL_METRICS_SERVER
+    if handle is None:
+        return
+    server, thread = handle
+    server.shutdown()
+    server.server_close()
+    thread.join(timeout=2)
+    if _INTERNAL_METRICS_SERVER == handle:
+        _INTERNAL_METRICS_SERVER = None
+    LOGGER.info(
+        "Servidor interno de métricas detenido.",
+        extra={"event": "metrics.internal.stopped"},
+    )
 
 
 class RequestObservabilityMiddleware:

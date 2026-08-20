@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from hmac import compare_digest
 from typing import Literal
 
@@ -23,6 +24,8 @@ from app.observability import (
     configure_sentry,
     instrument_fastapi,
     render_metrics,
+    start_internal_metrics_server,
+    stop_internal_metrics_server,
 )
 from app.open_responses import build_completed_response, iter_open_responses_sse
 from app.rate_limit import enforce_rate_limit
@@ -43,12 +46,25 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     configure_logging(active_settings)
     configure_sentry(active_settings)
 
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        metrics_server = (
+            start_internal_metrics_server(active_settings.metrics_internal_port)
+            if active_settings.metrics_enabled
+            else None
+        )
+        try:
+            yield
+        finally:
+            stop_internal_metrics_server(metrics_server)
+
     application = FastAPI(
         title=active_settings.app_name,
         version=active_settings.app_version,
         docs_url=None if is_production else "/docs",
         redoc_url=None if is_production else "/redoc",
         openapi_url=None if is_production else "/openapi.json",
+        lifespan=lifespan,
     )
     application.add_middleware(
         RequestBodyLimitMiddleware,
