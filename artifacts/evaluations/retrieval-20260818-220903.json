@@ -3,7 +3,7 @@
   "evaluation_scope": "Recuperación single-turn por documento permitido y trazabilidad SRC; la cobertura factual final requiere revisión del fragmento y evaluación de generación.",
   "evaluation_mode": "single_turn_retrieval",
   "embedding_model": "text-embedding-3-small",
-  "collection": "banorte_cv_v1",
+  "collection": "agente_cv_v1",
   "thresholds": {
     "hit_at_4": 0.9,
     "top_1": 0.75,

@@ -1,4 +1,4 @@
-# Requisitos del agente de CV — Reto IA Banorte
+# Requisitos del agente de CV — proyecto de agente conversacional
 
 ## 1. Alcance del documento
 
@@ -8,11 +8,11 @@ Quedan fuera de este documento las decisiones de tecnología, proveedor, modelo,
 
 ## 2. Fuentes
 
-- **F01 — Instrucciones oficiales del reto:** mensaje recibido del personal de reclutamiento de Banorte.
+- **F01 — Instrucciones oficiales del reto:** mensaje recibido del personal de reclutamiento de la plataforma cliente.
 - **F02 — Indicación recibida en entrevista:** estudiar e incorporar RAG y su evaluación como parte del reto técnico.
 - **F03 — Requisitos derivados:** condiciones necesarias para que el agente sea coherente, confiable, seguro, verificable y operable.
-- **F04 — Plataforma y agente Guía de Banorte:** el formulario aporta evidencia de integración; el agente Guía aporta orientación general, pero confirmó que no dispone del contrato HTTP exacto.
-- **F05 — Decisiones directas de Mario:** elecciones de producto, alcance, entrega y operación confirmadas el 18 de agosto de 2026. No sustituyen requisitos oficiales de Banorte.
+- **F04 — Formulario y agente de referencia:** el formulario aporta evidencia de integración; el agente de referencia aporta orientación general, pero confirmó que no dispone del contrato HTTP exacto.
+- **F05 — Decisiones directas de Mario:** elecciones de producto, alcance, entrega y operación confirmadas el 18 de agosto de 2026. No sustituyen requisitos oficiales de la plataforma cliente.
 
 ## 3. Requisitos funcionales
 
@@ -49,14 +49,14 @@ Quedan fuera de este documento las decisiones de tecnología, proveedor, modelo,
 | ID | Requisito | Fuente | Verificación |
 |---|---|---|---|
 | INT-01 | El agente deberá estar disponible mediante un endpoint HTTP público protegido por HTTPS. | F01 | Acceder al endpoint desde una red externa y verificar una conexión HTTPS válida. |
-| INT-02 | El endpoint deberá ser compatible con el contrato Open Responses aceptado por la plataforma de Banorte. | F01 | Registrar el endpoint y completar una conversación desde la plataforma de Banorte. |
+| INT-02 | El endpoint deberá ser compatible con el contrato Open Responses aceptado por la plataforma cliente. | F01 | Registrar el endpoint y completar una conversación desde la plataforma cliente. |
 | INT-03 | El endpoint deberá validar la estructura y los campos obligatorios de cada solicitud. | F03 | Enviar solicitudes válidas, incompletas y mal formadas y comprobar sus resultados. |
-| INT-04 | El endpoint deberá devolver las respuestas con la estructura, encabezados y tipos de contenido requeridos por el contrato de integración. | F01, F04 | Comparar las respuestas con el contrato confirmado y probarlas desde Banorte. |
+| INT-04 | El endpoint deberá devolver las respuestas con la estructura, encabezados y tipos de contenido requeridos por el contrato de integración. | F01, F04 | Comparar las respuestas con el contrato confirmado y probarlas desde la plataforma cliente. |
 | INT-05 | El endpoint deberá devolver errores consistentes y códigos HTTP apropiados ante solicitudes inválidas o fallas de procesamiento. | F03 | Provocar cada error previsto y revisar el código y cuerpo recibidos. |
 | INT-06 | Cuando se configure autenticación para el agente, el endpoint deberá rechazar solicitudes sin credenciales o con credenciales inválidas. | F01, F04 | Probar solicitudes con credenciales válidas, ausentes e incorrectas. |
 | INT-07 | El agente deberá utilizar el historial que reciba conforme al contrato para mantener el contexto de una conversación de varios turnos. | F03, F04 | Ejecutar preguntas dependientes de mensajes anteriores y verificar la continuidad. |
 | INT-08 | El endpoint deberá admitir respuestas completas cuando la solicitud no requiera transmisión incremental. | F03, F04 | Enviar una solicitud no incremental y validar la respuesta completa. |
-| INT-09 | Si el contrato de Banorte solicita transmisión incremental, el endpoint deberá entregar y finalizar correctamente los eventos esperados. | F04 | Ejecutar una solicitud incremental desde un cliente compatible y validar su secuencia y cierre. |
+| INT-09 | Si el contrato de la plataforma cliente solicita transmisión incremental, el endpoint deberá entregar y finalizar correctamente los eventos esperados. | F04 | Ejecutar una solicitud incremental desde un cliente compatible y validar su secuencia y cierre. |
 | INT-10 | El servicio deberá exponer un mecanismo que permita verificar que se encuentra disponible. | F03 | Consultar el mecanismo de salud y comprobar una respuesta exitosa cuando el servicio opere normalmente. |
 
 ## 6. Requisitos de calidad y confiabilidad
@@ -97,13 +97,13 @@ Quedan fuera de este documento las decisiones de tecnología, proveedor, modelo,
 | EVA-09 | La evaluación deberá registrar latencia, errores y casos sin respuesta. | F03 | Generar un reporte con tiempos, fallas y resultado por caso. |
 | EVA-10 | Los criterios y umbrales de aceptación deberán quedar definidos antes de ejecutar la evaluación final. | F02, F03 | Revisar que la rúbrica y los umbrales tengan una versión y fecha anteriores al reporte final. |
 | EVA-11 | La evaluación completa deberá poder repetirse después de cualquier cambio relevante para detectar regresiones. | F02, F03 | Ejecutar el mismo conjunto antes y después de un cambio y comparar los resultados. |
-| EVA-12 | La ponderación interna deberá distinguirse explícitamente de cualquier rúbrica oficial de Banorte. | F05 | Revisar `docs/criterios-evaluacion.md`, el README y la presentación para evitar atribuir a Banorte porcentajes no publicados. |
+| EVA-12 | La ponderación interna deberá distinguirse explícitamente de cualquier rúbrica oficial de la plataforma cliente. | F05 | Revisar `docs/criterios-evaluacion.md`, el README y la presentación para evitar atribuir a la plataforma cliente porcentajes no publicados. |
 
-## 9. Requisitos pendientes de confirmación con Banorte
+## 9. Requisitos pendientes de confirmación con la plataforma cliente
 
 Los siguientes elementos forman parte del contrato de integración, pero sus valores exactos no deben asumirse hasta observar solicitudes y respuestas aceptadas por la plataforma:
 
-- Versión o subconjunto de Open Responses utilizado por Banorte.
+- Versión o subconjunto de Open Responses utilizado por la plataforma cliente.
 - Esquema exacto de solicitud y respuesta, incluidos campos opcionales.
 - Serialización exacta de la transcripción dentro de `input`.
 - Encabezados reales recibidos, aunque el formulario ya confirma el uso posible de Bearer.

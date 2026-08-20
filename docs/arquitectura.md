@@ -4,16 +4,16 @@
 
 Este documento registra el flujo del agente profesional y relaciona cada componente con el código que lo implementa.
 
-**Estado de D09:** En progreso  
-**Fecha de actualización:** 2026-08-18
+**Estado de D09:** Completada
+**Fecha de actualización:** 2026-08-20
 
-La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud ya tienen una implementación local. `POST /v1/responses` integra validación Pydantic, autenticación Bearer, recuperación RAG, prompt fundamentado y generación con `gpt-5.6-luna` en modalidades JSON completa y streaming SSE. Ambos flujos fueron validados localmente; D09 permanecerá en progreso hasta desplegar el incremento SSE y contrastarlo con una solicitud real de Banorte.
+La ingestión, fragmentación, almacenamiento vectorial, recuperación, evaluación y comprobación de salud están implementadas. `POST /v1/responses` integra validación Pydantic, autenticación Bearer, recuperación RAG, prompt fundamentado y generación con `gpt-5.6-luna` en modalidades JSON completa y streaming SSE. Ambos flujos fueron desplegados y la integración SSE fue confirmada desde el cliente conversacional.
 
 ## 2. Flujo objetivo de una solicitud
 
 ```mermaid
 flowchart LR
-    B[Plataforma Banorte] -->|HTTPS + Bearer| API[POST /responses]
+    B[Plataforma cliente] -->|HTTPS + Bearer| API[POST /responses]
     API --> VA[Validación y autenticación]
     VA --> ORI[Normalización Open Responses]
     ORI --> HC[Historial recibido en la solicitud]
@@ -104,16 +104,16 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Recuperación, diversidad y reranking | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
 | Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py`, `artifacts/evaluations/retrieval-20260818-221152.json` | Implementada y aprobada: 49 casos, Hit@4 100 %, Top-1 81.63 %, MRR@4 90.48 % |
 | `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real completa o streaming |
-| Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementación inicial probada; aceptación real de Banorte pendiente |
-| Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada y probada localmente; integración con Banorte pendiente |
+| Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementada, probada y aceptada por la plataforma cliente |
+| Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada, probada e integrada con la plataforma cliente |
 | Historial stateless | `app/agent.py`, `tests/test_agent.py` | Implementado para reproducción de transcripción |
 | Prompt fundamentado | `app/prompts.py`, `tests/test_agent.py` | Implementado y probado sin red |
 | Adaptador de generación OpenAI | `app/llm.py`, `tests/test_llm.py` | Implementado con `gpt-5.6-luna`; llamada real local validada |
 | Contingencia Anthropic | Decisiones D02 y D03 | Pendiente |
 | Respuesta JSON completa | `app/main.py`, `tests/test_responses.py` | Implementada con respuesta real y uso de tokens |
-| Streaming SSE | `app/main.py`, `app/agent.py`, `app/llm.py`, `app/open_responses.py`, `tests/test_responses.py` | Implementado y validado localmente; despliegue y aceptación de Banorte pendientes |
+| Streaming SSE | `app/main.py`, `app/agent.py`, `app/llm.py`, `app/open_responses.py`, `tests/test_responses.py` | Implementado, desplegado y aceptado por el cliente conversacional |
 | Contenedor Docker | Decisión D08 | Pendiente |
-| Despliegue Railway | `railway.json`, `.python-version`, `scripts/ensure_index.py` | API base desplegada; el nuevo incremento y la persistencia del índice deben validarse |
+| Despliegue Railway | `railway.json`, `.python-version`, `scripts/ensure_index.py` | API desplegada; healthcheck, cabeceras y acceso público validados |
 
 ## 6. Límites de seguridad y privacidad
 
@@ -152,22 +152,22 @@ flowchart LR
     SEC[Variables secretas] --> RW
     VOL[(Volumen persistente)] --> RW
     RW --> URL[URL HTTPS estable]
-    URL --> BN[Registro del agente en Banorte]
+    URL --> BN[Registro del agente en la plataforma cliente]
     RW --> LOG[Logs sanitizados]
 ```
 
 Railway deberá mantener Serverless desactivado durante la evaluación. El volumen conservará `data/chroma`, mientras que las fuentes Markdown versionadas permitirán reconstruir el índice si fuera necesario.
 
-## 8. Criterios pendientes para terminar D09
+## 8. Criterios de cierre de D09
 
-D09 podrá marcarse como terminado cuando:
+D09 se considera terminada porque:
 
 - Exista `POST /responses` y su recorrido real corresponda con el flujo documentado.
 - La autenticación Bearer, validación, RAG, modelo y adaptación se relacionen con archivos y pruebas concretas.
-- El diagrama elimine o actualice todos los componentes marcados como pendientes.
-- Las modalidades JSON completa y SSE funcionen desde Banorte.
-- La URL, volumen, secretos y logs de Railway coincidan con el diagrama de despliegue.
-- Cualquier diferencia entre diseño y código se corrija en el código o en este documento.
+- El diagrama refleja el estado actual de los componentes.
+- Las modalidades JSON completa y SSE funcionan desde la plataforma cliente.
+- La URL, el volumen y los secretos de Railway coinciden con el flujo de despliegue.
+- La integración y el streaming quedaron confirmados en producción controlada.
 
 ## 9. Evidencia actual
 

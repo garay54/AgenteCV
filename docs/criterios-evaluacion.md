@@ -1,8 +1,8 @@
-# Criterios internos de evaluación — Agente de CV Banorte
+# Criterios internos de evaluación — Agente de CV
 
 ## 1. Propósito y autoridad
 
-Este documento define cómo Mario evaluará la solución antes de presentarla. **No es una rúbrica oficial de Banorte**: no se dispone de ponderaciones oficiales ni de una lista exhaustiva de pruebas de evaluación.
+Este documento define cómo Mario evaluará la solución antes de presentarla. **No es una rúbrica oficial de la plataforma cliente**: no se dispone de ponderaciones oficiales ni de una lista exhaustiva de pruebas de evaluación.
 
 Las expectativas confirmadas por las instrucciones del reto son construir, integrar, desplegar y operar un agente de CV funcional, y explicar las decisiones técnicas adoptadas. Mario decidió utilizar RAG, dar prioridad a una arquitectura justificable y mantener el servicio disponible durante al menos 15 días.
 
@@ -10,7 +10,7 @@ Las expectativas confirmadas por las instrucciones del reto son construir, integ
 
 La solución no podrá considerarse lista, independientemente de la puntuación interna, mientras incumpla cualquiera de estas condiciones:
 
-- La plataforma de Banorte no puede invocar el endpoint o mostrar su respuesta.
+- La plataforma cliente no puede invocar el endpoint o mostrar su respuesta.
 - El endpoint no está disponible mediante HTTPS o no cumple el contrato aplicable.
 - El agente inventa información profesional en los casos críticos de evaluación.
 - El agente revela información privada, confidencial o no autorizada.
@@ -27,7 +27,7 @@ La solución no podrá considerarse lista, independientemente de la puntuación 
 | Seguridad y privacidad | 10 % | Pruebas de autenticación, ataques, secretos y auditoría del corpus. |
 | Documentación y presentación | 10 % | README, criterios, evidencias y explicación reproducible. |
 
-Esta ponderación expresa la estrategia de presentación de Mario. No deberá describirse como una ponderación asignada por Banorte.
+Esta ponderación expresa la estrategia de presentación de Mario. No deberá describirse como una ponderación asignada por la plataforma cliente.
 
 ## 4. Calidad de respuestas y RAG
 
@@ -82,10 +82,10 @@ La evidencia mínima incluirá:
 - Medición de latencia local y desplegada, incluido el arranque en frío.
 - Logs sanitizados con identificador de solicitud, resultado, latencia y tipo de error.
 - Manejo controlado de solicitudes inválidas, fallos del proveedor y timeouts.
-- Prueba real desde el chat de Banorte.
+- Prueba real desde el chat de la plataforma cliente.
 - Disponibilidad durante al menos 15 días después de la entrega, seguida de retiro manual por Mario.
 
-Los objetivos numéricos de timeout y latencia se fijarán después de observar los límites reales de Banorte.
+Los objetivos numéricos de timeout y latencia se fijarán después de observar los límites reales de la plataforma cliente.
 
 ## 7. Seguridad y privacidad
 
@@ -93,7 +93,7 @@ Antes de publicar se deberá comprobar:
 
 - Ausencia de claves y secretos en código, documentación, evidencias e historial que vaya a hacerse público.
 - Exclusión efectiva de fuentes privadas y documentos administrativos del corpus de producción.
-- Autenticación Bearer cuando se registre la clave del agente en Banorte.
+- Autenticación Bearer cuando se registre la clave del agente en la plataforma cliente.
 - Registros sin valores de `Authorization`, cookies ni contenido sensible innecesario.
 - Límites de entrada y respuestas de error sin detalles internos.
 - Pruebas contra inyección de instrucciones, extracción de prompt, invención y solicitudes confidenciales.
@@ -118,11 +118,11 @@ La publicación del repositorio permanece bloqueada hasta resolver los documento
 
 ## 10. Dudas que no resuelve esta rúbrica
 
-Todavía deben validarse mediante una solicitud real desde Banorte:
+La integración real confirmó la invocación autenticada y el streaming SSE. Todavía deben caracterizarse con mayor precisión:
 
 - Esquema exacto de solicitud y respuesta.
 - Versión o subconjunto de Open Responses.
-- Uso y secuencia de streaming SSE.
+- Subconjunto exacto de eventos SSE que consume la interfaz.
 - Formato de errores consumido por la plataforma.
 - Límites de tamaño, frecuencia y tiempo de respuesta.
 

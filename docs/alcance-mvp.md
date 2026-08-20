@@ -1,4 +1,4 @@
-# Alcance del MVP — Agente de CV Banorte
+# Alcance del MVP — Agente de CV
 
 ## 1. Definición del MVP
 
@@ -7,7 +7,7 @@ El MVP será un agente de CV accesible mediante una API pública HTTPS compatibl
 ## 2. Capacidades incluidas
 
 - Endpoint público mediante HTTPS.
-- Compatibilidad con el contrato Open Responses requerido por Banorte.
+- Compatibilidad con el contrato Open Responses requerido por la plataforma cliente.
 - Conversación de texto en español.
 - Identificación explícita como agente profesional de Mario y uso consistente de primera persona al describir su trayectoria.
 - Respuestas sobre el perfil profesional de Mario.
@@ -22,7 +22,7 @@ El MVP será un agente de CV accesible mediante una API pública HTTPS compatibl
 - Resistencia a solicitudes para revelar información confidencial, inventar experiencia o cambiar el propósito del agente.
 - Manejo de preguntas fuera del alcance profesional.
 - Uso de la transcripción recibida para mantener el contexto de varios turnos.
-- Autenticación mediante Bearer token al integrarse con Banorte.
+- Autenticación mediante Bearer token al integrarse con la plataforma cliente.
 - Respuesta no streaming compatible con el contrato.
 - Streaming SSE cuando sea solicitado por la plataforma y confirmado mediante pruebas.
 - Manejo consistente de solicitudes inválidas y errores.
@@ -44,7 +44,7 @@ El MVP será un agente de CV accesible mediante una API pública HTTPS compatibl
 - WebSockets.
 - Endpoint de compactación de conversaciones.
 - Soporte de voz, audio o video.
-- Integraciones adicionales fuera de la plataforma de Banorte.
+- Integraciones adicionales fuera de la plataforma cliente.
 
 Un elemento fuera del alcance sólo podrá incorporarse si resulta obligatorio para la integración, corrige un riesgo crítico o sustituye una capacidad incluida sin ampliar el tiempo de entrega.
 
@@ -52,7 +52,7 @@ Un elemento fuera del alcance sólo podrá incorporarse si resulta obligatorio p
 
 El MVP se considerará funcional cuando:
 
-- Banorte pueda enviar una pregunta al endpoint y mostrar su respuesta.
+- La plataforma cliente pueda enviar una pregunta al endpoint y mostrar su respuesta.
 - El endpoint público responda mediante HTTPS y cumpla el contrato aplicable.
 - La autenticación configurada acepte la clave correcta y rechace claves ausentes o incorrectas.
 - El agente responda correctamente preguntas representativas sobre perfil, formación, experiencia, habilidades y proyectos.
@@ -62,8 +62,8 @@ El MVP se considerará funcional cuando:
 - El agente reconozca datos ausentes en lugar de inventarlos.
 - El agente no divulgue información confidencial ni afirme ser una persona humana.
 - Una conversación de varios turnos conserve contexto mediante la transcripción recibida.
-- La respuesta no streaming sea aceptada por Banorte.
-- El streaming funcione si Banorte lo solicita durante la integración.
+- La respuesta no streaming sea aceptada por la plataforma cliente.
+- El streaming funcione si la plataforma cliente lo solicita durante la integración.
 - Los errores principales produzcan respuestas controladas y comprensibles.
 - Las evaluaciones críticas alcancen los criterios definidos antes de la evaluación final.
 

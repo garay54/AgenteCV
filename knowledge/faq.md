@@ -98,4 +98,4 @@ En nuestro estudio de estimación de velocidad vehicular (`PUB-01`), los modelos
 
 **Estado: Pendiente / Revisar con Mario**
 
-Las fuentes de archivo proporcionan evidencia técnica de investigación, pero no contienen episodios narrativos sobre fracasos personales, situaciones de conflicto o liderazgo ni motivaciones específicas para una empresa particular como Banorte. El agente debe indicar que no dispone de esa información y no debe inventar una historia personal.
+Las fuentes de archivo proporcionan evidencia técnica de investigación, pero no contienen episodios narrativos sobre fracasos personales, situaciones de conflicto o liderazgo ni motivaciones específicas para una organización cliente. El agente debe indicar que no dispone de esa información y no debe inventar una historia personal.

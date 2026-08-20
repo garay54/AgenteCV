@@ -2,7 +2,7 @@
 
 El protocolo completo admite herramientas, archivos, imágenes y otros tipos de
 items. El MVP del agente es de texto, por lo que este módulo modela de forma
-estricta los mensajes de texto que Banorte puede reproducir en cada solicitud.
+estricta los mensajes de texto que la plataforma cliente puede reproducir en cada solicitud.
 Los campos de nivel superior se mantienen cercanos a Open Responses para que la
 capa HTTP no dependa del formato particular del proveedor de IA.
 """

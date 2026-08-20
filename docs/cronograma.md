@@ -1,4 +1,4 @@
-# Cronograma de entrega — Agente de CV Banorte
+# Cronograma de entrega — Agente de CV
 
 ## 1. Fecha límite
 
@@ -12,7 +12,7 @@ El objetivo es terminar el martes con una versión pública demostrable y utiliz
 
 - Cada bloque debe cerrar con el resultado indicado antes de comenzar el siguiente.
 - Si una actividad no crítica se retrasa, se mueve a la lista de mejoras y no bloquea el MVP.
-- R06 permanece en progreso hasta probar solicitudes y respuestas reales con Banorte.
+- R06 quedó confirmado mediante solicitudes y respuestas reales con la plataforma cliente.
 - Después de las 11:15 del miércoles no se agregan funciones; sólo se aceptan correcciones críticas.
 
 ## 3. Agenda por etapas
@@ -26,7 +26,7 @@ El objetivo es terminar el martes con una versión pública demostrable y utiliz
 | 4. Seguridad y pruebas base | Mar 18, 17:00–19:00 | Proteger y estabilizar el servicio | `I06`, `I10`, `G01–G07`, `G09–G10`, `E01–E03`, `E05–E06` | Autenticación, errores y pruebas fundamentales funcionan localmente. |
 | 5. Contrato y streaming | Mar 18, 19:00–21:00 | Completar Open Responses | `A11`, `T01`, `T03–T06`, `T08`, `E04`, `E11` | Respuesta completa, historial y SSE pasan pruebas locales. |
 | 6. Despliegue público | Mar 18, 21:00–23:00 | Publicar la versión demostrable | `S03`, `S12`, `H01–H04`, `H06–H09`, `H12` | URL HTTPS pública, secretos configurados y repositorio actualizado. |
-| 7. Integración Banorte | Mié 19, 07:00–08:30 | Conectar el agente real | `N01–N03`, `N05–N07` | Banorte muestra respuestas del agente y existe evidencia. |
+| 7. Integración con plataforma cliente | Mié 19, 07:00–08:30 | Conectar el agente real | `N01–N03`, `N05–N07` | La plataforma cliente muestra respuestas del agente y existe evidencia. |
 | 8. Corrección de contrato | Mié 19, 08:30–09:30 | Resolver diferencias observadas | `R06`, `N04`, `H10–H11` | Ejemplos aceptados, streaming confirmado y contrato cerrado. |
 | 9. Evaluación final | Mié 19, 09:30–10:30 | Comprobar calidad y regresiones | `E07–E10`, `E13–E14` | Banco crítico ejecutado con resultados guardados. |
 | 10. Documentación y demo | Mié 19, 10:30–11:15 | Preparar la defensa de la solución | `M01–M10`, `F01–F08` | README completo, explicación preparada y demo ensayada. |
@@ -66,7 +66,7 @@ Estas actividades sólo se realizan si las exige la integración o existe tiempo
 
 ### Miércoles 19 a las 09:30
 
-- Agente registrado en Banorte.
+- Agente registrado en la plataforma cliente.
 - Contrato corregido con evidencia real.
 - R06 cerrado.
 
@@ -85,9 +85,9 @@ Estas actividades sólo se realizan si las exige la integración o existe tiempo
 ## 6. Contingencia
 
 - Si RAG no está listo el martes a las 17:00, reducir el corpus a las fuentes profesionales esenciales y conservar la evaluación mínima.
-- Si streaming falla a las 21:00, preservar la respuesta no streaming y continuar sólo si Banorte confirma que streaming es obligatorio.
+- Si streaming falla a las 21:00, preservar la respuesta no streaming y continuar sólo si la plataforma cliente confirma que streaming es obligatorio.
 - Si el despliegue principal falla, utilizar una segunda opción de alojamiento sin cambiar la aplicación.
-- Si Banorte no responde, demostrar el endpoint público con solicitudes guardadas y conservar logs sanitizados.
+- Si la plataforma cliente no responde, demostrar el endpoint público con solicitudes guardadas y conservar logs sanitizados.
 - Si una mejora no corrige un riesgo crítico antes del congelamiento, se documenta como trabajo futuro.
 
 ## 7. Historial de cambios

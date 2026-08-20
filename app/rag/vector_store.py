@@ -26,7 +26,7 @@ class ChromaVectorStore:
         return self._client.get_or_create_collection(
             name=self._collection_name,
             configuration={"hnsw": {"space": "cosine"}},
-            metadata={"purpose": "banorte_cv_rag"},
+            metadata={"purpose": "agente_cv_rag"},
         )
 
     def rebuild(
@@ -52,7 +52,7 @@ class ChromaVectorStore:
             name=self._collection_name,
             configuration={"hnsw": {"space": "cosine"}},
             metadata={
-                "purpose": "banorte_cv_rag",
+                "purpose": "agente_cv_rag",
                 "embedding_model": embedding_model,
                 "corpus_hash": corpus_hash,
             },

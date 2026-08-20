@@ -48,7 +48,7 @@ class Settings(BaseSettings):
 
     knowledge_dir: Path = PROJECT_ROOT / "knowledge"
     chroma_path: Path = PROJECT_ROOT / "data" / "chroma"
-    chroma_collection: str = "banorte_cv_v1"
+    chroma_collection: str = "agente_cv_v1"
 
     rag_top_k: int = 4
     rag_candidate_k: int = 16

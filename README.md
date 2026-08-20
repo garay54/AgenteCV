@@ -1,17 +1,17 @@
-# AgenteCV — Conversational CV Agent (Reto IA Banorte)
+# AgenteCV — Agente conversacional de CV
 
 Agente conversacional de CV desarrollado con FastAPI, RAG ligero (OpenAI Embeddings + ChromaDB) y protocolo Open Responses para responder preguntas verificables sobre experiencia, formación, habilidades, proyectos y publicaciones profesionales de Mario Alberto Román Garay.
 
-Banorte proporciona la interfaz de chat que consume el endpoint desplegado; este repositorio contiene la API backend, el motor RAG, la base de conocimiento curada y la suite de evaluación y pruebas.
+La plataforma cliente proporciona la interfaz de chat que consume el endpoint desplegado; este repositorio contiene la API backend, el motor RAG, la base de conocimiento curada y la suite de evaluación y pruebas.
 
 ## Estado actual
 
-- API desplegada en Railway con HTTPS, healthcheck y autenticación Bearer; el despliegue público debe actualizarse con el incremento de streaming SSE.
+- API desplegada en Railway con HTTPS, healthcheck, autenticación Bearer y streaming SSE.
 - RAG local construido con 55 fragmentos curados y evaluación real aprobada.
-- Suite automatizada: 41 pruebas aprobadas.
-- `POST /v1/responses` conecta localmente recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
-- Las modalidades JSON completa y streaming SSE están implementadas; el stream local produjo el ciclo Open Responses completo, texto incremental y cierre `[DONE]`.
-- Flujo real local validado con HTTP 200, modelo efectivo y uso de tokens reportado; falta desplegar el incremento SSE y validarlo desde Banorte.
+- Suite automatizada: 56 pruebas aprobadas.
+- `POST /v1/responses` conecta recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
+- Las modalidades JSON completa y streaming SSE están implementadas; el stream produce el ciclo Open Responses completo, texto incremental y cierre `[DONE]`.
+- La integración desplegada fue validada desde el cliente conversacional con HTTP 200 y transmisión SSE completa.
 
 ### Resultado de recuperación
 
@@ -94,7 +94,7 @@ RATE_LIMIT_REQUESTS_PER_MINUTE=20
 ```
 
 `AGENT_API_KEY` protege `POST /v1/responses` y es la clave que se registrará
-en Banorte. Nunca debe reutilizarse como `OPENAI_API_KEY`.
+en la plataforma cliente. Nunca debe reutilizarse como `OPENAI_API_KEY`.
 
 El cuerpo completo de `POST /v1/responses` se limita antes de deserializar el
 JSON. Las solicitudes autenticadas también se limitan por credencial mediante
@@ -134,4 +134,4 @@ python -m pytest
 - `docs/arquitectura.md`: Diseño de la arquitectura RAG y flujo de datos.
 - `docs/decisiones.md`: Registro de decisiones técnicas (ADR).
 - `docs/criterios-evaluacion.md`: Rúbrica de evaluación interna y calidad.
-- `docs/contrato-open-responses.md`: Especificación del contrato de integración con Banorte.
+- `docs/contrato-open-responses.md`: Especificación del contrato de integración con la plataforma cliente.

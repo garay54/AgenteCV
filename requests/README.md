@@ -6,8 +6,8 @@ Esta carpeta contiene solicitudes repetibles para comprobar el agente sin volver
 
 - `GET /health` puede ejecutarse desde ahora.
 - `POST /v1/responses` acepta solicitudes de texto y conecta RAG con `gpt-5.6-luna` tanto en modalidad completa como en streaming SSE.
-- La autenticación Bearer, el RAG, el modelo y el streaming están integrados y probados localmente. La aceptación del stream en Banorte requiere desplegar este incremento.
-- Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de Banorte utiliza otro subconjunto del contrato.
+- La autenticación Bearer, el RAG, el modelo y el streaming están integrados, desplegados y aceptados por el cliente conversacional.
+- Los cuerpos se basan en el contrato preliminar de `docs/contrato-open-responses.md`; deberán ajustarse si una solicitud real de la plataforma cliente utiliza otro subconjunto del contrato.
 
 ## Archivos
 
@@ -32,14 +32,14 @@ $env:AGENT_BASE_URL="http://127.0.0.1:8000/v1"
 $env:AGENT_API_KEY="tu-clave-local-del-agente"
 ```
 
-`AGENT_API_KEY` es la clave con la que Banorte invocará el agente. Nunca debe contener `OPENAI_API_KEY`.
+`AGENT_API_KEY` es la clave con la que la plataforma cliente invocará el agente. Nunca debe contener `OPENAI_API_KEY`.
 
 En Railway sólo cambiarán las URL y la clave de entrada:
 
 ```powershell
 $env:SERVICE_URL="https://nombre-del-servicio.up.railway.app"
 $env:AGENT_BASE_URL="https://nombre-del-servicio.up.railway.app/v1"
-$env:AGENT_API_KEY="clave-configurada-en-banorte-y-railway"
+$env:AGENT_API_KEY="clave-configurada-en-cliente-y-railway"
 ```
 
 ## Ejecución

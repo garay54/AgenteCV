@@ -33,13 +33,13 @@ Se consideró JavaScript con Express por su flexibilidad, soporte asíncrono y e
 
 - La API y el sistema RAG se desarrollarán en Python.
 - Los modelos de entrada y salida deberán representar correctamente el contrato Open Responses.
-- La documentación automática de FastAPI servirá como apoyo para pruebas, pero no sustituirá las pruebas de compatibilidad con la plataforma de Banorte.
+- La documentación automática de FastAPI servirá como apoyo para pruebas, pero no sustituirá las pruebas de compatibilidad con la plataforma cliente.
 - Las operaciones que esperen servicios externos podrán ser asíncronas.
 - Las tareas intensivas de procesamiento no deberán ejecutarse directamente como si fueran operaciones asíncronas de red.
 
 ### Condición de revisión
 
-La decisión solamente se reconsiderará si la plataforma de Banorte presenta una incompatibilidad comprobada con FastAPI/Python o si aparece un requisito obligatorio exclusivo del ecosistema JavaScript.
+La decisión solamente se reconsiderará si la plataforma cliente presenta una incompatibilidad comprobada con FastAPI/Python o si aparece un requisito obligatorio exclusivo del ecosistema JavaScript.
 
 ## D02. Proveedor y modelo de inteligencia artificial
 
@@ -131,7 +131,7 @@ La API pública conservará el contrato Open Responses y no expondrá directamen
 El flujo general será:
 
 ```text
-Plataforma Banorte
+Plataforma cliente
         │
         │ Open Responses
         ▼
@@ -335,12 +335,12 @@ La evidencia reproducible está en `artifacts/evaluations/retrieval-20260818-221
 
 ## D05. Manejo del estado conversacional
 
-**Estado:** Aceptada para el MVP; pendiente de validación con una solicitud real de Banorte  
+**Estado:** Aceptada para el MVP; pendiente de documentar una conversación de varios turnos
 **Fecha:** 2026-08-18
 
 ### Contexto
 
-La plataforma de Banorte permite seleccionar entre reproducir la transcripción completa en cada solicitud o utilizar `previous_response_id` para que el agente conserve el estado. En la configuración observada se seleccionó **Reproducir transcripción (sin estado)**.
+La plataforma cliente permite seleccionar entre reproducir la transcripción completa en cada solicitud o utilizar `previous_response_id` para que el agente conserve el estado. En la configuración observada se seleccionó **Reproducir transcripción (sin estado)**.
 
 El agente necesita mantener continuidad entre preguntas relacionadas, pero no requiere conservar conversaciones después de responder ni compartirlas entre solicitudes mediante almacenamiento propio.
 
@@ -348,7 +348,7 @@ El agente necesita mantener continuidad entre preguntas relacionadas, pero no re
 
 El servicio será **stateless** respecto de la conversación.
 
-- Banorte deberá enviar en cada solicitud la transcripción o los mensajes necesarios para reconstruir el contexto conversacional.
+- La plataforma cliente deberá enviar en cada solicitud la transcripción o los mensajes necesarios para reconstruir el contexto conversacional.
 - La aplicación normalizará y utilizará ese historial únicamente en memoria mientras procesa la solicitud.
 - El estado temporal comenzará al recibir la solicitud y terminará al entregar la respuesta completa o cerrar la transmisión correspondiente.
 - Después de responder, el servidor descartará mensajes, contexto recuperado y respuesta temporal.
@@ -360,7 +360,7 @@ El servicio será **stateless** respecto de la conversación.
 
 | Elemento | Ubicación | Duración |
 |---|---|---|
-| Historial conversacional | Cuerpo de la solicitud enviado por Banorte y memoria del proceso | Sólo durante la solicitud |
+| Historial conversacional | Cuerpo de la solicitud enviado por la plataforma cliente y memoria del proceso | Sólo durante la solicitud |
 | Fragmentos recuperados | Memoria del proceso | Sólo durante la solicitud |
 | Respuesta en construcción | Memoria del proceso | Hasta completar o cerrar la respuesta |
 | Conocimiento profesional | Índice RAG de Chroma | Persistente y reconstruible; no constituye estado conversacional |
@@ -371,27 +371,27 @@ El servicio será **stateless** respecto de la conversación.
 - Cualquier instancia disponible podrá atender una solicitud sin consultar sesiones creadas por otra instancia.
 - Reiniciar o escalar el servicio no eliminará conversaciones almacenadas porque el servidor no las conservará.
 - Se reduce el tratamiento de datos conversacionales y la complejidad de privacidad, expiración y sincronización.
-- La continuidad dependerá de que Banorte reproduzca correctamente el historial relevante en cada solicitud.
+- La continuidad dependerá de que la plataforma cliente reproduzca correctamente el historial relevante en cada solicitud.
 - El tamaño máximo de historial aceptado deberá definirse y validarse al confirmar el contrato real.
 
 ### Validación
 
-La decisión se comprobará mediante una conversación de varios turnos en la que Banorte envíe la transcripción previa y el agente responda correctamente una pregunta de seguimiento sin consultar almacenamiento de sesiones.
+La decisión se comprobará mediante una conversación de varios turnos en la que la plataforma cliente envíe la transcripción previa y el agente responda correctamente una pregunta de seguimiento sin consultar almacenamiento de sesiones.
 
 Se deberá verificar también que una solicitud independiente, sin historial, no reciba información procedente de conversaciones anteriores.
 
 ### Condición de revisión
 
-La decisión se revisará si una solicitud real demuestra que Banorte no reproduce el historial necesario, si exige `previous_response_id` o si aparece un requisito explícito de continuidad entre dispositivos o sesiones que no pueda resolverse con la transcripción recibida.
+La decisión se revisará si una solicitud real demuestra que la plataforma cliente no reproduce el historial necesario, si exige `previous_response_id` o si aparece un requisito explícito de continuidad entre dispositivos o sesiones que no pueda resolverse con la transcripción recibida.
 
 ## D06. Modalidad de respuesta completa y streaming
 
-**Estado:** Implementada y validada localmente; aceptación pública pendiente
-**Fecha:** 2026-08-18
+**Estado:** Implementada, desplegada y aceptada por el cliente conversacional
+**Fecha:** 2026-08-20
 
 ### Contexto
 
-El contrato contempla respuestas completas en JSON y transmisión incremental mediante Server-Sent Events (SSE). Una solicitud real de la plataforma de Banorte utilizó `stream: true` y la versión desplegada respondió que SSE no estaba implementado. Esta evidencia convirtió el streaming en un requisito obligatorio de integración.
+El contrato contempla respuestas completas en JSON y transmisión incremental mediante Server-Sent Events (SSE). Una solicitud real de la plataforma cliente utilizó `stream: true` y la versión desplegada respondió que SSE no estaba implementado. Esta evidencia convirtió el streaming en un requisito obligatorio de integración.
 
 Las respuestas del agente de CV serán normalmente breves, pero algunas explicaciones sobre proyectos, investigaciones o experiencia pueden beneficiarse de mostrar contenido antes de terminar la generación.
 
@@ -400,29 +400,29 @@ Las respuestas del agente de CV serán normalmente breves, pero algunas explicac
 Se soportarán las dos modalidades del contrato:
 
 - Cuando `stream` sea `false` o no esté presente, el endpoint devolverá una respuesta completa con `Content-Type: application/json`.
-- La recuperación RAG y la generación deberán funcionar y estar probadas en esta modalidad antes de incorporar SSE.
+- La recuperación RAG y la generación funcionan y están probadas en ambas modalidades.
 - La arquitectura interna conservará interfaces separadas para generación completa y generación incremental, evitando acoplar el RAG a una modalidad de transporte.
 - Cuando `stream` sea `true`, el endpoint devolverá eventos SSE semánticos compatibles con Open Responses.
-- SSE es un requisito obligatorio porque Banorte ya envió una solicitud real con `stream: true`.
+- SSE es un requisito obligatorio porque la plataforma cliente ya envió una solicitud real con `stream: true`.
 - Una solicitud con `stream: true` no deberá tratarse silenciosamente como `stream: false`.
-- La modalidad definitiva aceptada se confirmará mediante una prueba desde la plataforma de Banorte.
+- La modalidad streaming fue aceptada mediante una prueba desde la plataforma cliente.
 
 ### Evaluación por criterio
 
 | Criterio | Respuesta completa | Streaming SSE |
 |---|---|---|
 | Experiencia de usuario | Adecuada para respuestas breves; el contenido aparece al terminar | Mejora la percepción de velocidad en respuestas extensas |
-| Contrato | Contemplada mediante `stream: false` o su ausencia | Obligatoria: Banorte ya envió `stream: true` |
+| Contrato | Contemplada mediante `stream: false` o su ausencia | Obligatoria: la plataforma cliente ya envió `stream: true` |
 | Proxies y nube | Compatible con el comportamiento HTTP convencional | Puede sufrir buffering, timeout o cierre anticipado; requiere validación en el despliegue real |
 | Complejidad | Una respuesta, un estado final y errores HTTP directos | Requiere eventos ordenados, vaciado incremental, desconexión, errores parciales y cierre correcto |
-| Prioridad | Obligatoria y primera en implementarse | Obligatoria para la integración con Banorte |
+| Prioridad | Obligatoria y primera en implementarse | Obligatoria para la integración con la plataforma cliente |
 
 ### Requisitos implementados para SSE
 
 La implementación:
 
 - Responder con `Content-Type: text/event-stream`.
-- Emitir la secuencia de eventos exigida por el subconjunto de Open Responses que consuma Banorte.
+- Emitir la secuencia de eventos exigida por el subconjunto de Open Responses que consuma la plataforma cliente.
 - Mantener identificadores y números de secuencia coherentes.
 - Propagar texto incremental sin repetir ni perder fragmentos.
 - Representar fallos ocurridos después de iniciar la transmisión.
@@ -434,52 +434,52 @@ La implementación:
 
 La modalidad no streaming produce una respuesta JSON válida. La modalidad streaming fue probada localmente contra el proveedor real: respondió HTTP 200, emitió el ciclo semántico esperado con números de secuencia monotónicos, entregó texto mediante múltiples eventos `response.output_text.delta`, finalizó con `response.completed` y cerró con `[DONE]` sin exponer el prompt interno ni identificadores de fuentes RAG.
 
-D06 no estará completamente validada hasta desplegar este incremento y comprobar que la interfaz de Banorte acepta y muestra la secuencia SSE.
+El incremento desplegado fue comprobado desde el cliente conversacional, que aceptó y mostró la secuencia SSE completa.
 
 ### Condición de revisión
 
-La prioridad podrá cambiar si Banorte confirma que siempre solicita streaming, si establece un límite de tiempo incompatible con respuestas completas o si las mediciones muestran que la espera perjudica de forma material la experiencia conversacional.
+La prioridad podrá cambiar si la plataforma cliente confirma que siempre solicita streaming, si establece un límite de tiempo incompatible con respuestas completas o si las mediciones muestran que la espera perjudica de forma material la experiencia conversacional.
 
 ## D07. Estrategia de autenticación de entrada
 
-**Estado:** Implementada y probada localmente; pendiente de integración con Banorte
-**Fecha:** 2026-08-18
+**Estado:** Implementada, probada e integrada con la plataforma cliente
+**Fecha:** 2026-08-20
 
 ### Contexto
 
-El formulario de Banorte indica que la clave configurada para el agente se enviará al endpoint mediante el encabezado `Authorization: Bearer ...`. El endpoint utilizará servicios externos con credenciales propias, por lo que es necesario separar la autenticación de entrada de las claves empleadas para llamar a OpenAI u otros proveedores.
+El formulario de la plataforma cliente indica que la clave configurada para el agente se enviará al endpoint mediante el encabezado `Authorization: Bearer ...`. El endpoint utilizará servicios externos con credenciales propias, por lo que es necesario separar la autenticación de entrada de las claves empleadas para llamar a OpenAI u otros proveedores.
 
 Se evaluaron estas alternativas:
 
 | Alternativa | Ventajas | Limitaciones |
 |---|---|---|
-| Clave estática mediante Bearer | Coincide con la interfaz observada de Banorte, utiliza un esquema HTTP estándar y es sencilla de probar | Requiere proteger, distribuir y rotar el secreto |
-| Clave en encabezado personalizado | Permite definir un nombre propio como `x-api-key` | No existe evidencia de que Banorte permita configurar otro encabezado |
-| Endpoint sin autenticación | Elimina la configuración de credenciales | Permite abuso, acceso no autorizado y consumo de cuota; Banorte no lo exige actualmente |
+| Clave estática mediante Bearer | Coincide con la interfaz observada de la plataforma cliente, utiliza un esquema HTTP estándar y es sencilla de probar | Requiere proteger, distribuir y rotar el secreto |
+| Clave en encabezado personalizado | Permite definir un nombre propio como `x-api-key` | No existe evidencia de que la plataforma cliente permita configurar otro encabezado |
+| Endpoint sin autenticación | Elimina la configuración de credenciales | Permite abuso, acceso no autorizado y consumo de cuota; la plataforma cliente no lo exige actualmente |
 
 ### Decisión
 
 `POST /v1/responses` se protege mediante una **clave estática Bearer independiente**, almacenada como variable de entorno.
 
 - La credencial de entrada se llamará `AGENT_API_KEY`.
-- Banorte enviará `Authorization: Bearer <AGENT_API_KEY>`.
+- La plataforma cliente enviará `Authorization: Bearer <AGENT_API_KEY>`.
 - `AGENT_API_KEY` será distinta de `OPENAI_API_KEY` y de cualquier clave de un proveedor de modelos.
 - La aplicación no incluirá valores reales de estas claves en código, documentación, pruebas, respuestas ni registros.
 - Las solicitudes sin credencial o con una credencial inválida recibirán HTTP `401` y `WWW-Authenticate: Bearer`.
 - El cuerpo del error será genérico y no revelará si una clave concreta existe, expiró o coincide parcialmente.
 - La comparación de la credencial evitará comparaciones inseguras dependientes del tiempo cuando la implementación lo permita.
 - `GET /health` permanecerá público y no devolverá configuración, información profesional, estado del índice ni secretos.
-- No se habilitará un endpoint público sin autenticación para generar respuestas, salvo que Banorte lo exija explícitamente.
+- No se habilitará un endpoint público sin autenticación para generar respuestas, salvo que la plataforma cliente lo exija explícitamente.
 
 ### Separación de credenciales
 
 | Variable | Autoriza | Se configura en |
 |---|---|---|
-| `AGENT_API_KEY` | A Banorte para invocar el endpoint del agente | Servicio desplegado y formulario de Banorte |
+| `AGENT_API_KEY` | A la plataforma cliente para invocar el endpoint del agente | Servicio desplegado y formulario de la plataforma cliente |
 | `OPENAI_API_KEY` | Al servidor para invocar OpenAI | Únicamente en el servicio desplegado o entorno local |
 | Credencial de contingencia | Al servidor para invocar el proveedor alternativo | Únicamente en el servicio desplegado o entorno local |
 
-La clave registrada en el formulario de Banorte nunca deberá ser `OPENAI_API_KEY`.
+La clave registrada en el formulario de la plataforma cliente nunca deberá ser `OPENAI_API_KEY`.
 
 ### Rotación
 
@@ -488,7 +488,7 @@ La clave podrá rotarse sin modificar ni volver a compilar el código:
 1. Generar una nueva clave aleatoria.
 2. Reemplazar `AGENT_API_KEY` en las variables de entorno del servicio.
 3. Reiniciar o desplegar nuevamente la instancia para cargarla, si la plataforma lo requiere.
-4. Actualizar la clave del agente en Banorte.
+4. Actualizar la clave del agente en la plataforma cliente.
 5. Probar una solicitud autorizada y confirmar que la clave anterior ya no funciona.
 
 Si la plataforma no permite actualizar ambos extremos dentro de una ventana suficientemente corta, se podrá añadir temporalmente soporte para una clave actual y una anterior mediante configuración, sin incorporarlas al código.
@@ -510,12 +510,12 @@ usan una credencial ficticia y no leen la clave personal de `.env`.
 
 ### Condición de revisión
 
-La estrategia se revisará si Banorte exige un encabezado diferente, un endpoint abierto, claves múltiples, firma de solicitudes, OAuth u otro mecanismo de autenticación no observable en la configuración actual.
+La estrategia se revisará si la plataforma cliente exige un encabezado diferente, un endpoint abierto, claves múltiples, firma de solicitudes, OAuth u otro mecanismo de autenticación no observable en la configuración actual.
 
 ## D08. Plataforma de despliegue
 
-**Estado:** Aceptada; despliegue base validado, persistencia RAG pendiente
-**Fecha:** 2026-08-18  
+**Estado:** Aceptada; despliegue y SSE validados, persistencia RAG bajo monitoreo
+**Fecha:** 2026-08-20
 **Aprobación de costo:** Mario acepta el plan Railway Hobby con cuota base de USD $5 al mes.
 
 ### Contexto
@@ -550,7 +550,7 @@ La plataforma principal será **Railway**, utilizando el plan **Hobby**.
 - Se montará un volumen persistente para el índice de Chroma y `CHROMA_PATH` apuntará a dicho volumen.
 - `OPENAI_API_KEY`, `AGENT_API_KEY` y cualquier credencial de contingencia se configurarán como variables del servicio, nunca dentro de la imagen ni del repositorio.
 - La aplicación escribirá registros estructurados en salida estándar sin claves, encabezados de autorización ni transcripciones completas.
-- Si se activa SSE, se comprobará desde el dominio público de Railway y no solamente en local.
+- SSE se comprueba desde el dominio público de Railway y no solamente en local.
 - Los despliegues se realizarán desde el repositorio mediante una configuración reproducible.
 
 ### Costo y control de consumo
@@ -582,17 +582,17 @@ Render gratuito no se utilizará para la entrega porque su suspensión por inact
 
 ### Validación
 
-D08 está validada para la API base: Railway construye el servicio, la URL pública HTTPS es estable, `/health` responde externamente, `/v1/responses` acepta autenticación y la clave de entrada puede rotarse mediante variables. Para considerarla terminada aún falta evidencia de que:
+D08 está validada para la API desplegada: Railway construye el servicio, la URL pública HTTPS es estable, `/health` responde externamente, `/v1/responses` acepta autenticación, SSE funciona a través del proxy y la clave de entrada puede rotarse mediante variables. La operación controlada seguirá observando que:
 
 - El índice Chroma permanece disponible después de reiniciar el servicio o puede reconstruirse de manera controlada.
 - Los logs permiten diagnosticar solicitudes sin divulgar secretos ni transcripciones completas.
-- Una prueba SSE funciona a través del proxy público si Banorte activa `stream: true`.
+- El streaming SSE mantiene su funcionamiento a través del proxy público.
 - El servicio permanece activo sin cold start durante el periodo de evaluación.
 - El consumo y costo observados quedan registrados.
 
 ### Condición de revisión
 
-La decisión se revisará si Railway no puede ejecutar las dependencias dentro de los recursos seleccionados, no conserva el volumen, interfiere con el contrato de Banorte, excede el presupuesto aceptado o presenta fallas de disponibilidad durante las pruebas.
+La decisión se revisará si Railway no puede ejecutar las dependencias dentro de los recursos seleccionados, no conserva el volumen, interfiere con el contrato de la plataforma cliente, excede el presupuesto aceptado o presenta fallas de disponibilidad durante las pruebas.
 
 ### Referencias
 
@@ -610,15 +610,15 @@ La decisión se revisará si Railway no puede ejecutar las dependencias dentro d
 
 **Estado:** Aceptada  
 **Fecha:** 2026-08-18  
-**Fuente:** Instrucciones y formulario de Banorte; decisión directa de Mario.
+**Fuente:** Instrucciones y formulario de la plataforma cliente; decisión directa de Mario.
 
 ### Contexto
 
-La plataforma de Banorte proporciona el chat, permite seleccionar el agente y consume su endpoint público. No existe una regla confirmada que obligue a hablar en primera o tercera persona. La solución debe representar la trayectoria de Mario sin confundir al usuario ni afirmar que el software es una persona humana.
+La plataforma cliente proporciona el chat, permite seleccionar el agente y consume su endpoint público. No existe una regla confirmada que obligue a hablar en primera o tercera persona. La solución debe representar la trayectoria de Mario sin confundir al usuario ni afirmar que el software es una persona humana.
 
 ### Decisión
 
-- No se construirá una interfaz gráfica propia para el MVP; Banorte será el cliente conversacional.
+- No se construirá una interfaz gráfica propia para el MVP; la plataforma cliente será el cliente conversacional.
 - El agente se presentará explícitamente como **el agente profesional de Mario**.
 - Utilizará primera persona por defecto al describir la trayectoria de Mario para mantener una conversación natural.
 - No afirmará ser una persona humana ni inventará opiniones, emociones, intereses o experiencias.
@@ -635,7 +635,7 @@ La plataforma de Banorte proporciona el chat, permite seleccionar el agente y co
 
 **Estado:** Aceptada  
 **Fecha:** 2026-08-18  
-**Fuente:** Decisión directa de Mario; no constituye una rúbrica oficial de Banorte.
+**Fuente:** Decisión directa de Mario; no constituye una rúbrica oficial de la plataforma cliente.
 
 ### Contexto
 
@@ -645,7 +645,7 @@ No se dispone de una rúbrica oficial con porcentajes. El reto sí enfatiza que 
 
 - Se utilizarán como condiciones mínimas el funcionamiento extremo a extremo, respuestas claras y fundamentadas, ausencia de divulgaciones críticas, despliegue reproducible y publicación segura del repositorio.
 - La evaluación interna asignará 30 % a calidad y RAG, 30 % a arquitectura y decisiones, 20 % a despliegue y operación, 10 % a seguridad y privacidad, y 10 % a documentación y presentación.
-- Estas ponderaciones se presentarán siempre como criterios internos, nunca como calificación o ponderación atribuida a Banorte.
+- Estas ponderaciones se presentarán siempre como criterios internos, nunca como calificación o ponderación atribuida a la plataforma cliente.
 - El repositorio final será público e incluirá README, decisiones, arquitectura y evidencia de evaluación.
 - La presentación formará parte de la entrega; el video o la demostración en vivo se prepararán posteriormente.
 - El endpoint permanecerá disponible durante al menos 15 días después de la entrega y Mario lo retirará manualmente al concluir ese periodo.
@@ -653,4 +653,4 @@ No se dispone de una rúbrica oficial con porcentajes. El reto sí enfatiza que 
 
 ### Evidencia y revisión
 
-Los criterios completos están en `docs/criterios-evaluacion.md`. La ponderación podrá ajustarse antes de la evaluación final si Banorte publica una rúbrica oficial; cualquier cambio deberá conservar el historial y distinguir la fuente de cada criterio.
+Los criterios completos están en `docs/criterios-evaluacion.md`. La ponderación podrá ajustarse antes de la evaluación final si la plataforma cliente publica una rúbrica oficial; cualquier cambio deberá conservar el historial y distinguir la fuente de cada criterio.

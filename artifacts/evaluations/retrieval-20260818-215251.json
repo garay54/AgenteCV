@@ -2,7 +2,7 @@
   "created_at": "2026-08-19T04:52:51.851945+00:00",
   "evaluation_scope": "Recuperación por documento esperado; la pertinencia de sección requiere revisión del detalle.",
   "embedding_model": "text-embedding-3-small",
-  "collection": "banorte_cv_v1",
+  "collection": "agente_cv_v1",
   "thresholds": {
     "hit_at_3": 0.9,
     "top_1": 0.75,

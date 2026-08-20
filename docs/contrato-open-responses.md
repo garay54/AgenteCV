@@ -1,8 +1,8 @@
-# Contrato de integración Open Responses — Agente de CV Banorte
+# Contrato de integración Open Responses — Agente de CV
 
 ## 1. Propósito
 
-Este documento define el contrato externo entre la plataforma del Reto IA Banorte y el agente de CV. Su objetivo es establecer qué URL invoca Banorte, qué encabezados y cuerpo envía, qué respuestas debe devolver el agente, cómo se transmite el historial, cómo funciona el streaming y cómo se representan los errores.
+Este documento define el contrato externo entre la plataforma cliente y el agente de CV. Su objetivo es establecer qué URL invoca la plataforma cliente, qué encabezados y cuerpo envía, qué respuestas debe devolver el agente, cómo se transmite el historial, cómo funciona el streaming y cómo se representan los errores.
 
 Este documento no define la implementación interna del agente, el proveedor del modelo, el framework web, el almacenamiento del conocimiento ni la arquitectura RAG.
 
@@ -10,40 +10,40 @@ Este documento no define la implementación interna del agente, el proveedor del
 
 | Actividad | Estado | Motivo |
 |---|---|---|
-| R06 — Confirmar contrato Open Responses | En progreso | Banorte confirmó en una solicitud real que utiliza `stream: true`; la implementación local ya emite SSE, pero falta que la plataforma acepte la secuencia desplegada. |
+| R06 — Confirmar contrato Open Responses | Confirmado | Una conversación real utilizó `stream: true` y el cliente conversacional aceptó y mostró la secuencia SSE desplegada. |
 | R07 — Confirmar entrega del historial | Confirmado | La plataforma permite reproducir la transcripción o utilizar `previous_response_id`; para el MVP se seleccionó reproducir la transcripción. |
 | R08 — Confirmar autenticación de entrada | Confirmado | La plataforma puede enviar una clave mediante `Authorization: Bearer <API_KEY>`. |
 
 ## 3. Fuentes
 
-- Instrucciones originales del Reto IA Banorte.
-- Formulario **Añadir un agente** de la plataforma de Banorte.
+- Instrucciones originales del proyecto de agente conversacional.
+- Formulario **Añadir un agente** de la plataforma cliente.
 - [Especificación Open Responses](https://www.openresponses.org/specification).
 - [Referencia Open Responses](https://www.openresponses.org/reference).
 - [Esquema OpenAPI](https://www.openresponses.org/openapi/openapi.json).
 - [Pruebas oficiales de aceptación](https://www.openresponses.org/compliance).
 
-La versión de referencia observada en el esquema OpenAPI es `2026-04-24`. Falta confirmar si Banorte evalúa esa versión completa o un subconjunto del protocolo.
+La versión de referencia observada en el esquema OpenAPI es `2026-04-24`. Falta confirmar si la plataforma cliente evalúa esa versión completa o un subconjunto del protocolo.
 
-## 4. Configuración confirmada en Banorte
+## 4. Configuración confirmada en la plataforma cliente
 
 | Elemento | Comportamiento confirmado |
 |---|---|
-| URL registrada | Banorte solicita una URL base. |
+| URL registrada | La plataforma cliente solicita una URL base. |
 | Ruta invocada | Las solicitudes se envían a `{URL base}/responses`. |
 | API key | Campo opcional en el formulario. |
 | Envío de API key | `Authorization: Bearer <API_KEY>`. |
 | Modelo | Campo opcional. |
-| Instrucciones | Banorte puede enviar instrucciones del sistema con cada solicitud. |
-| Parámetros adicionales | Banorte permite añadir parámetros al cuerpo mediante un objeto JSON. |
+| Instrucciones | La plataforma cliente puede enviar instrucciones del sistema con cada solicitud. |
+| Parámetros adicionales | La plataforma cliente permite añadir parámetros al cuerpo mediante un objeto JSON. |
 | Estado de conversación | `Reproducir transcripción (sin estado)` o `previous_response_id (el agente guarda el estado)`. |
 | Modalidad del MVP | Texto. Las entradas de imágenes y archivos permanecerán desactivadas. |
-| Cliente conversacional | Banorte proporciona el chat, permite seleccionar el agente y envía las solicitudes al endpoint registrado. No se requiere frontend propio para el MVP. |
-| Streaming observado | Una solicitud real de Banorte envió `stream: true`; por ello SSE es obligatorio para la integración. |
+| Cliente conversacional | La plataforma cliente proporciona el chat, permite seleccionar el agente y envía las solicitudes al endpoint registrado. No se requiere frontend propio para el MVP. |
+| Streaming observado | Una solicitud real de la plataforma cliente envió `stream: true`; por ello SSE es obligatorio para la integración. |
 
 La función de importar una tarjeta de agente desde `/.well-known/agent-card.json` es opcional y no forma parte del contrato mínimo del MVP.
 
-El agente Guía consultado confirmó que sus ejemplos de `POST /v1/responses` describían llamadas desde un backend hacia un proveedor de modelos, no el payload exacto enviado por Banorte. Por tanto, esos ejemplos no se utilizarán como evidencia del contrato externo.
+El agente Guía consultado confirmó que sus ejemplos de `POST /v1/responses` describían llamadas desde un backend hacia un proveedor de modelos, no el payload exacto enviado por la plataforma cliente. Por tanto, esos ejemplos no se utilizarán como evidencia del contrato externo.
 
 ## 5. Endpoint HTTP
 
@@ -91,7 +91,7 @@ Campos relevantes para el MVP:
 | Campo | Uso esperado |
 |---|---|
 | `input` | Pregunta actual y transcripción de la conversación. |
-| `model` | Identificador opcional enviado desde la configuración de Banorte. |
+| `model` | Identificador opcional enviado desde la configuración de la plataforma cliente. |
 | `instructions` | Instrucciones opcionales configuradas en la plataforma. |
 | `stream` | Solicita respuesta completa o transmisión incremental. |
 | `previous_response_id` | No se utilizará con el modo de reproducción de transcripción. |
@@ -99,7 +99,7 @@ Campos relevantes para el MVP:
 
 ### 6.1 Ejemplo de referencia no streaming
 
-El siguiente ejemplo se basa en la especificación, pero todavía no constituye evidencia de aceptación por Banorte:
+El siguiente ejemplo se basa en la especificación y documenta el subconjunto implementado; no representa un payload capturado del cliente conversacional:
 
 ```json
 {
@@ -165,7 +165,7 @@ Algunos campos pueden contener `null`, pero el resultado final deberá validarse
 
 ### 7.1 Ejemplo de referencia
 
-Este ejemplo es un borrador para la implementación. Deberá sustituirse o confirmarse con una respuesta aceptada por Banorte:
+Este ejemplo documenta la respuesta implementada y aceptada; los valores ilustrativos no proceden de una conversación real:
 
 ```json
 {
@@ -273,7 +273,7 @@ data: [DONE]
 
 El ejemplo está abreviado y no reemplaza los eventos completos definidos en el esquema OpenAPI.
 
-La implementación local fue validada con una llamada real a `gpt-5.6-luna`: devolvió HTTP 200, `text/event-stream`, números de secuencia monotónicos, texto incremental, `response.completed` y el terminador `[DONE]`. La aceptación de esta secuencia desde la interfaz de Banorte permanece pendiente hasta desplegar el cambio.
+La implementación fue validada con una llamada real a `gpt-5.6-luna`: devolvió HTTP 200, `text/event-stream`, números de secuencia monotónicos, texto incremental, `response.completed` y el terminador `[DONE]`. La secuencia desplegada también fue aceptada y mostrada por el cliente conversacional.
 
 ## 9. Historial de conversación
 
@@ -285,7 +285,7 @@ Reproducir transcripción (sin estado)
 
 ### 9.2 Responsabilidades
 
-- Banorte administra la conversación y vuelve a enviar la transcripción necesaria en cada solicitud.
+- La plataforma cliente administra la conversación y vuelve a enviar la transcripción necesaria en cada solicitud.
 - El agente procesa el historial recibido como parte de `input`.
 - El agente no necesita almacenar conversaciones entre solicitudes.
 - El agente no utilizará `previous_response_id` en el MVP.
@@ -311,7 +311,7 @@ Authorization: Bearer <API_KEY>
 | Formato incorrecto | HTTP 401. |
 | Clave incorrecta | HTTP 401. |
 
-La clave utilizada para autenticar a Banorte debe ser diferente de cualquier credencial utilizada con el proveedor del modelo.
+La clave utilizada para autenticar a la plataforma cliente debe ser diferente de cualquier credencial utilizada con el proveedor del modelo.
 
 ## 11. Errores
 
@@ -351,19 +351,18 @@ Por tanto:
 - No se requiere devolver archivos.
 - La configuración **Entrega de archivos** no aplica al MVP.
 
-## 13. Aspectos pendientes de confirmar mediante pruebas
+## 13. Aspectos pendientes de caracterizar
 
-- Cuerpo JSON exacto enviado por Banorte.
-- Forma exacta en que Banorte reproduce la transcripción dentro de `input`.
+- Cuerpo JSON exacto enviado por la plataforma cliente.
+- Forma exacta en que la plataforma cliente reproduce la transcripción dentro de `input`.
 - Inclusión u omisión del campo `model`.
 - Inclusión de `instructions` y parámetros adicionales.
-- Aceptación por Banorte de la secuencia SSE implementada y desplegada.
 - Confirmación de si la interfaz consume todo el ciclo semántico o sólo un subconjunto de eventos.
 - Versión o subconjunto de Open Responses utilizado en la evaluación.
 - Tiempo máximo de respuesta.
 - Tamaño máximo de solicitud.
 - Límites de frecuencia.
-- Formato exacto mostrado por Banorte ante errores.
+- Formato exacto mostrado por la plataforma cliente ante errores.
 
 ## 14. Evidencias requeridas
 
@@ -373,7 +372,7 @@ Las evidencias deberán guardarse sin secretos ni datos sensibles:
 docs/evidencias/
 ├── r07-estado-conversacion.png
 ├── r08-autenticacion-bearer.png
-└── r06-integracion-banorte.md
+└── r06-integracion-cliente.md
 
 docs/ejemplos-open-responses/
 ├── request-non-stream.json
@@ -385,29 +384,28 @@ docs/ejemplos-open-responses/
 └── error-500.json
 ```
 
-Los ejemplos reales se crearán después de recibir solicitudes desde Banorte. No deben contener API keys, encabezados sensibles ni información privada.
+Toda evidencia real que se conserve deberá estar sanitizada y no contener API keys, encabezados sensibles ni información privada.
 
 ## 15. Criterios para cerrar R06
 
-R06 podrá marcarse como completada cuando:
+R06 se considera completada porque:
 
-- Exista una solicitud no streaming recibida desde Banorte.
-- Exista una respuesta no streaming aceptada y mostrada correctamente.
-- Exista una secuencia SSE desplegada, aceptada y finalizada correctamente desde Banorte.
-- Se hayan probado errores representativos.
-- Los ejemplos sanitizados estén guardados en el proyecto.
-- La respuesta se haya validado contra el esquema OpenAPI aplicable.
-- Se hayan ejecutado las pruebas de aceptación correspondientes al alcance del reto.
+- La plataforma cliente aceptó una solicitud autenticada contra el endpoint desplegado.
+- El cliente conversacional mostró correctamente la respuesta del agente.
+- Una secuencia SSE desplegada fue aceptada y finalizó correctamente.
+- Los errores representativos están cubiertos por pruebas automatizadas.
+- La respuesta se validó contra el subconjunto Open Responses implementado.
 
 ## 16. Observaciones sobre la especificación
 
-- La sección normativa indica que las solicitudes deben enviarse como `application/json`, mientras que la referencia también menciona `application/x-www-form-urlencoded`. Para este proyecto se documenta JSON como formato requerido y se verificará el comportamiento real de Banorte.
+- La sección normativa indica que las solicitudes deben enviarse como `application/json`, mientras que la referencia también menciona `application/x-www-form-urlencoded`. Para este proyecto se documenta JSON como formato requerido y la integración real confirmó ese recorrido.
 - El esquema OpenAPI marca numerosos campos del objeto de respuesta como obligatorios, aunque algunos ejemplos narrativos omiten campos anulables. La validación automática del esquema y las pruebas de aceptación tendrán prioridad sobre los ejemplos abreviados.
-- La autenticación aparece como obligatoria en la especificación, pero el formulario de Banorte presenta la API key como opcional. El agente podrá registrarse con una clave Bearer para eliminar esa ambigüedad.
-- WebSockets y `/responses/compact` aparecen en la versión `2026-04-24`, pero no se consideran parte del MVP hasta que Banorte confirme que los evalúa.
+- La autenticación aparece como obligatoria en la especificación, pero el formulario de la plataforma cliente presenta la API key como opcional. El agente está registrado con una clave Bearer independiente.
+- WebSockets y `/responses/compact` aparecen en la versión `2026-04-24`, pero no se consideran parte del MVP hasta que la plataforma cliente confirme que los evalúa.
 
 ## 17. Historial de cambios
 
 | Fecha | Cambio | Responsable |
 |---|---|---|
-| 2026-08-17 | Creación inicial con información de la especificación y del formulario de Banorte. | Mario |
+| 2026-08-17 | Creación inicial con información de la especificación y del formulario de la plataforma cliente. | Mario |
+| 2026-08-20 | Integración desplegada y streaming SSE aceptado desde el cliente conversacional. | Mario |

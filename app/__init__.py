@@ -1,2 +1,1 @@
-"""Aplicación del agente profesional para el reto de Banorte."""
-
+"""Aplicación del agente profesional de CV."""
