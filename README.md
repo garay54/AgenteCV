@@ -7,26 +7,26 @@ La plataforma cliente proporciona la interfaz de chat que consume el endpoint de
 ## Estado actual
 
 - API desplegada en Railway con HTTPS, healthcheck, autenticación Bearer y streaming SSE.
-- RAG local construido con 55 fragmentos curados y evaluación real aprobada.
-- Suite automatizada: 56 pruebas aprobadas.
+- RAG local `agente_cv_v2` construido con 59 fragmentos curados y evaluación real aprobada.
+- Suite automatizada: 59 pruebas aprobadas.
 - `POST /v1/responses` conecta recuperación RAG, prompt fundamentado y `gpt-5.6-luna` mediante Responses API.
 - Las modalidades JSON completa y streaming SSE están implementadas; el stream produce el ciclo Open Responses completo, texto incremental y cierre `[DONE]`.
 - La integración desplegada fue validada desde el cliente conversacional con HTTP 200 y transmisión SSE completa.
 
 ### Resultado de recuperación
 
-La evaluación reproducible más reciente ejecutó 49 consultas single-turn con `text-embedding-3-small`, Chroma y reranking híbrido ligero:
+La evaluación reproducible más reciente ejecutó 54 consultas single-turn con `text-embedding-3-small`, Chroma y reranking híbrido ligero:
 
 | Métrica | Resultado |
 |---|---:|
 | Hit@3 | 100 % |
 | Hit@4 | 100 % |
-| Top-1 | 81.63 % |
-| MRR@4 | 90.48 % |
+| Top-1 | 83.33 % |
+| MRR@4 | 91.36 % |
 | Errores | 0 |
 | Documentos excluidos recuperados | 0 |
 
-Reporte: `artifacts/evaluations/retrieval-20260818-221152.json`. Estas cifras evalúan recuperación; la generación y las conversaciones multitur­no requieren una evaluación posterior.
+Reporte: `artifacts/evaluations/retrieval-20260819-220326.json`. Estas cifras evalúan recuperación. Las pruebas de generación dirigidas confirmaron el rechazo de una tarea de programación, el seguimiento sobre grados académicos y una respuesta fundamentada sobre RankVideo; todavía se requiere una evaluación de generación más amplia para medir calidad global.
 
 ---
 

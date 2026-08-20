@@ -1,5 +1,11 @@
-from app.agent import AgentService, provider_input, retrieval_query
-from app.llm import GenerationResult, GenerationUsage
+from app.agent import AgentService, OUT_OF_SCOPE_MESSAGE, provider_input, retrieval_query
+from app.llm import (
+    GenerationResult,
+    GenerationStreamCompleted,
+    GenerationStreamStarted,
+    GenerationTextDelta,
+    GenerationUsage,
+)
 from app.models import ResponseCreateRequest
 from app.rag.models import KnowledgeChunk, SearchResult
 
@@ -7,8 +13,10 @@ from app.rag.models import KnowledgeChunk, SearchResult
 class _RagStub:
     def __init__(self) -> None:
         self.query = ""
+        self.calls = 0
 
     def search(self, query: str):
+        self.calls += 1
         self.query = query
         return [
             SearchResult(
@@ -32,8 +40,10 @@ class _GenerationStub:
 
     def __init__(self) -> None:
         self.arguments = {}
+        self.calls = 0
 
     def generate(self, **kwargs):
+        self.calls += 1
         self.arguments = kwargs
         return GenerationResult(
             id="resp-test",
@@ -44,6 +54,11 @@ class _GenerationStub:
             status="completed",
             usage=GenerationUsage(),
         )
+
+    def stream(self, **kwargs):
+        self.calls += 1
+        self.arguments = kwargs
+        return iter(())
 
 
 def test_multiturn_query_uses_two_recent_user_turns() -> None:
@@ -74,6 +89,36 @@ def test_multiturn_query_uses_two_recent_user_turns() -> None:
     }
 
 
+def test_ambiguous_education_followup_expands_retrieval_topic() -> None:
+    request = ResponseCreateRequest.model_validate(
+        {
+            "input": [
+                {
+                    "type": "message",
+                    "role": "user",
+                    "content": "¿Cuándo obtuvo Mario el doctorado?",
+                },
+                {
+                    "type": "message",
+                    "role": "assistant",
+                    "content": "Obtuvo el grado el 10 de agosto de 2026.",
+                },
+                {
+                    "type": "message",
+                    "role": "user",
+                    "content": "¿Tenía otros grados?",
+                },
+            ]
+        }
+    )
+
+    query = retrieval_query(request)
+
+    assert "¿Cuándo obtuvo Mario el doctorado?" in query
+    assert "¿Tenía otros grados?" in query
+    assert "licenciatura, maestría y doctorado" in query
+
+
 def test_agent_connects_retrieval_prompt_and_generation() -> None:
     rag = _RagStub()
     generation = _GenerationStub()
@@ -100,3 +145,51 @@ def test_agent_connects_retrieval_prompt_and_generation() -> None:
     assert "SRC-TD-01" in generation.arguments["instructions"]
     assert "Responde brevemente" in generation.arguments["instructions"]
     assert "no inventes" in generation.arguments["instructions"].casefold()
+    assert "generar o depurar código" in generation.arguments["instructions"]
+
+
+def test_obvious_code_request_is_refused_without_rag_or_model() -> None:
+    rag = _RagStub()
+    generation = _GenerationStub()
+    service = AgentService(
+        rag_service=rag,
+        generation_provider=generation,
+        default_max_output_tokens=300,
+    )
+    request = ResponseCreateRequest.model_validate(
+        {
+            "input": (
+                "Quiero un código que pida dos números, los sume y calcule "
+                "su promedio."
+            )
+        }
+    )
+
+    answer = service.answer(request)
+
+    assert answer.generation.text == OUT_OF_SCOPE_MESSAGE
+    assert answer.retrieved == ()
+    assert rag.calls == 0
+    assert generation.calls == 0
+
+
+def test_obvious_code_request_has_complete_local_stream() -> None:
+    rag = _RagStub()
+    generation = _GenerationStub()
+    service = AgentService(
+        rag_service=rag,
+        generation_provider=generation,
+        default_max_output_tokens=300,
+    )
+    request = ResponseCreateRequest.model_validate(
+        {"input": "Genera un programa para sumar dos números.", "stream": True}
+    )
+
+    events = list(service.stream(request))
+
+    assert isinstance(events[0], GenerationStreamStarted)
+    assert events[1] == GenerationTextDelta(delta=OUT_OF_SCOPE_MESSAGE)
+    assert isinstance(events[2], GenerationStreamCompleted)
+    assert events[2].result.text == OUT_OF_SCOPE_MESSAGE
+    assert rag.calls == 0
+    assert generation.calls == 0

@@ -102,7 +102,7 @@ Actualmente `app/main.py` expone `GET /health` y `POST /v1/responses`. La segund
 | Embeddings de documentos y consulta | `app/rag/embeddings.py` | Implementado; ejecución real depende de la clave y cuota |
 | Chroma y similitud coseno | `app/rag/vector_store.py`, `tests/test_vector_store.py` | Implementado y probado localmente |
 | Recuperación, diversidad y reranking | `app/rag/service.py`, `tests/test_service.py` | Implementado y probado |
-| Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py`, `artifacts/evaluations/retrieval-20260818-221152.json` | Implementada y aprobada: 49 casos, Hit@4 100 %, Top-1 81.63 %, MRR@4 90.48 % |
+| Evaluación de recuperación | `scripts/evaluate_retrieval.py`, `tests/test_evaluation.py`, `artifacts/evaluations/retrieval-20260819-220326.json` | Implementada y aprobada sobre `agente_cv_v2`: 54 casos, Hit@4 100 %, Top-1 83.33 %, MRR@4 91.36 % |
 | `POST /v1/responses` | `app/main.py`, `app/agent.py`, `tests/test_responses.py` | Implementado con RAG y generación real completa o streaming |
 | Validación del contrato Open Responses | `app/models.py`, `tests/test_models.py`, `tests/test_responses.py` | Implementada, probada y aceptada por la plataforma cliente |
 | Autenticación Bearer | `app/auth.py`, `app/config.py`, `tests/test_auth.py` | Implementada, probada e integrada con la plataforma cliente |

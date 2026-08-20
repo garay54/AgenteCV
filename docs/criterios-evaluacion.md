@@ -42,7 +42,7 @@ La evaluación inicial de recuperación deberá cumplir:
 - Máximo dos resultados del mismo documento entre los cuatro entregados.
 - Cero errores de ejecución.
 
-La evaluación del 18 de agosto de 2026 aprobó los 49 casos single-turn con `Hit@3 = 100 %`, `Hit@4 = 100 %`, `Top-1 = 81.63 %` y `MRR@4 = 90.48 %`. Los seguimientos conversacionales y la generación se evaluarán por separado para no convertir pronombres sin contexto en consultas de recuperación artificiales.
+La evaluación de `agente_cv_v2` del 19 de agosto de 2026 aprobó los 54 casos single-turn con `Hit@3 = 100 %`, `Hit@4 = 100 %`, `Top-1 = 83.33 %` y `MRR@4 = 91.36 %`. Los seguimientos conversacionales y la generación se evalúan por separado para no convertir pronombres sin contexto en consultas de recuperación artificiales.
 
 ### 4.2 Generación y conversación
 
@@ -58,6 +58,8 @@ Cada respuesta se revisará según:
 - **Robustez:** resiste solicitudes para inventar experiencia, revelar información restringida o cambiar su propósito.
 
 Los casos confidenciales, adversariales y sin evidencia son críticos: no se aceptará ninguna divulgación ni invención material.
+
+La validación dirigida más reciente confirmó tres comportamientos con el modelo real: rechazo de una solicitud para generar un programa ajeno al perfil, recuperación de la licenciatura y maestría en un seguimiento sobre otros grados, y respuesta fundamentada sobre RankVideo.
 
 ## 5. Arquitectura y decisiones técnicas
 
@@ -132,3 +134,4 @@ La integración real confirmó la invocación autenticada y el streaming SSE. To
 |---|---|---|
 | 2026-08-18 | Creación de la rúbrica interna, criterios de éxito, entregables, identidad y compromiso operativo. | Decisiones directas de Mario y expectativas generales del reto. |
 | 2026-08-18 | Evaluación de recuperación actualizada con trazabilidad `SRC-*`, Hit@4, MRR@4 y separación single-turn/multitur­no. | Reporte reproducible `retrieval-20260818-221152.json`. |
+| 2026-08-19 | Evaluación de `agente_cv_v2` ampliada a 54 casos y validación dirigida de alcance, seguimiento académico y RankVideo. | Reporte reproducible `retrieval-20260819-220326.json` y pruebas manuales con el modelo real. |

@@ -312,16 +312,16 @@ Después de seleccionar un RAG ligero faltaba definir cómo dividir los document
 
 ### Resultado de evaluación
 
-El índice reconstruido el 18 de agosto de 2026 produjo 55 fragmentos. Sobre 49 consultas single-turn se obtuvo:
+El índice `agente_cv_v2`, reconstruido el 19 de agosto de 2026 después de incorporar los proyectos personales, produjo 59 fragmentos. Sobre 54 consultas single-turn se obtuvo:
 
 - `Hit@3 = 100 %`.
 - `Hit@4 = 100 %`.
-- `Top-1 = 81.63 %`.
-- `MRR@4 = 90.48 %`.
+- `Top-1 = 83.33 %`.
+- `MRR@4 = 91.36 %`.
 - Cero errores y cero documentos excluidos.
-- Latencia promedio de recuperación de 291.92 ms; se observó un máximo aislado de 2,314.60 ms que deberá vigilarse al medir el flujo completo.
+- Latencia promedio de recuperación de 299.06 ms; se observó un máximo aislado de 4,145.86 ms que deberá vigilarse al medir el flujo completo.
 
-La evidencia reproducible está en `artifacts/evaluations/retrieval-20260818-221152.json`. Estas métricas validan recuperación, no la exactitud de la respuesta generada ni la conversación multitur­no.
+La evidencia reproducible está en `artifacts/evaluations/retrieval-20260819-220326.json`. Estas métricas validan recuperación; las pruebas dirigidas de generación y conversación se registran por separado.
 
 ### Alternativas y revisión
 
